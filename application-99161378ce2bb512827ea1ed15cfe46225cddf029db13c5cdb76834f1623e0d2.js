@@ -56409,22 +56409,29 @@ This script provides functionalities for internationalisation in JavaScript.
   });
 
   window._jed = function() {
-    var args, isKeyPresent, key;
+    var args, isKeyPresent, key, untranslated;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     isKeyPresent = function(key) {
       return (i18n.jed.options.locale_data.leihs[key] != null) && key.length;
+    };
+    untranslated = function(text, sArr) {
+      if ((sArr != null) && text) {
+        return Jed.sprintf(text, sArr);
+      } else {
+        return text;
+      }
     };
     if (typeof args[0] === "number") {
       if ((key = args[1]) && isKeyPresent(key)) {
         return i18n.jed.translate(args[1]).ifPlural(args[0], args[2]).fetch(args[3]);
       } else {
-        return key;
+        return untranslated((args[0] !== 1 && (args[2] != null) ? args[2] : key), args[3]);
       }
     } else {
       if ((key = args[0]) && isKeyPresent(key)) {
         return i18n.jed.translate(args[0]).fetch(args[1]);
       } else {
-        return key;
+        return untranslated(key, args[1]);
       }
     }
   };
@@ -57037,7 +57044,7 @@ This script provides functionalities for the interactivity with the topbar searc
       return this.groupByDateRange(this.reservations().all(), mergeModels);
     },
     groupByDateRange: function(reservations, mergeModels, actionDate) {
-      var group, hash, i, j, len, len1, name, name1, reservation, result;
+      var group, hash, i, j, len, len1, name, name1, ref, ref1, reservation, result;
       if (mergeModels == null) {
         mergeModels = false;
       }
@@ -57052,7 +57059,9 @@ This script provides functionalities for the interactivity with the topbar searc
         reservation = reservations[i];
         (hash[name = JSON.stringify({
           start_date: reservation.start_date,
-          end_date: reservation.end_date
+          end_date: reservation.end_date,
+          start_time: (ref = reservation.start_time) != null ? ref : null,
+          end_time: (ref1 = reservation.end_time) != null ? ref1 : null
         })] != null ? hash[name] : hash[name] = []).push(reservation);
       }
       result = [];
@@ -57073,6 +57082,8 @@ This script provides functionalities for the interactivity with the topbar searc
         return result.push({
           start_date: key_obj.start_date,
           end_date: key_obj.end_date,
+          start_time: key_obj.start_time,
+          end_time: key_obj.end_time,
           reservations: reservations
         });
       });
@@ -57246,7 +57257,7 @@ This script provides functionalities for the interactivity with the topbar searc
   window.App.Availability = (function(superClass) {
     extend(Availability, superClass);
 
-    Availability.configure("Availability", "inventory_pool_id", "model_id", "changes", "total_borrowable", "total_rentable", "in_stock");
+    Availability.configure("Availability", "inventory_pool_id", "model_id", "changes", "changes_by_window", "total_borrowable", "total_rentable", "in_stock");
 
     Availability.belongsTo("inventory_pool", "App.InventoryPool", "inventory_pool_id");
 
@@ -57257,6 +57268,27 @@ This script provides functionalities for the interactivity with the topbar searc
     function Availability(data) {
       Availability.__super__.constructor.apply(this, arguments);
     }
+
+    Availability.prototype.forTimeWindow = function(startTime, endTime) {
+      var byWindow, keys, windowed;
+      byWindow = this.changes_by_window || {};
+      keys = startTime != null ? [startTime + "-" + endTime] : _.keys(byWindow);
+      windowed = _.compact(_.map(keys, (function(_this) {
+        return function(key) {
+          var clone;
+          if (byWindow[key] != null) {
+            clone = $.extend(true, {}, _this);
+            clone.changes = byWindow[key];
+            return clone;
+          }
+        };
+      })(this)));
+      if (windowed.length) {
+        return windowed;
+      } else {
+        return [this];
+      }
+    };
 
     Availability.prototype.availabilityForGroups = function(change, groupIds) {
       return _.reduce(change[2], ((function(_this) {
@@ -57725,10 +57757,20 @@ This script provides functionalities for the interactivity with the topbar searc
       this.hasEnoughReservationAdvanceDays = bind(this.hasEnoughReservationAdvanceDays, this);
       this.isVisitPossible = bind(this.isVisitPossible, this);
       this.isClosedOn = bind(this.isClosedOn, this);
+      this.timeSlotOptions = bind(this.timeSlotOptions, this);
       return InventoryPool.__super__.constructor.apply(this, arguments);
     }
 
     InventoryPool.configure("InventoryPool", "id", "name", "default_contract_note", "borrow_reservation_advance_days");
+
+    InventoryPool.prototype.timeSlotOptions = function() {
+      return _.map(this.time_slots || [], function(slot) {
+        return {
+          value: slot.start_time + "-" + slot.end_time,
+          label: slot.name + " (" + slot.start_time.slice(0, 5) + "–" + slot.end_time.slice(0, 5) + ")"
+        };
+      });
+    };
 
     InventoryPool.hasMany("availabilities", "App.Availability", "inventory_pool_id");
 
@@ -58184,7 +58226,7 @@ This script provides functionalities for the interactivity with the topbar searc
       return Reservation.__super__.constructor.apply(this, arguments);
     }
 
-    Reservation.configure("Reservation", "id", "inventory_pool_id", "user_id", "delegated_user_id", "status", "contract_id", "order_id", "model_id", "option_id", "purpose_id", "quantity", "start_date", "end_date", "item_id", "line_purpose");
+    Reservation.configure("Reservation", "id", "inventory_pool_id", "user_id", "delegated_user_id", "status", "contract_id", "order_id", "model_id", "option_id", "purpose_id", "quantity", "start_date", "end_date", "start_time", "end_time", "item_id", "line_purpose");
 
     Reservation.belongsTo("contract", "App.Contract", "contract_id");
 
@@ -73161,7 +73203,7 @@ window.TimelinePreprocessData = {
 
   changesAlgorithm: function (timeline_availability, changes, userEntitlementGroupsForModel, relevantItemsCount) {
     return changes.map(function (c) {
-      var reservations = TimelinePreprocessData.calculateChangesReservations(timeline_availability, c);
+      var reservations = TimelineUtil.concurrentReservations(TimelinePreprocessData.calculateChangesReservations(timeline_availability, c));
       return {
         change: c,
         date: c,
@@ -73213,17 +73255,20 @@ window.TimelinePreprocessData = {
     var numberOfDays = TimelineUtil.numberOfDays(firstMoment, lastMoment);
     var relevantItemsCount = TimelinePreprocessData.relevantItemsCount(timeline_availability);
     var totalCounts = TimelinePreprocessData.totalCounts(lastMoment, relevantItemsCount);
-    var handoutCounts = TimelinePreprocessData.handoutCounts(timeline_availability, lastMoment).map(function (hc) {
-      return -hc.length;
+    var handouts = TimelinePreprocessData.handoutCounts(timeline_availability, lastMoment);
+    var handoutCounts = handouts.map(function (hc) {
+      return -TimelineUtil.concurrentReservations(hc).length;
     });
     var borrowableCounts = _.zip(totalCounts, handoutCounts).map(function (p) {
       return _.first(p) + _.last(p);
     });
-    var reservationCounts = TimelinePreprocessData.reservationCounts(timeline_availability, lastMoment).map(function (rc) {
-      return -rc.length;
+    var reservationsOfDays = TimelinePreprocessData.reservationCounts(timeline_availability, lastMoment);
+    var reservationCounts = reservationsOfDays.map(function (rc) {
+      return -TimelineUtil.concurrentReservations(rc).length;
     });
-    var unusedCounts = _.zip(borrowableCounts, reservationCounts).map(function (p) {
-      return _.first(p) + _.last(p);
+    // morning and afternoon reservations of the same day can share the items
+    var unusedCounts = _.zip(totalCounts, handouts, reservationsOfDays).map(function (p) {
+      return p[0] - TimelineUtil.concurrentReservations(p[1].concat(p[2])).length;
     });
     var allLayoutedReservationFrames = TimelinePreprocessData.layoutReservationFrames(timeline_availability.running_reservations);
     var userEntitlementGroupsForModel = TimelinePreprocessData.userEntitlementGroupsForModel(timeline_availability);
@@ -73345,6 +73390,15 @@ window.TimelineRenderReservations = {
       { key: 'label' },
       label
     )];
+
+    var timeSlot = TimelineUtil.timeSlotLabel(rr);
+    if (timeSlot) {
+      elements.push(React.createElement(
+        'span',
+        { key: 'time_slot', style: { marginLeft: '10px', fontWeight: 'bold' } },
+        timeSlot
+      ));
+    }
 
     var inventoryCode = TimelineUtil.inventoryCode(timeline_availability, rr);
     if (inventoryCode) {
@@ -73822,6 +73876,39 @@ window.TimelineUtil = {
 
   late: function (r) {
     return r.status == 'signed' && !r.returned_date && TimelineUtil.isBefore(moment(r.end_date), moment());
+  },
+
+  // "HH:MM" of a time slot reservation, null for whole days
+  timeSlotTime: function (t) {
+    return t ? String(t).substr(0, 5) : null;
+  },
+
+  timeSlotLabel: function (r) {
+    if (!r.start_time) {
+      return null;
+    }
+    return TimelineUtil.timeSlotTime(r.start_time) + '–' + TimelineUtil.timeSlotTime(r.end_time);
+  },
+
+  // The reservations of a day which need items at the same time: the whole-day
+  // (and late) ones plus the time slot ones of the most booked time window.
+  concurrentReservations: function (reservations) {
+    var isSlot = function (r) {
+      return r.start_time && !TimelineUtil.late(r);
+    };
+    var wholeDay = _.reject(reservations, isSlot);
+    var slots = _.filter(reservations, isSlot);
+    var overlap = function (a, b) {
+      return a.start_time < b.end_time && b.start_time < a.end_time;
+    };
+    var busiest = _.max(slots.map(function (w) {
+      return _.filter(slots, function (r) {
+        return overlap(r, w);
+      });
+    }), function (rs) {
+      return rs.length;
+    });
+    return wholeDay.concat(_.isArray(busiest) ? busiest : []);
   },
 
   reserved: function (r) {

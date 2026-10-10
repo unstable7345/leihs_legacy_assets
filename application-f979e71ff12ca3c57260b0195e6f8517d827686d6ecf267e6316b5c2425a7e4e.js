@@ -56409,22 +56409,29 @@ This script provides functionalities for internationalisation in JavaScript.
   });
 
   window._jed = function() {
-    var args, isKeyPresent, key;
+    var args, isKeyPresent, key, untranslated;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     isKeyPresent = function(key) {
       return (i18n.jed.options.locale_data.leihs[key] != null) && key.length;
+    };
+    untranslated = function(text, sArr) {
+      if ((sArr != null) && text) {
+        return Jed.sprintf(text, sArr);
+      } else {
+        return text;
+      }
     };
     if (typeof args[0] === "number") {
       if ((key = args[1]) && isKeyPresent(key)) {
         return i18n.jed.translate(args[1]).ifPlural(args[0], args[2]).fetch(args[3]);
       } else {
-        return key;
+        return untranslated((args[0] !== 1 && (args[2] != null) ? args[2] : key), args[3]);
       }
     } else {
       if ((key = args[0]) && isKeyPresent(key)) {
         return i18n.jed.translate(args[0]).fetch(args[1]);
       } else {
-        return key;
+        return untranslated(key, args[1]);
       }
     }
   };
@@ -57754,6 +57761,15 @@ This script provides functionalities for the interactivity with the topbar searc
     }
 
     InventoryPool.configure("InventoryPool", "id", "name", "default_contract_note", "borrow_reservation_advance_days");
+
+    InventoryPool.prototype.timeSlotOptions = function() {
+      return _.map(this.time_slots || [], function(slot) {
+        return {
+          value: slot.start_time + "-" + slot.end_time,
+          label: slot.name + " (" + slot.start_time.slice(0, 5) + "–" + slot.end_time.slice(0, 5) + ")"
+        };
+      });
+    };
 
     InventoryPool.hasMany("availabilities", "App.Availability", "inventory_pool_id");
 

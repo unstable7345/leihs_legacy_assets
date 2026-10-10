@@ -2932,6 +2932,15 @@
     anyProblems: function() {
       return !!this.getProblems().length;
     },
+    _availabilities: function() {
+      var avail, line;
+      avail = this.model().availability();
+      if (avail == null) {
+        return [];
+      }
+      line = this.subreservations != null ? this.subreservations[0] : this;
+      return avail.forTimeWindow(line.start_time, line.end_time);
+    },
     _isSoftOverbooked: function(avail, reservationsToExclude) {
       return _.any(avail.changes, (function(_this) {
         return function(change) {
@@ -2944,31 +2953,40 @@
       })(this));
     },
     effectiveAvailableForUser: function() {
-      var avail, maxAvailableForUser, quantity, reservationsToExclude;
+      var avails, quantity, reservationsToExclude;
       if (this.model_id == null) {
         return null;
       }
-      avail = this.model().availability();
-      if (avail == null) {
+      avails = this._availabilities();
+      if (!avails.length) {
         return null;
       }
       reservationsToExclude = this.subreservations != null ? this.subreservations : [this];
-      maxAvailableForUser = avail.withoutLines(reservationsToExclude).maxAvailableForGroups(this.start_date, this.end_date, this.user().groupIds);
       quantity = this.subreservations != null ? _.reduce(this.subreservations, (function(mem, l) {
         return mem + l.quantity;
       }), 0) : this.quantity;
-      if (this._isSoftOverbooked(avail, reservationsToExclude)) {
-        return maxAvailableForUser - quantity;
-      } else {
-        return maxAvailableForUser;
-      }
+      return _.min(_.map(avails, (function(_this) {
+        return function(avail) {
+          var maxAvailableForUser;
+          maxAvailableForUser = avail.withoutLines(reservationsToExclude).maxAvailableForGroups(_this.start_date, _this.end_date, _this.user().groupIds);
+          if (_this._isSoftOverbooked(avail, reservationsToExclude)) {
+            return maxAvailableForUser - quantity;
+          } else {
+            return maxAvailableForUser;
+          }
+        };
+      })(this)));
     },
     getProblems: function() {
       var avail, days, effectiveAvailable, maxAvailableForUser, maxAvailableInTotal, problems, quantity, reservationsToExclude, softOverbooked;
       problems = [];
       if (this.model_id != null) {
         reservationsToExclude = this.subreservations != null ? this.subreservations : [this];
-        avail = this.model().availability();
+        avail = _.min(this._availabilities(), (function(_this) {
+          return function(a) {
+            return a.withoutLines(reservationsToExclude).maxAvailableForGroups(_this.start_date, _this.end_date, _this.user().groupIds);
+          };
+        })(this));
         maxAvailableForUser = avail.withoutLines(reservationsToExclude).maxAvailableForGroups(this.start_date, this.end_date, this.user().groupIds);
         softOverbooked = this._isSoftOverbooked(avail, reservationsToExclude);
         quantity = this.subreservations != null ? _.reduce(this.subreservations, (function(mem, l) {
@@ -3630,18 +3648,24 @@
   };
 
   window.App.Reservation.changeTimeRange = (function(_this) {
-    return function(reservations, startDate, endDate) {
+    return function(reservations, startDate, endDate, timeWindow) {
+      var params;
       if (startDate) {
         startDate = moment(startDate).format("YYYY-MM-DD");
       }
       endDate = moment(endDate).format("YYYY-MM-DD");
-      return $.post("/manage/" + App.InventoryPool.current.id + "/reservations/change_time_range", {
+      params = {
         line_ids: _.map(reservations, function(l) {
           return l.id;
         }),
         start_date: startDate,
         end_date: endDate
-      }).done(function() {
+      };
+      if (timeWindow != null) {
+        params.start_time = timeWindow[0] || "";
+        params.end_time = timeWindow[1] || "";
+      }
+      return $.post("/manage/" + App.InventoryPool.current.id + "/reservations/change_time_range", params).done(function() {
         var data, i, len, line;
         for (i = 0, len = reservations.length; i < len; i++) {
           line = reservations[i];
@@ -3650,6 +3674,10 @@
           };
           if (startDate) {
             data["start_date"] = startDate;
+          }
+          if (timeWindow != null) {
+            data["start_time"] = timeWindow[0];
+            data["end_time"] = timeWindow[1];
           }
           line.refresh(data);
         }
@@ -5969,14 +5997,19 @@
       return this.el = this.modal.el;
     };
 
-    HandOverDialogController.prototype.handOver = function() {
+    HandOverDialogController.prototype.handOver = function(e, confirmEarlyHandOver) {
       var ref;
-      if (this.purpose.length) {
-        if (this.purposeTextArea.val()) {
-          this.purpose = this.purpose + "; " + (this.purposeTextArea.val());
+      if (confirmEarlyHandOver == null) {
+        confirmEarlyHandOver = false;
+      }
+      if (!confirmEarlyHandOver) {
+        if (this.purpose.length) {
+          if (this.purposeTextArea.val()) {
+            this.purpose = this.purpose + "; " + (this.purposeTextArea.val());
+          }
+        } else {
+          this.purpose = this.purposeTextArea.val();
         }
-      } else {
-        this.purpose = this.purposeTextArea.val();
       }
       if (this.validatePurpose() && this.validateDelegatedUser()) {
         return App.Contract.create({
@@ -5986,11 +6019,16 @@
           }),
           purpose: this.purpose,
           note: this.noteTextArea.val(),
-          delegated_user_id: (ref = this.delegatedUser) != null ? ref.id : void 0
+          delegated_user_id: (ref = this.delegatedUser) != null ? ref.id : void 0,
+          confirm_early_hand_over: confirmEarlyHandOver
         }).fail((function(_this) {
           return function(e) {
-            _this.errorContainer.find("strong").html(e.responseText);
-            return _this.errorContainer.removeClass("hidden");
+            if (e.status === 409 && confirm(e.responseText)) {
+              return _this.handOver(null, true);
+            } else {
+              _this.errorContainer.find("strong").html(e.responseText);
+              return _this.errorContainer.removeClass("hidden");
+            }
           };
         })(this)).done((function(_this) {
           return function(data) {
@@ -9650,20 +9688,72 @@
       this.fetchAvailability = bind(this.fetchAvailability, this);
       this.fetchData = bind(this.fetchData, this);
       this.setupDates = bind(this.setupDates, this);
+      this.getTimeWindow = bind(this.getTimeWindow, this);
+      this.setupTimeSlots = bind(this.setupTimeSlots, this);
       this.setupModal = bind(this.setupModal, this);
       return ManageBookingCalendarDialogController.__super__.constructor.apply(this, arguments);
     }
 
     ManageBookingCalendarDialogController.prototype.setupModal = function() {
+      this.setupTimeSlots();
       this.dialog = $(App.Render("manage/views/booking_calendar/calendar_dialog", {
         user: this.user
       }, {
         startDateDisabled: this.startDateDisabled,
-        quantityDisabled: this.quantityDisabled
+        quantityDisabled: this.quantityDisabled,
+        timeSlots: this.timeSlots,
+        mixedTimeSlots: this.initialTimeSlot === "keep"
       }));
       this.listOfLines = this.dialog.find("#booking-calendar-lines .list-of-lines");
       this.partitionsEl = this.dialog.find("#booking-calendar-partitions");
-      return ManageBookingCalendarDialogController.__super__.setupModal.apply(this, arguments);
+      this.timeSlotEl = this.dialog.find("#booking-calendar-time-slot");
+      ManageBookingCalendarDialogController.__super__.setupModal.apply(this, arguments);
+      this.timeSlotEl.val(this.initialTimeSlot);
+      return this.timeSlotEl.on("change", (function(_this) {
+        return function() {
+          var ref;
+          if ((ref = _this.getTimeWindow()) != null ? ref[0] : void 0) {
+            return _this.endDateEl.val(_this.startDateEl.val());
+          }
+        };
+      })(this));
+    };
+
+    ManageBookingCalendarDialogController.prototype.setupTimeSlots = function() {
+      var end, ref, ref1, start, values;
+      this.timeSlots = App.InventoryPool.current.timeSlotOptions();
+      values = _.uniq(_.map(this.reservations, function(l) {
+        if (l.start_time) {
+          return l.start_time + "-" + l.end_time;
+        } else {
+          return "";
+        }
+      }));
+      this.initialTimeSlot = values.length === 1 ? values[0] : "keep";
+      if (((ref = this.initialTimeSlot) !== "" && ref !== "keep") && !_.find(this.timeSlots, (function(_this) {
+        return function(o) {
+          return o.value === _this.initialTimeSlot;
+        };
+      })(this))) {
+        ref1 = this.initialTimeSlot.split("-"), start = ref1[0], end = ref1[1];
+        return this.timeSlots.push({
+          value: this.initialTimeSlot,
+          label: start.slice(0, 5) + "–" + end.slice(0, 5)
+        });
+      }
+    };
+
+    ManageBookingCalendarDialogController.prototype.getTimeWindow = function() {
+      var ref, value;
+      value = (ref = this.timeSlotEl) != null ? ref.val() : void 0;
+      if ((value == null) || value === "keep") {
+        return void 0;
+      }
+      if (value === "") {
+        return [null, null];
+      } else {
+        return value.split("-");
+      }
     };
 
     ManageBookingCalendarDialogController.prototype.setupDates = function() {
@@ -9869,7 +9959,13 @@
     };
 
     ManageBookingCalendarDialogController.prototype.valid = function() {
-      return true;
+      var ref;
+      if (((ref = this.getTimeWindow()) != null ? ref[0] : void 0) && !this.getStartDate().isSame(this.getEndDate(), "day")) {
+        this.showError(_jed("A time slot can only be reserved for a single day"));
+        return false;
+      } else {
+        return true;
+      }
     };
 
     ManageBookingCalendarDialogController.prototype.store = function() {};
@@ -9889,7 +9985,8 @@
 
     ReservationAssignOrCreateController.prototype.elements = {
       "#add-start-date": "addStartDate",
-      "#add-end-date": "addEndDate"
+      "#add-end-date": "addEndDate",
+      "#add-time-slot": "addTimeSlot"
     };
 
     function ReservationAssignOrCreateController() {
@@ -9944,17 +10041,20 @@
     };
 
     ReservationAssignOrCreateController.prototype.submit = function(inventoryCode) {
-      var ref, ref1, ref2;
+      var endTime, ref, ref1, ref2, ref3, ref4, startTime;
       if (!(inventoryCode != null ? inventoryCode.length : void 0)) {
         return false;
       }
+      ref1 = ((ref = this.addTimeSlot.val()) != null ? ref.split("-") : void 0) || [], startTime = ref1[0], endTime = ref1[1];
       App.Reservation.assignOrCreate({
         start_date: this.getStartDate().format("YYYY-MM-DD"),
-        end_date: this.getEndDate().format("YYYY-MM-DD"),
+        end_date: (startTime ? this.getStartDate() : this.getEndDate()).format("YYYY-MM-DD"),
+        start_time: startTime || "",
+        end_time: endTime || "",
         code: inventoryCode,
-        order_id: (ref = this.order) != null ? ref.id : void 0,
-        user_id: ((ref1 = this.order) != null ? ref1.user_id : void 0) || this.user.id,
-        inventory_pool_id: ((ref2 = this.order) != null ? ref2.inventory_pool_id : void 0) || App.InventoryPool.current.id
+        order_id: (ref2 = this.order) != null ? ref2.id : void 0,
+        user_id: ((ref3 = this.order) != null ? ref3.user_id : void 0) || this.user.id,
+        inventory_pool_id: ((ref4 = this.order) != null ? ref4.inventory_pool_id : void 0) || App.InventoryPool.current.id
       }).done((function(_this) {
         return function(data) {
           return _this.assignedOrCreated(inventoryCode, data);
@@ -10038,7 +10138,8 @@
 
     ReservationsAddController.prototype.elements = {
       "#add-start-date": "addStartDate",
-      "#add-end-date": "addEndDate"
+      "#add-end-date": "addEndDate",
+      "#add-time-slot": "addTimeSlot"
     };
 
     ReservationsAddController.prototype.events = {
@@ -10083,6 +10184,7 @@
       this.pushModelsTo = bind(this.pushModelsTo, this);
       this.getEndDate = bind(this.getEndDate, this);
       this.getStartDate = bind(this.getStartDate, this);
+      this.getTimeWindow = bind(this.getTimeWindow, this);
       this.setupDatepickers = bind(this.setupDatepickers, this);
       this.select = bind(this.select, this);
       this.search = bind(this.search, this);
@@ -10144,16 +10246,38 @@
           };
         })(this)
       });
-      return this.addStartDate.datepicker("option", "onSelect", (function(_this) {
+      this.addStartDate.datepicker("option", "onSelect", (function(_this) {
         return function(newStartDate) {
           var endDate;
           newStartDate = moment(newStartDate, i18n.date.L).startOf("day");
           endDate = moment(_this.addEndDate.val(), i18n.date.L).startOf("day");
-          if (newStartDate.toDate() > endDate.toDate()) {
+          if (newStartDate.toDate() > endDate.toDate() || (_this.getTimeWindow() != null)) {
             return _this.addEndDate.val(newStartDate.format(i18n.date.L));
           }
         };
       })(this));
+      this.addTimeSlot.on("change", (function(_this) {
+        return function() {
+          if (_this.getTimeWindow() != null) {
+            return _this.addEndDate.val(_this.addStartDate.val());
+          }
+        };
+      })(this));
+      return this.addEndDate.on("change", (function(_this) {
+        return function() {
+          if (!_this.getStartDate().isSame(_this.getEndDate(), "day")) {
+            return _this.addTimeSlot.val("");
+          }
+        };
+      })(this));
+    };
+
+    ReservationsAddController.prototype.getTimeWindow = function() {
+      var value;
+      value = this.addTimeSlot.val();
+      if (value) {
+        return value.split("-");
+      }
     };
 
     ReservationsAddController.prototype.getStartDate = function() {
@@ -10385,17 +10509,20 @@
     };
 
     ReservationsAddController.prototype.addModel = function(model, startDate, endDate, inventoryCode) {
-      var ref, ref1, ref2;
+      var endTime, ref, ref1, ref2, ref3, startTime;
       if (this.addModelForHandOver && inventoryCode) {
         return typeof this.onSubmitInventoryCode === "function" ? this.onSubmitInventoryCode(inventoryCode) : void 0;
       } else {
+        ref = this.getTimeWindow() || [], startTime = ref[0], endTime = ref[1];
         return App.Reservation.createOne({
           inventory_pool_id: App.InventoryPool.current.id,
           start_date: moment(startDate).format("YYYY-MM-DD"),
-          end_date: moment(endDate).format("YYYY-MM-DD"),
-          order_id: (ref = this.order) != null ? ref.id : void 0,
-          user_id: ((ref1 = this.order) != null ? ref1.user_id : void 0) || this.user.id,
-          inventory_pool_id: ((ref2 = this.order) != null ? ref2.inventory_pool_id : void 0) || App.InventoryPool.current.id,
+          end_date: moment(startTime ? startDate : endDate).format("YYYY-MM-DD"),
+          start_time: startTime || "",
+          end_time: endTime || "",
+          order_id: (ref1 = this.order) != null ? ref1.id : void 0,
+          user_id: ((ref2 = this.order) != null ? ref2.user_id : void 0) || this.user.id,
+          inventory_pool_id: ((ref3 = this.order) != null ? ref3.inventory_pool_id : void 0) || App.InventoryPool.current.id,
           quantity: 1,
           model_id: model.id
         }).done((function(_this) {
@@ -10694,19 +10821,28 @@
       this.store = bind(this.store, this);
       this.done = bind(this.done, this);
       this.createReservation = bind(this.createReservation, this);
+      this.timeWindowForNewReservations = bind(this.timeWindowForNewReservations, this);
       return ReservationsChangeController.__super__.constructor.apply(this, arguments);
     }
 
+    ReservationsChangeController.prototype.timeWindowForNewReservations = function() {
+      var ref;
+      return this.getTimeWindow() || ((ref = this.initialTimeSlot) === "" || ref === "keep" ? [null, null] : this.initialTimeSlot.split("-"));
+    };
+
     ReservationsChangeController.prototype.createReservation = function() {
-      var ref, ref1, ref2, ref3, ref4, ref5;
+      var endTime, ref, ref1, ref2, ref3, ref4, ref5, ref6, startTime;
+      ref = this.timeWindowForNewReservations(), startTime = ref[0], endTime = ref[1];
       return App.Reservation.createOne({
         model_id: _.first(this.models).id,
+        start_time: startTime || "",
+        end_time: endTime || "",
         start_date: this.getStartDate().format("YYYY-MM-DD"),
         end_date: this.getEndDate().format("YYYY-MM-DD"),
-        order_id: (ref = this.order) != null ? ref.id : void 0,
-        user_id: ((ref1 = this.order) != null ? (ref2 = ref1.user) != null ? ref2.id : void 0 : void 0) || this.user.id,
-        inventory_pool_id: ((ref3 = this.order) != null ? (ref4 = ref3.inventory_pool) != null ? ref4.id : void 0 : void 0) || App.InventoryPool.current.id,
-        state: ((ref5 = this.order) != null ? ref5.state : void 0) || "approved",
+        order_id: (ref1 = this.order) != null ? ref1.id : void 0,
+        user_id: ((ref2 = this.order) != null ? (ref3 = ref2.user) != null ? ref3.id : void 0 : void 0) || this.user.id,
+        inventory_pool_id: ((ref4 = this.order) != null ? (ref5 = ref4.inventory_pool) != null ? ref5.id : void 0 : void 0) || App.InventoryPool.current.id,
+        state: ((ref6 = this.order) != null ? ref6.state : void 0) || "approved",
         quantity: 1
       }).fail((function(_this) {
         return function(e) {
@@ -10801,8 +10937,12 @@
     };
 
     ReservationsChangeController.prototype.changeRange = function() {
-      if (this.getStartDate().format("YYYY-MM-DD") !== this.startDate || this.getEndDate().format("YYYY-MM-DD") !== this.endDate) {
-        return App.Reservation.changeTimeRange(this.reservations, (!this.startDateDisabled ? this.getStartDate() : void 0), this.getEndDate()).done(this.done).fail(this.fail);
+      var timeWindow;
+      if (this.timeSlotEl.val() !== this.initialTimeSlot) {
+        timeWindow = this.getTimeWindow();
+      }
+      if (this.getStartDate().format("YYYY-MM-DD") !== this.startDate || this.getEndDate().format("YYYY-MM-DD") !== this.endDate || (timeWindow != null)) {
+        return App.Reservation.changeTimeRange(this.reservations, (!this.startDateDisabled ? this.getStartDate() : void 0), this.getEndDate(), timeWindow).done(this.done).fail(this.fail);
       } else {
         return this.done();
       }
@@ -13287,7 +13427,7 @@
 }).call(this);
 (function($) {$.views.templates("manage/views/availabilities/loaded", "<div class=\'emboss padding-inset-s\'>\n  <p class=\'paragraph-s\'>\n    <i class=\'fa fa-check margin-right-m\'><\/i>\n    {{jed \"Availability loaded\"/}}\n  <\/p>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/availabilities/loading", "<div class=\'emboss blue padding-inset-s\'>\n  <p class=\'paragraph-s\'>\n    <img class=\'margin-right-s max-width-micro\' src=\'/assets/loading-4eebf3d6e9139e863f2be8c14cad4638df21bf050cea16117739b3431837ee0a.gif\'>\n    <strong>{{jed \"Loading availability\"/}}<\/strong>\n  <\/p>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
-(function($) {$.views.templates("manage/views/booking_calendar/calendar_dialog", "<div class=\'modal fade ui-modal medium\' role=\'dialog\' tabindex=\'-1\'>\n  <div class=\'modal-header row\'>\n    <div class=\'col3of5\'>\n      <h2 class=\'headline-l\'>{{jed \"Edit reservation\"/}}<\/h2>\n      <h3 class=\'headline-m\'>\n        {{>user.firstname}}\n        {{>user.lastname}}\n      <\/h3>\n    <\/div>\n    <div class=\'col2of5 text-align-right\'>\n      <div class=\'modal-close\'>{{jed \"Cancel\"/}}<\/div>\n      <button class=\'button green\' disabled=\'disabled\' id=\'submit-booking-calendar\'>{{jed \"Save\"/}}<\/button>\n    <\/div>\n  <\/div>\n  <div id=\'booking-calendar-errors\'><\/div>\n  <div class=\'modal-body\'>\n    <form class=\'padding-inset-m\'>\n      <div class=\'hidden\' id=\'booking-calendar-controls\'>\n        <div class=\'col5of8 float-right\'>\n          <div class=\'row grey padding-bottom-xxs\'>\n            <div class=\'col1of2\'>\n              <div class=\'col1of2 padding-right-xs text-align-left\'>\n                <div class=\'row {{if ~startDateDisabled}} hidden{{/if}}\'>\n                  <span>{{jed \"Start date\"/}}<\/span>\n                  <a class=\'grey fa fa-eye position-absolute-right padding-right-xxs\' id=\'jump-to-start-date\'><\/a>\n                <\/div>\n              <\/div>\n              <div class=\'col1of2 padding-right-xs text-align-left\'>\n                <div class=\'row\'>\n                  <span>{{jed \"End date\"/}}<\/span>\n                  <a class=\'grey fa fa-eye position-absolute-right padding-right-xxs\' id=\'jump-to-end-date\'><\/a>\n                <\/div>\n              <\/div>\n            <\/div>\n            <div class=\'col1of2\'>\n              <div class=\'col2of8 text-align-left\'>{{jed \"Quantity\"/}}<\/div>\n              <div class=\'col6of8 padding-left-xs text-align-left\'>{{jed \"Availability\"/}}<\/div>\n            <\/div>\n          <\/div>\n          <div class=\'row\'>\n            <div class=\'col1of2\'>\n              <div class=\'col1of2 padding-right-xs\'>\n                <div class=\'row {{if ~startDateDisabled}} hidden{{/if}}\'>\n                  <input autocomplete=\'off\' id=\'booking-calendar-start-date\' type=\'text\'>\n                <\/div>\n              <\/div>\n              <div class=\'col1of2 padding-right-xs\'>\n                <input autocomplete=\'off\' id=\'booking-calendar-end-date\' type=\'text\'>\n              <\/div>\n            <\/div>\n            <div class=\'col1of2\'>\n              <div class=\'col2of8\'>\n                {{if ~quantityDisabled}}\n                <input autocomplete=\'off\' class=\'text-align-center\' disabled=\'disabled\' id=\'booking-calendar-quantity\' type=\'text\' value=\'1\'>\n                {{else}}\n                <input autocomplete=\'off\' class=\'text-align-center\' id=\'booking-calendar-quantity\' type=\'text\' value=\'1\'>\n                {{/if}}\n              <\/div>\n              <div class=\'col6of8 padding-left-xs\'>\n                <select class=\'width-full\' id=\'booking-calendar-partitions\'><\/select>\n              <\/div>\n            <\/div>\n          <\/div>\n        <\/div>\n      <\/div>\n      <div class=\'booking-calendar padding-top-xs\' id=\'booking-calendar\'><\/div>\n      <img class=\'loading margin-horziontal-auto margin-vertical-xl\' src=\'/assets/loading-4eebf3d6e9139e863f2be8c14cad4638df21bf050cea16117739b3431837ee0a.gif\'>\n    <\/form>\n    <div id=\'booking-calendar-lines\'>\n      <div class=\'list-of-lines separated-top\'><\/div>\n    <\/div>\n  <\/div>\n  <div class=\'modal-footer\'><\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
+(function($) {$.views.templates("manage/views/booking_calendar/calendar_dialog", "<div class=\'modal fade ui-modal medium\' role=\'dialog\' tabindex=\'-1\'>\n  <div class=\'modal-header row\'>\n    <div class=\'col3of5\'>\n      <h2 class=\'headline-l\'>{{jed \"Edit reservation\"/}}<\/h2>\n      <h3 class=\'headline-m\'>\n        {{>user.firstname}}\n        {{>user.lastname}}\n      <\/h3>\n    <\/div>\n    <div class=\'col2of5 text-align-right\'>\n      <div class=\'modal-close\'>{{jed \"Cancel\"/}}<\/div>\n      <button class=\'button green\' disabled=\'disabled\' id=\'submit-booking-calendar\'>{{jed \"Save\"/}}<\/button>\n    <\/div>\n  <\/div>\n  <div id=\'booking-calendar-errors\'><\/div>\n  <div class=\'modal-body\'>\n    <form class=\'padding-inset-m\'>\n      <div class=\'hidden\' id=\'booking-calendar-controls\'>\n        <div class=\'col5of8 float-right\'>\n          <div class=\'row grey padding-bottom-xxs\'>\n            <div class=\'col1of2\'>\n              <div class=\'col1of2 padding-right-xs text-align-left\'>\n                <div class=\'row {{if ~startDateDisabled}} hidden{{/if}}\'>\n                  <span>{{jed \"Start date\"/}}<\/span>\n                  <a class=\'grey fa fa-eye position-absolute-right padding-right-xxs\' id=\'jump-to-start-date\'><\/a>\n                <\/div>\n              <\/div>\n              <div class=\'col1of2 padding-right-xs text-align-left\'>\n                <div class=\'row\'>\n                  <span>{{jed \"End date\"/}}<\/span>\n                  <a class=\'grey fa fa-eye position-absolute-right padding-right-xxs\' id=\'jump-to-end-date\'><\/a>\n                <\/div>\n              <\/div>\n            <\/div>\n            <div class=\'col1of2\'>\n              <div class=\'col2of8 text-align-left\'>{{jed \"Quantity\"/}}<\/div>\n              <div class=\'col6of8 padding-left-xs text-align-left\'>{{jed \"Availability\"/}}<\/div>\n            <\/div>\n          <\/div>\n          <div class=\'row\'>\n            <div class=\'col1of2\'>\n              <div class=\'col1of2 padding-right-xs\'>\n                <div class=\'row {{if ~startDateDisabled}} hidden{{/if}}\'>\n                  <input autocomplete=\'off\' id=\'booking-calendar-start-date\' type=\'text\'>\n                <\/div>\n              <\/div>\n              <div class=\'col1of2 padding-right-xs\'>\n                <input autocomplete=\'off\' id=\'booking-calendar-end-date\' type=\'text\'>\n              <\/div>\n            <\/div>\n            <div class=\'col1of2\'>\n              <div class=\'col2of8\'>\n                {{if ~quantityDisabled}}\n                <input autocomplete=\'off\' class=\'text-align-center\' disabled=\'disabled\' id=\'booking-calendar-quantity\' type=\'text\' value=\'1\'>\n                {{else}}\n                <input autocomplete=\'off\' class=\'text-align-center\' id=\'booking-calendar-quantity\' type=\'text\' value=\'1\'>\n                {{/if}}\n              <\/div>\n              <div class=\'col6of8 padding-left-xs\'>\n                <select class=\'width-full\' id=\'booking-calendar-partitions\'><\/select>\n              <\/div>\n            <\/div>\n          <\/div>\n          {{if ~timeSlots.length && !~startDateDisabled}}\n          <div class=\'row padding-top-xs\'>\n            <div class=\'col1of2 padding-right-xs text-align-left\'>\n              <div class=\'row grey padding-bottom-xxs\'>{{jed \"Time slot\"/}}<\/div>\n              <select class=\'width-full\' id=\'booking-calendar-time-slot\'>\n                {{if ~mixedTimeSlots}}<option value=\'keep\'>{{jed \"Keep the time slots\"/}}<\/option>{{/if}}\n                <option value=\'\'>{{jed \"Whole day\"/}}<\/option>\n                {{for ~timeSlots}}<option value=\'{{>value}}\'>{{>label}}<\/option>{{/for}}\n              <\/select>\n            <\/div>\n          <\/div>\n          {{/if}}\n        <\/div>\n      <\/div>\n      <div class=\'booking-calendar padding-top-xs\' id=\'booking-calendar\'><\/div>\n      <img class=\'loading margin-horziontal-auto margin-vertical-xl\' src=\'/assets/loading-4eebf3d6e9139e863f2be8c14cad4638df21bf050cea16117739b3431837ee0a.gif\'>\n    <\/form>\n    <div id=\'booking-calendar-lines\'>\n      <div class=\'list-of-lines separated-top\'><\/div>\n    <\/div>\n  <\/div>\n  <div class=\'modal-footer\'><\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/booking_calendar/line", "<div class=\'line row\'>\n  {{if model().availability}}\n  <div class=\'line-info{{if model().availability().withoutLines([#view.data]).maxAvailableForGroups(~start_date, ~end_date, ~groupIds) < (~quantity||quantity)}} red{{/if}}\'><\/div>\n  {{/if}}\n  <div class=\'col1of10 line-col text-align-center\'>\n    <span>\n      {{if ~quantity}}\n      {{>~quantity}}\n      {{else subreservations}}\n      {{sum subreservations \"quantity\"/}}\n      {{else}}\n      {{>quantity}}\n      {{/if}}\n    <\/span>\n    {{if model().availability}}\n    <span class=\'grey-text\'>\n      /\n      {{>effectiveAvailableForUser()}}\n    <\/span>\n    {{/if}}\n  <\/div>\n  <div class=\'col5of10 line-col text-align-left\'>\n    <strong>{{>model().name()}}<\/strong>\n  <\/div>\n  <div class=\'col4of10 line-col\'>\n    {{if model().availability}}\n    {{for model().availability().withoutLines([#view.data]).unavailableRanges((~quantity||quantity), ~groupIds, ~start_date, ~end_date)}}\n    <strong class=\'darkred-text\'>{{date startDate/}}-{{date endDate/}}<\/strong>\n    {{/for}}\n    {{/if}}\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/booking_calendar/partitions", "<option data-value=\'[{{>user}}]\'>{{jed \"Borrower\"/}}<\/option>\n{{if userGroups.length}}\n<optgroup label=\'{{jed \'Entitlement-Groups of this customer\'/}}\'>\n  {{for userGroups}}\n  <option data-value=\'[{{>id}}]\'>{{>name}}<\/option>\n  {{/for}}\n<\/optgroup>\n{{/if}}\n{{if otherGroups.length}}\n<optgroup label=\'{{jed \'Other entitlement-groups\'/}}\'>\n  {{for otherGroups}}\n  <option data-value=\'[{{>id}}]\'>{{>name}}<\/option>\n  {{/for}}\n<\/optgroup>\n{{/if}}\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/categories/filter_list_current", "<a class=\'emboss links black row focus-hover-thin font-size-m padding-horizontal-s padding-vertical-xs round-border-on-hover\' data-id=\'{{>id}}\' data-type=\'category-current\'>\n  <i class=\'arrow left\'><\/i>\n  {{>name}}\n<\/a>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
@@ -13389,7 +13529,7 @@
 (function($) {$.views.templates("manage/views/reservations/assign/autocomplete_element", "<li class=\'separated-bottom exclude-last-child width-xl\'>\n  <a>\n    <div class=\'row\'>\n      <div class=\'col1of3\'>\n        <strong>\n          {{>inventoryCode}}\n        <\/strong>\n      <\/div>\n      <div class=\'col2of3 text-ellipsis\' title=\'{{>name}}\'>\n        <span class=\'grey-text\'>{{>name}}<\/span>\n      <\/div>\n    <\/div>\n  <\/a>\n<\/li>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/reservations/cell", "{{>quantity()}}\n{{jed quantity() \"Item\" \"Items\"/}}\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/reservations/explorative_add_dialog", "<div class=\'modal fade ui-modal medium\' role=\'dialog\' tabindex=\'-1\'>\n  <div class=\'modal-header row padding-bottom-s\'>\n    <div class=\'col4of5\'>\n      <h2 class=\'headline-l\'>{{jed \'Models\'/}} {{jed \'by browsing categories\'/}}<\/h2>\n      <h3 class=\'headline-m light\'>({{date startDate/}} - {{date endDate/}})<\/h3>\n    <\/div>\n    <div class=\'col1of5 text-align-right\'>\n      <div class=\'modal-close\'>{{jed \"Cancel\"/}}<\/div>\n    <\/div>\n  <\/div>\n  <div class=\'modal-body separated-top\'>\n    <div class=\'table\'>\n      <div class=\'table-row\'>\n        <div class=\'col1of4 table-cell separated-right padding-inset-m\' id=\'categories\'>\n          <div class=\'row padding-inset-s\'>\n            <input autocomplete=\'off\' class=\'small\' id=\'category-search\' placeholder=\'{{jed \'Search category\'/}}\' type=\'text\'>\n          <\/div>\n          <div id=\'category-root\'><\/div>\n          <div id=\'category-current\'><\/div>\n          <div class=\'row padding-bottom-s\' id=\'category-list\'>\n            <div class=\'height-xs\'><\/div>\n            <img class=\'margin-horziontal-auto margin-top-xxl margin-bottom-xxl\' src=\'/assets/loading-4eebf3d6e9139e863f2be8c14cad4638df21bf050cea16117739b3431837ee0a.gif\'>\n          <\/div>\n        <\/div>\n        <div class=\'table-cell col3of4 list-of-lines even min-height-l\' id=\'models\'>\n          <div class=\'height-s\'><\/div>\n          <img class=\'margin-horziontal-auto margin-top-xxl margin-bottom-xxl\' src=\'/assets/loading-4eebf3d6e9139e863f2be8c14cad4638df21bf050cea16117739b3431837ee0a.gif\'>\n          <div class=\'height-s\'><\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n  <div class=\'modal-footer\'><\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
-(function($) {$.views.templates("manage/views/reservations/grouped_lines", "<div class=\'emboss deep padding-bottom-s margin-bottom-m\' data-selected-lines-container>\n  <div class=\'row\'>\n    <div class=\'col1of2 padding-vertical-s\'>\n      <label class=\'padding-inset-s inline\'>\n        <input autocomplete=\'off\' data-select-lines type=\'checkbox\'>\n      <\/label>\n      <p class=\'paragraph-s inline\'>\n        {{day start_date/}}\n        {{date start_date/}}\n        -\n        {{day end_date/}}\n        {{date end_date/}}\n      <\/p>\n    <\/div>\n    <div class=\'col1of2 padding-inset-s text-align-right\'>\n      <p class=\'paragraph-s inline\'>\n        {{diffDatesInDays start_date end_date/}}\n      <\/p>\n    <\/div>\n  <\/div>\n  <div class=\'row\'>\n    {{partial ~linePartial reservations #view.ctx/}}\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
+(function($) {$.views.templates("manage/views/reservations/grouped_lines", "<div class=\'emboss deep padding-bottom-s margin-bottom-m\' data-selected-lines-container>\n  <div class=\'row\'>\n    <div class=\'col1of2 padding-vertical-s\'>\n      <label class=\'padding-inset-s inline\'>\n        <input autocomplete=\'off\' data-select-lines type=\'checkbox\'>\n      <\/label>\n      <p class=\'paragraph-s inline\'>\n        {{day start_date/}}\n        {{date start_date/}}\n        -\n        {{day end_date/}}\n        {{date end_date/}}\n        {{if start_time}}\n        <strong>{{>start_time.substr(0, 5)}}–{{>end_time.substr(0, 5)}}<\/strong>\n        {{/if}}\n      <\/p>\n    <\/div>\n    <div class=\'col1of2 padding-inset-s text-align-right\'>\n      <p class=\'paragraph-s inline\'>\n        {{diffDatesInDays start_date end_date/}}\n      <\/p>\n    <\/div>\n  <\/div>\n  <div class=\'row\'>\n    {{partial ~linePartial reservations #view.ctx/}}\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/reservations/grouped_lines_with_action_date", "<h3 class=\'headline-s padding-inset-s\'>\n  {{if ~moment(date).endOf(\"day\").diff(~moment().endOf(\"day\"), \"days\") == 0}}\n  <strong>{{jed \"Today\"/}}<\/strong>\n  {{else}}\n  {{day date/}}\n  {{date date/}}\n  {{/if}}\n<\/h3>\n{{partial \"manage/views/reservations/grouped_lines\" groups #view.ctx/}}\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/reservations/hand_over_line", "{{if model_id}}\n{{partial \'manage/views/reservations/hand_over_line/item_line\' #view.data #view.ctx/}}\n{{else option_id}}\n{{partial \'manage/views/reservations/hand_over_line/option_line\' #view.data #view.ctx/}}\n{{/if}}\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/reservations/hand_over_line/assigned_item", "<input autocomplete=\'off\' class=\'small width-full has-addon text-align-center\' data-assign-item disabled id=\'assigned-item-{{>id}}\' type=\'text\' value=\'{{>item().inventory_code}}\'>\n<label class=\'addon small transparent no-padding\' data-remove-assignment for=\'assigned-item-{{>id}}\'>\n  <span class=\'link grey padding-inset-xs vertical-align-middle\'>\n    <i class=\'fa fa-times-circle\'><\/i>\n  <\/span>\n<\/label>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
