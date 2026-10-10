@@ -51105,7 +51105,7 @@ return $;
 /*!
  * URI.js - Mutating URLs
  *
- * Version: 1.18.11
+ * Version: 1.19.11
  *
  * Author: Rodney Rehm
  * Web: http://medialize.github.io/URI.js/
@@ -51182,7 +51182,11 @@ return $;
     return this;
   }
 
-  URI.version = '1.18.11';
+  function isInteger(value) {
+    return /^[0-9]+$/.test(value);
+  }
+
+  URI.version = '1.19.11';
 
   var p = URI.prototype;
   var hasOwn = Object.prototype.hasOwnProperty;
@@ -51302,17 +51306,22 @@ return $;
       query: null,
       fragment: null,
       // state
+      preventInvalidHostname: URI.preventInvalidHostname,
       duplicateQueryParameters: URI.duplicateQueryParameters,
       escapeQuerySpace: URI.escapeQuerySpace
     };
   };
+  // state: throw on invalid hostname
+  // see https://github.com/medialize/URI.js/pull/345
+  // and https://github.com/medialize/URI.js/issues/354
+  URI.preventInvalidHostname = false;
   // state: allow duplicate query parameters (a=1&a=1)
   URI.duplicateQueryParameters = false;
   // state: replaces + with %20 (space in query strings)
   URI.escapeQuerySpace = true;
   // static properties
   URI.protocol_expression = /^[a-z][a-z0-9.+-]*$/i;
-  URI.idn_expression = /[^a-z0-9\.-]/i;
+  URI.idn_expression = /[^a-z0-9\._-]/i;
   URI.punycode_expression = /(xn--)/i;
   // well, 333.444.555.666 matches, but it sure ain't no IPv4 - do we care?
   URI.ip4_expression = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
@@ -51335,6 +51344,9 @@ return $;
     // balanced parens inclusion (), [], {}, <>
     parens: /(\([^\)]*\)|\[[^\]]*\]|\{[^}]*\}|<[^>]*>)/g,
   };
+  URI.leading_whitespace_expression = /^[\x00-\x20\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+/
+  // https://infra.spec.whatwg.org/#ascii-tab-or-newline
+  URI.ascii_tab_whitespace = /[\u0009\u000A\u000D]+/g
   // http://www.iana.org/assignments/uri-schemes.html
   // http://en.wikipedia.org/wiki/List_of_TCP_and_UDP_port_numbers#Well-known_ports
   URI.defaultPorts = {
@@ -51353,8 +51365,8 @@ return $;
 
   // allowed hostname characters according to RFC 3986
   // ALPHA DIGIT "-" "." "_" "~" "!" "$" "&" "'" "(" ")" "*" "+" "," ";" "=" %encoded
-  // I've never seen a (non-IDN) hostname other than: ALPHA DIGIT . -
-  URI.invalid_hostname_characters = /[^a-zA-Z0-9\.\-:]/;
+  // I've never seen a (non-IDN) hostname other than: ALPHA DIGIT . - _
+  URI.invalid_hostname_characters = /[^a-zA-Z0-9\.\-:_]/;
   // map DOM Elements to their URI attribute
   URI.domAttributes = {
     'a': 'href',
@@ -51586,8 +51598,15 @@ return $;
   URI.parse = function(string, parts) {
     var pos;
     if (!parts) {
-      parts = {};
+      parts = {
+        preventInvalidHostname: URI.preventInvalidHostname
+      };
     }
+
+    string = string.replace(URI.leading_whitespace_expression, '')
+    // https://infra.spec.whatwg.org/#ascii-tab-or-newline
+    string = string.replace(URI.ascii_tab_whitespace, '')
+
     // [protocol"://"[username[":"password]"@"]hostname[":"port]"/"?][path]["?"querystring]["#"fragment]
 
     // extract fragment
@@ -51606,6 +51625,11 @@ return $;
       string = string.substring(0, pos);
     }
 
+    // slashes and backslashes have lost all meaning for the web protocols (https, http, wss, ws)
+    string = string.replace(/^(https?|ftp|wss?)?:+[/\\]*/i, '$1://');
+    // slashes and backslashes have lost all meaning for scheme relative URLs
+    string = string.replace(/^[/\\]{2,}/i, '//');
+
     // extract protocol
     if (string.substring(0, 2) === '//') {
       // relative-scheme
@@ -51620,7 +51644,7 @@ return $;
         if (parts.protocol && !parts.protocol.match(URI.protocol_expression)) {
           // : may be within the path
           parts.protocol = undefined;
-        } else if (string.substring(pos + 1, pos + 3) === '//') {
+        } else if (string.substring(pos + 1, pos + 3).replace(/\\/g, '/') === '//') {
           string = string.substring(pos + 3);
 
           // extract "user:pass@host:port"
@@ -51639,6 +51663,10 @@ return $;
     return parts;
   };
   URI.parseHost = function(string, parts) {
+    if (!string) {
+      string = '';
+    }
+
     // Copy chrome, IE, opera backslash-handling behavior.
     // Back slashes before the query string get converted to forward slashes
     // See: https://github.com/joyent/node/blob/386fd24f49b0e9d1a8a076592a404168faeecc34/lib/url.js#L115-L124
@@ -51686,7 +51714,9 @@ return $;
       string = '/' + string;
     }
 
-    URI.ensureValidHostname(parts.hostname, parts.protocol);
+    if (parts.preventInvalidHostname) {
+      URI.ensureValidHostname(parts.hostname, parts.protocol);
+    }
 
     if (parts.port) {
       URI.ensureValidPort(parts.port);
@@ -51700,17 +51730,22 @@ return $;
   };
   URI.parseUserinfo = function(string, parts) {
     // extract username:password
+    var _string = string
+    var firstBackSlash = string.indexOf('\\');
+    if (firstBackSlash !== -1) {
+      string = string.replace(/\\/g, '/')
+    }
     var firstSlash = string.indexOf('/');
     var pos = string.lastIndexOf('@', firstSlash > -1 ? firstSlash : string.length - 1);
     var t;
 
-    // authority@ must come before /path
+    // authority@ must come before /path or \path
     if (pos > -1 && (firstSlash === -1 || pos < firstSlash)) {
       t = string.substring(0, pos).split(':');
       parts.username = t[0] ? URI.decode(t[0]) : null;
       t.shift();
       parts.password = t[0] ? URI.decode(t.join(':')) : null;
-      string = string.substring(pos + 1);
+      string = _string.substring(pos + 1);
     } else {
       parts.username = null;
       parts.password = null;
@@ -51741,7 +51776,10 @@ return $;
       // no "=" is null according to http://dvcs.w3.org/hg/url/raw-file/tip/Overview.html#collect-url-parameters
       value = v.length ? URI.decodeQuery(v.join('='), escapeQuerySpace) : null;
 
-      if (hasOwn.call(items, name)) {
+      if (name === '__proto__') {
+        // ignore attempt at exploiting JavaScript internals
+        continue;
+      } else if (hasOwn.call(items, name)) {
         if (typeof items[name] === 'string' || items[name] === null) {
           items[name] = [items[name]];
         }
@@ -51757,6 +51795,7 @@ return $;
 
   URI.build = function(parts) {
     var t = '';
+    var requireAbsolutePath = false
 
     if (parts.protocol) {
       t += parts.protocol + ':';
@@ -51764,12 +51803,13 @@ return $;
 
     if (!parts.urn && (t || parts.hostname)) {
       t += '//';
+      requireAbsolutePath = true
     }
 
     t += (URI.buildAuthority(parts) || '');
 
     if (typeof parts.path === 'string') {
-      if (parts.path.charAt(0) !== '/' && typeof parts.hostname === 'string') {
+      if (parts.path.charAt(0) !== '/' && requireAbsolutePath) {
         t += '/';
       }
 
@@ -51832,7 +51872,10 @@ return $;
     var t = '';
     var unique, key, i, length;
     for (key in data) {
-      if (hasOwn.call(data, key) && key) {
+      if (key === '__proto__') {
+        // ignore attempt at exploiting JavaScript internals
+        continue;
+      } else if (hasOwn.call(data, key)) {
         if (isArray(data[key])) {
           unique = {};
           for (i = 0, length = data[key].length; i < length; i++) {
@@ -51881,6 +51924,21 @@ return $;
       throw new TypeError('URI.addQuery() accepts an object, string as the name parameter');
     }
   };
+
+  URI.setQuery = function(data, name, value) {
+    if (typeof name === 'object') {
+      for (var key in name) {
+        if (hasOwn.call(name, key)) {
+          URI.setQuery(data, key, name[key]);
+        }
+      }
+    } else if (typeof name === 'string') {
+      data[name] = value === undefined ? null : value;
+    } else {
+      throw new TypeError('URI.setQuery() accepts an object, string as the name parameter');
+    }
+  };
+
   URI.removeQuery = function(data, name, value) {
     var i, length, key;
 
@@ -52149,10 +52207,10 @@ return $;
     } else if (v && v.match(URI.invalid_hostname_characters)) {
       // test punycode
       if (!punycode) {
-        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-] and Punycode.js is not available');
+        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-:_] and Punycode.js is not available');
       }
       if (punycode.toASCII(v).match(URI.invalid_hostname_characters)) {
-        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.:-]');
+        throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-:_]');
       }
     }
   };
@@ -52163,7 +52221,7 @@ return $;
     }
 
     var port = Number(v);
-    if (Number.isInteger(port) && (port > 0) && (port < 65536)) {
+    if (isInteger(port) && (port > 0) && (port < 65536)) {
       return;
     }
 
@@ -52314,9 +52372,13 @@ return $;
     } else if (_URI || _object) {
       var src = _URI ? href._parts : href;
       for (key in src) {
+        if (key === 'query') { continue; }
         if (hasOwn.call(this._parts, key)) {
           this._parts[key] = src[key];
         }
+      }
+      if (src.query) {
+        this.query(src.query, false);
       }
     } else {
       throw new TypeError('invalid input');
@@ -52398,16 +52460,15 @@ return $;
   var _hostname = p.hostname;
 
   p.protocol = function(v, build) {
-    if (v !== undefined) {
-      if (v) {
-        // accept trailing ://
-        v = v.replace(/:(\/\/)?$/, '');
+    if (v) {
+      // accept trailing ://
+      v = v.replace(/:(\/\/)?$/, '');
 
-        if (!v.match(URI.protocol_expression)) {
-          throw new TypeError('Protocol "' + v + '" contains characters other than [A-Z0-9.+-] or doesn\'t start with [A-Z]');
-        }
+      if (!v.match(URI.protocol_expression)) {
+        throw new TypeError('Protocol "' + v + '" contains characters other than [A-Z0-9.+-] or doesn\'t start with [A-Z]');
       }
     }
+
     return _protocol.call(this, v, build);
   };
   p.scheme = p.protocol;
@@ -52438,15 +52499,18 @@ return $;
     }
 
     if (v !== undefined) {
-      var x = {};
+      var x = { preventInvalidHostname: this._parts.preventInvalidHostname };
       var res = URI.parseHost(v, x);
       if (res !== '/') {
         throw new TypeError('Hostname "' + v + '" contains characters other than [A-Z0-9.-]');
       }
 
       v = x.hostname;
-      URI.ensureValidHostname(v, this._parts.protocol);
+      if (this._parts.preventInvalidHostname) {
+        URI.ensureValidHostname(v, this._parts.protocol);
+      }
     }
+
     return _hostname.call(this, v, build);
   };
 
@@ -53386,6 +53450,11 @@ return $;
   };
 
   // state
+  p.preventInvalidHostname = function(v) {
+    this._parts.preventInvalidHostname = !!v;
+    return this;
+  };
+
   p.duplicateQueryParameters = function(v) {
     this._parts.duplicateQueryParameters = !!v;
     return this;
@@ -56340,22 +56409,29 @@ This script provides functionalities for internationalisation in JavaScript.
   });
 
   window._jed = function() {
-    var args, isKeyPresent, key;
+    var args, isKeyPresent, key, untranslated;
     args = 1 <= arguments.length ? slice.call(arguments, 0) : [];
     isKeyPresent = function(key) {
       return (i18n.jed.options.locale_data.leihs[key] != null) && key.length;
+    };
+    untranslated = function(text, sArr) {
+      if ((sArr != null) && text) {
+        return Jed.sprintf(text, sArr);
+      } else {
+        return text;
+      }
     };
     if (typeof args[0] === "number") {
       if ((key = args[1]) && isKeyPresent(key)) {
         return i18n.jed.translate(args[1]).ifPlural(args[0], args[2]).fetch(args[3]);
       } else {
-        return key;
+        return untranslated((args[0] !== 1 && (args[2] != null) ? args[2] : key), args[3]);
       }
     } else {
       if ((key = args[0]) && isKeyPresent(key)) {
         return i18n.jed.translate(args[0]).fetch(args[1]);
       } else {
-        return key;
+        return untranslated(key, args[1]);
       }
     }
   };
@@ -56968,7 +57044,7 @@ This script provides functionalities for the interactivity with the topbar searc
       return this.groupByDateRange(this.reservations().all(), mergeModels);
     },
     groupByDateRange: function(reservations, mergeModels, actionDate) {
-      var group, hash, i, j, len, len1, name, name1, reservation, result;
+      var group, hash, i, j, len, len1, name, name1, ref, ref1, reservation, result;
       if (mergeModels == null) {
         mergeModels = false;
       }
@@ -56983,7 +57059,9 @@ This script provides functionalities for the interactivity with the topbar searc
         reservation = reservations[i];
         (hash[name = JSON.stringify({
           start_date: reservation.start_date,
-          end_date: reservation.end_date
+          end_date: reservation.end_date,
+          start_time: (ref = reservation.start_time) != null ? ref : null,
+          end_time: (ref1 = reservation.end_time) != null ? ref1 : null
         })] != null ? hash[name] : hash[name] = []).push(reservation);
       }
       result = [];
@@ -57004,6 +57082,8 @@ This script provides functionalities for the interactivity with the topbar searc
         return result.push({
           start_date: key_obj.start_date,
           end_date: key_obj.end_date,
+          start_time: key_obj.start_time,
+          end_time: key_obj.end_time,
           reservations: reservations
         });
       });
@@ -57177,7 +57257,7 @@ This script provides functionalities for the interactivity with the topbar searc
   window.App.Availability = (function(superClass) {
     extend(Availability, superClass);
 
-    Availability.configure("Availability", "inventory_pool_id", "model_id", "changes", "total_borrowable", "total_rentable", "in_stock");
+    Availability.configure("Availability", "inventory_pool_id", "model_id", "changes", "changes_by_window", "total_borrowable", "total_rentable", "in_stock");
 
     Availability.belongsTo("inventory_pool", "App.InventoryPool", "inventory_pool_id");
 
@@ -57188,6 +57268,27 @@ This script provides functionalities for the interactivity with the topbar searc
     function Availability(data) {
       Availability.__super__.constructor.apply(this, arguments);
     }
+
+    Availability.prototype.forTimeWindow = function(startTime, endTime) {
+      var byWindow, keys, windowed;
+      byWindow = this.changes_by_window || {};
+      keys = startTime != null ? [startTime + "-" + endTime] : _.keys(byWindow);
+      windowed = _.compact(_.map(keys, (function(_this) {
+        return function(key) {
+          var clone;
+          if (byWindow[key] != null) {
+            clone = $.extend(true, {}, _this);
+            clone.changes = byWindow[key];
+            return clone;
+          }
+        };
+      })(this)));
+      if (windowed.length) {
+        return windowed;
+      } else {
+        return [this];
+      }
+    };
 
     Availability.prototype.availabilityForGroups = function(change, groupIds) {
       return _.reduce(change[2], ((function(_this) {
@@ -58115,7 +58216,7 @@ This script provides functionalities for the interactivity with the topbar searc
       return Reservation.__super__.constructor.apply(this, arguments);
     }
 
-    Reservation.configure("Reservation", "id", "inventory_pool_id", "user_id", "delegated_user_id", "status", "contract_id", "order_id", "model_id", "option_id", "purpose_id", "quantity", "start_date", "end_date", "item_id", "line_purpose");
+    Reservation.configure("Reservation", "id", "inventory_pool_id", "user_id", "delegated_user_id", "status", "contract_id", "order_id", "model_id", "option_id", "purpose_id", "quantity", "start_date", "end_date", "start_time", "end_time", "item_id", "line_purpose");
 
     Reservation.belongsTo("contract", "App.Contract", "contract_id");
 
@@ -73092,7 +73193,7 @@ window.TimelinePreprocessData = {
 
   changesAlgorithm: function (timeline_availability, changes, userEntitlementGroupsForModel, relevantItemsCount) {
     return changes.map(function (c) {
-      var reservations = TimelinePreprocessData.calculateChangesReservations(timeline_availability, c);
+      var reservations = TimelineUtil.concurrentReservations(TimelinePreprocessData.calculateChangesReservations(timeline_availability, c));
       return {
         change: c,
         date: c,
@@ -73144,17 +73245,20 @@ window.TimelinePreprocessData = {
     var numberOfDays = TimelineUtil.numberOfDays(firstMoment, lastMoment);
     var relevantItemsCount = TimelinePreprocessData.relevantItemsCount(timeline_availability);
     var totalCounts = TimelinePreprocessData.totalCounts(lastMoment, relevantItemsCount);
-    var handoutCounts = TimelinePreprocessData.handoutCounts(timeline_availability, lastMoment).map(function (hc) {
-      return -hc.length;
+    var handouts = TimelinePreprocessData.handoutCounts(timeline_availability, lastMoment);
+    var handoutCounts = handouts.map(function (hc) {
+      return -TimelineUtil.concurrentReservations(hc).length;
     });
     var borrowableCounts = _.zip(totalCounts, handoutCounts).map(function (p) {
       return _.first(p) + _.last(p);
     });
-    var reservationCounts = TimelinePreprocessData.reservationCounts(timeline_availability, lastMoment).map(function (rc) {
-      return -rc.length;
+    var reservationsOfDays = TimelinePreprocessData.reservationCounts(timeline_availability, lastMoment);
+    var reservationCounts = reservationsOfDays.map(function (rc) {
+      return -TimelineUtil.concurrentReservations(rc).length;
     });
-    var unusedCounts = _.zip(borrowableCounts, reservationCounts).map(function (p) {
-      return _.first(p) + _.last(p);
+    // morning and afternoon reservations of the same day can share the items
+    var unusedCounts = _.zip(totalCounts, handouts, reservationsOfDays).map(function (p) {
+      return p[0] - TimelineUtil.concurrentReservations(p[1].concat(p[2])).length;
     });
     var allLayoutedReservationFrames = TimelinePreprocessData.layoutReservationFrames(timeline_availability.running_reservations);
     var userEntitlementGroupsForModel = TimelinePreprocessData.userEntitlementGroupsForModel(timeline_availability);
@@ -73276,6 +73380,15 @@ window.TimelineRenderReservations = {
       { key: 'label' },
       label
     )];
+
+    var timeSlot = TimelineUtil.timeSlotLabel(rr);
+    if (timeSlot) {
+      elements.push(React.createElement(
+        'span',
+        { key: 'time_slot', style: { marginLeft: '10px', fontWeight: 'bold' } },
+        timeSlot
+      ));
+    }
 
     var inventoryCode = TimelineUtil.inventoryCode(timeline_availability, rr);
     if (inventoryCode) {
@@ -73753,6 +73866,39 @@ window.TimelineUtil = {
 
   late: function (r) {
     return r.status == 'signed' && !r.returned_date && TimelineUtil.isBefore(moment(r.end_date), moment());
+  },
+
+  // "HH:MM" of a time slot reservation, null for whole days
+  timeSlotTime: function (t) {
+    return t ? String(t).substr(0, 5) : null;
+  },
+
+  timeSlotLabel: function (r) {
+    if (!r.start_time) {
+      return null;
+    }
+    return TimelineUtil.timeSlotTime(r.start_time) + '–' + TimelineUtil.timeSlotTime(r.end_time);
+  },
+
+  // The reservations of a day which need items at the same time: the whole-day
+  // (and late) ones plus the time slot ones of the most booked time window.
+  concurrentReservations: function (reservations) {
+    var isSlot = function (r) {
+      return r.start_time && !TimelineUtil.late(r);
+    };
+    var wholeDay = _.reject(reservations, isSlot);
+    var slots = _.filter(reservations, isSlot);
+    var overlap = function (a, b) {
+      return a.start_time < b.end_time && b.start_time < a.end_time;
+    };
+    var busiest = _.max(slots.map(function (w) {
+      return _.filter(slots, function (r) {
+        return overlap(r, w);
+      });
+    }), function (rs) {
+      return rs.length;
+    });
+    return wholeDay.concat(_.isArray(busiest) ? busiest : []);
   },
 
   reserved: function (r) {
