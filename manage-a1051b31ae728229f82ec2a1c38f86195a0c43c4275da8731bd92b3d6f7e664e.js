@@ -3648,18 +3648,24 @@
   };
 
   window.App.Reservation.changeTimeRange = (function(_this) {
-    return function(reservations, startDate, endDate) {
+    return function(reservations, startDate, endDate, timeWindow) {
+      var params;
       if (startDate) {
         startDate = moment(startDate).format("YYYY-MM-DD");
       }
       endDate = moment(endDate).format("YYYY-MM-DD");
-      return $.post("/manage/" + App.InventoryPool.current.id + "/reservations/change_time_range", {
+      params = {
         line_ids: _.map(reservations, function(l) {
           return l.id;
         }),
         start_date: startDate,
         end_date: endDate
-      }).done(function() {
+      };
+      if (timeWindow != null) {
+        params.start_time = timeWindow[0] || "";
+        params.end_time = timeWindow[1] || "";
+      }
+      return $.post("/manage/" + App.InventoryPool.current.id + "/reservations/change_time_range", params).done(function() {
         var data, i, len, line;
         for (i = 0, len = reservations.length; i < len; i++) {
           line = reservations[i];
@@ -3668,6 +3674,10 @@
           };
           if (startDate) {
             data["start_date"] = startDate;
+          }
+          if (timeWindow != null) {
+            data["start_time"] = timeWindow[0];
+            data["end_time"] = timeWindow[1];
           }
           line.refresh(data);
         }
@@ -5987,14 +5997,19 @@
       return this.el = this.modal.el;
     };
 
-    HandOverDialogController.prototype.handOver = function() {
+    HandOverDialogController.prototype.handOver = function(e, confirmEarlyHandOver) {
       var ref;
-      if (this.purpose.length) {
-        if (this.purposeTextArea.val()) {
-          this.purpose = this.purpose + "; " + (this.purposeTextArea.val());
+      if (confirmEarlyHandOver == null) {
+        confirmEarlyHandOver = false;
+      }
+      if (!confirmEarlyHandOver) {
+        if (this.purpose.length) {
+          if (this.purposeTextArea.val()) {
+            this.purpose = this.purpose + "; " + (this.purposeTextArea.val());
+          }
+        } else {
+          this.purpose = this.purposeTextArea.val();
         }
-      } else {
-        this.purpose = this.purposeTextArea.val();
       }
       if (this.validatePurpose() && this.validateDelegatedUser()) {
         return App.Contract.create({
@@ -6004,11 +6019,16 @@
           }),
           purpose: this.purpose,
           note: this.noteTextArea.val(),
-          delegated_user_id: (ref = this.delegatedUser) != null ? ref.id : void 0
+          delegated_user_id: (ref = this.delegatedUser) != null ? ref.id : void 0,
+          confirm_early_hand_over: confirmEarlyHandOver
         }).fail((function(_this) {
           return function(e) {
-            _this.errorContainer.find("strong").html(e.responseText);
-            return _this.errorContainer.removeClass("hidden");
+            if (e.status === 409 && confirm(e.responseText)) {
+              return _this.handOver(null, true);
+            } else {
+              _this.errorContainer.find("strong").html(e.responseText);
+              return _this.errorContainer.removeClass("hidden");
+            }
           };
         })(this)).done((function(_this) {
           return function(data) {
@@ -9668,20 +9688,72 @@
       this.fetchAvailability = bind(this.fetchAvailability, this);
       this.fetchData = bind(this.fetchData, this);
       this.setupDates = bind(this.setupDates, this);
+      this.getTimeWindow = bind(this.getTimeWindow, this);
+      this.setupTimeSlots = bind(this.setupTimeSlots, this);
       this.setupModal = bind(this.setupModal, this);
       return ManageBookingCalendarDialogController.__super__.constructor.apply(this, arguments);
     }
 
     ManageBookingCalendarDialogController.prototype.setupModal = function() {
+      this.setupTimeSlots();
       this.dialog = $(App.Render("manage/views/booking_calendar/calendar_dialog", {
         user: this.user
       }, {
         startDateDisabled: this.startDateDisabled,
-        quantityDisabled: this.quantityDisabled
+        quantityDisabled: this.quantityDisabled,
+        timeSlots: this.timeSlots,
+        mixedTimeSlots: this.initialTimeSlot === "keep"
       }));
       this.listOfLines = this.dialog.find("#booking-calendar-lines .list-of-lines");
       this.partitionsEl = this.dialog.find("#booking-calendar-partitions");
-      return ManageBookingCalendarDialogController.__super__.setupModal.apply(this, arguments);
+      this.timeSlotEl = this.dialog.find("#booking-calendar-time-slot");
+      ManageBookingCalendarDialogController.__super__.setupModal.apply(this, arguments);
+      this.timeSlotEl.val(this.initialTimeSlot);
+      return this.timeSlotEl.on("change", (function(_this) {
+        return function() {
+          var ref;
+          if ((ref = _this.getTimeWindow()) != null ? ref[0] : void 0) {
+            return _this.endDateEl.val(_this.startDateEl.val());
+          }
+        };
+      })(this));
+    };
+
+    ManageBookingCalendarDialogController.prototype.setupTimeSlots = function() {
+      var end, ref, ref1, start, values;
+      this.timeSlots = App.InventoryPool.current.timeSlotOptions();
+      values = _.uniq(_.map(this.reservations, function(l) {
+        if (l.start_time) {
+          return l.start_time + "-" + l.end_time;
+        } else {
+          return "";
+        }
+      }));
+      this.initialTimeSlot = values.length === 1 ? values[0] : "keep";
+      if (((ref = this.initialTimeSlot) !== "" && ref !== "keep") && !_.find(this.timeSlots, (function(_this) {
+        return function(o) {
+          return o.value === _this.initialTimeSlot;
+        };
+      })(this))) {
+        ref1 = this.initialTimeSlot.split("-"), start = ref1[0], end = ref1[1];
+        return this.timeSlots.push({
+          value: this.initialTimeSlot,
+          label: start.slice(0, 5) + "–" + end.slice(0, 5)
+        });
+      }
+    };
+
+    ManageBookingCalendarDialogController.prototype.getTimeWindow = function() {
+      var ref, value;
+      value = (ref = this.timeSlotEl) != null ? ref.val() : void 0;
+      if ((value == null) || value === "keep") {
+        return void 0;
+      }
+      if (value === "") {
+        return [null, null];
+      } else {
+        return value.split("-");
+      }
     };
 
     ManageBookingCalendarDialogController.prototype.setupDates = function() {
@@ -9887,7 +9959,13 @@
     };
 
     ManageBookingCalendarDialogController.prototype.valid = function() {
-      return true;
+      var ref;
+      if (((ref = this.getTimeWindow()) != null ? ref[0] : void 0) && !this.getStartDate().isSame(this.getEndDate(), "day")) {
+        this.showError(_jed("A time slot can only be reserved for a single day"));
+        return false;
+      } else {
+        return true;
+      }
     };
 
     ManageBookingCalendarDialogController.prototype.store = function() {};
@@ -9907,7 +9985,8 @@
 
     ReservationAssignOrCreateController.prototype.elements = {
       "#add-start-date": "addStartDate",
-      "#add-end-date": "addEndDate"
+      "#add-end-date": "addEndDate",
+      "#add-time-slot": "addTimeSlot"
     };
 
     function ReservationAssignOrCreateController() {
@@ -9962,17 +10041,20 @@
     };
 
     ReservationAssignOrCreateController.prototype.submit = function(inventoryCode) {
-      var ref, ref1, ref2;
+      var endTime, ref, ref1, ref2, ref3, ref4, startTime;
       if (!(inventoryCode != null ? inventoryCode.length : void 0)) {
         return false;
       }
+      ref1 = ((ref = this.addTimeSlot.val()) != null ? ref.split("-") : void 0) || [], startTime = ref1[0], endTime = ref1[1];
       App.Reservation.assignOrCreate({
         start_date: this.getStartDate().format("YYYY-MM-DD"),
-        end_date: this.getEndDate().format("YYYY-MM-DD"),
+        end_date: (startTime ? this.getStartDate() : this.getEndDate()).format("YYYY-MM-DD"),
+        start_time: startTime || "",
+        end_time: endTime || "",
         code: inventoryCode,
-        order_id: (ref = this.order) != null ? ref.id : void 0,
-        user_id: ((ref1 = this.order) != null ? ref1.user_id : void 0) || this.user.id,
-        inventory_pool_id: ((ref2 = this.order) != null ? ref2.inventory_pool_id : void 0) || App.InventoryPool.current.id
+        order_id: (ref2 = this.order) != null ? ref2.id : void 0,
+        user_id: ((ref3 = this.order) != null ? ref3.user_id : void 0) || this.user.id,
+        inventory_pool_id: ((ref4 = this.order) != null ? ref4.inventory_pool_id : void 0) || App.InventoryPool.current.id
       }).done((function(_this) {
         return function(data) {
           return _this.assignedOrCreated(inventoryCode, data);
@@ -10056,7 +10138,8 @@
 
     ReservationsAddController.prototype.elements = {
       "#add-start-date": "addStartDate",
-      "#add-end-date": "addEndDate"
+      "#add-end-date": "addEndDate",
+      "#add-time-slot": "addTimeSlot"
     };
 
     ReservationsAddController.prototype.events = {
@@ -10101,6 +10184,7 @@
       this.pushModelsTo = bind(this.pushModelsTo, this);
       this.getEndDate = bind(this.getEndDate, this);
       this.getStartDate = bind(this.getStartDate, this);
+      this.getTimeWindow = bind(this.getTimeWindow, this);
       this.setupDatepickers = bind(this.setupDatepickers, this);
       this.select = bind(this.select, this);
       this.search = bind(this.search, this);
@@ -10162,16 +10246,38 @@
           };
         })(this)
       });
-      return this.addStartDate.datepicker("option", "onSelect", (function(_this) {
+      this.addStartDate.datepicker("option", "onSelect", (function(_this) {
         return function(newStartDate) {
           var endDate;
           newStartDate = moment(newStartDate, i18n.date.L).startOf("day");
           endDate = moment(_this.addEndDate.val(), i18n.date.L).startOf("day");
-          if (newStartDate.toDate() > endDate.toDate()) {
+          if (newStartDate.toDate() > endDate.toDate() || (_this.getTimeWindow() != null)) {
             return _this.addEndDate.val(newStartDate.format(i18n.date.L));
           }
         };
       })(this));
+      this.addTimeSlot.on("change", (function(_this) {
+        return function() {
+          if (_this.getTimeWindow() != null) {
+            return _this.addEndDate.val(_this.addStartDate.val());
+          }
+        };
+      })(this));
+      return this.addEndDate.on("change", (function(_this) {
+        return function() {
+          if (!_this.getStartDate().isSame(_this.getEndDate(), "day")) {
+            return _this.addTimeSlot.val("");
+          }
+        };
+      })(this));
+    };
+
+    ReservationsAddController.prototype.getTimeWindow = function() {
+      var value;
+      value = this.addTimeSlot.val();
+      if (value) {
+        return value.split("-");
+      }
     };
 
     ReservationsAddController.prototype.getStartDate = function() {
@@ -10403,17 +10509,20 @@
     };
 
     ReservationsAddController.prototype.addModel = function(model, startDate, endDate, inventoryCode) {
-      var ref, ref1, ref2;
+      var endTime, ref, ref1, ref2, ref3, startTime;
       if (this.addModelForHandOver && inventoryCode) {
         return typeof this.onSubmitInventoryCode === "function" ? this.onSubmitInventoryCode(inventoryCode) : void 0;
       } else {
+        ref = this.getTimeWindow() || [], startTime = ref[0], endTime = ref[1];
         return App.Reservation.createOne({
           inventory_pool_id: App.InventoryPool.current.id,
           start_date: moment(startDate).format("YYYY-MM-DD"),
-          end_date: moment(endDate).format("YYYY-MM-DD"),
-          order_id: (ref = this.order) != null ? ref.id : void 0,
-          user_id: ((ref1 = this.order) != null ? ref1.user_id : void 0) || this.user.id,
-          inventory_pool_id: ((ref2 = this.order) != null ? ref2.inventory_pool_id : void 0) || App.InventoryPool.current.id,
+          end_date: moment(startTime ? startDate : endDate).format("YYYY-MM-DD"),
+          start_time: startTime || "",
+          end_time: endTime || "",
+          order_id: (ref1 = this.order) != null ? ref1.id : void 0,
+          user_id: ((ref2 = this.order) != null ? ref2.user_id : void 0) || this.user.id,
+          inventory_pool_id: ((ref3 = this.order) != null ? ref3.inventory_pool_id : void 0) || App.InventoryPool.current.id,
           quantity: 1,
           model_id: model.id
         }).done((function(_this) {
@@ -10712,19 +10821,28 @@
       this.store = bind(this.store, this);
       this.done = bind(this.done, this);
       this.createReservation = bind(this.createReservation, this);
+      this.timeWindowForNewReservations = bind(this.timeWindowForNewReservations, this);
       return ReservationsChangeController.__super__.constructor.apply(this, arguments);
     }
 
+    ReservationsChangeController.prototype.timeWindowForNewReservations = function() {
+      var ref;
+      return this.getTimeWindow() || ((ref = this.initialTimeSlot) === "" || ref === "keep" ? [null, null] : this.initialTimeSlot.split("-"));
+    };
+
     ReservationsChangeController.prototype.createReservation = function() {
-      var ref, ref1, ref2, ref3, ref4, ref5;
+      var endTime, ref, ref1, ref2, ref3, ref4, ref5, ref6, startTime;
+      ref = this.timeWindowForNewReservations(), startTime = ref[0], endTime = ref[1];
       return App.Reservation.createOne({
         model_id: _.first(this.models).id,
+        start_time: startTime || "",
+        end_time: endTime || "",
         start_date: this.getStartDate().format("YYYY-MM-DD"),
         end_date: this.getEndDate().format("YYYY-MM-DD"),
-        order_id: (ref = this.order) != null ? ref.id : void 0,
-        user_id: ((ref1 = this.order) != null ? (ref2 = ref1.user) != null ? ref2.id : void 0 : void 0) || this.user.id,
-        inventory_pool_id: ((ref3 = this.order) != null ? (ref4 = ref3.inventory_pool) != null ? ref4.id : void 0 : void 0) || App.InventoryPool.current.id,
-        state: ((ref5 = this.order) != null ? ref5.state : void 0) || "approved",
+        order_id: (ref1 = this.order) != null ? ref1.id : void 0,
+        user_id: ((ref2 = this.order) != null ? (ref3 = ref2.user) != null ? ref3.id : void 0 : void 0) || this.user.id,
+        inventory_pool_id: ((ref4 = this.order) != null ? (ref5 = ref4.inventory_pool) != null ? ref5.id : void 0 : void 0) || App.InventoryPool.current.id,
+        state: ((ref6 = this.order) != null ? ref6.state : void 0) || "approved",
         quantity: 1
       }).fail((function(_this) {
         return function(e) {
@@ -10819,8 +10937,12 @@
     };
 
     ReservationsChangeController.prototype.changeRange = function() {
-      if (this.getStartDate().format("YYYY-MM-DD") !== this.startDate || this.getEndDate().format("YYYY-MM-DD") !== this.endDate) {
-        return App.Reservation.changeTimeRange(this.reservations, (!this.startDateDisabled ? this.getStartDate() : void 0), this.getEndDate()).done(this.done).fail(this.fail);
+      var timeWindow;
+      if (this.timeSlotEl.val() !== this.initialTimeSlot) {
+        timeWindow = this.getTimeWindow();
+      }
+      if (this.getStartDate().format("YYYY-MM-DD") !== this.startDate || this.getEndDate().format("YYYY-MM-DD") !== this.endDate || (timeWindow != null)) {
+        return App.Reservation.changeTimeRange(this.reservations, (!this.startDateDisabled ? this.getStartDate() : void 0), this.getEndDate(), timeWindow).done(this.done).fail(this.fail);
       } else {
         return this.done();
       }
@@ -13305,7 +13427,7 @@
 }).call(this);
 (function($) {$.views.templates("manage/views/availabilities/loaded", "<div class=\'emboss padding-inset-s\'>\n  <p class=\'paragraph-s\'>\n    <i class=\'fa fa-check margin-right-m\'><\/i>\n    {{jed \"Availability loaded\"/}}\n  <\/p>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/availabilities/loading", "<div class=\'emboss blue padding-inset-s\'>\n  <p class=\'paragraph-s\'>\n    <img class=\'margin-right-s max-width-micro\' src=\'/assets/loading-4eebf3d6e9139e863f2be8c14cad4638df21bf050cea16117739b3431837ee0a.gif\'>\n    <strong>{{jed \"Loading availability\"/}}<\/strong>\n  <\/p>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
-(function($) {$.views.templates("manage/views/booking_calendar/calendar_dialog", "<div class=\'modal fade ui-modal medium\' role=\'dialog\' tabindex=\'-1\'>\n  <div class=\'modal-header row\'>\n    <div class=\'col3of5\'>\n      <h2 class=\'headline-l\'>{{jed \"Edit reservation\"/}}<\/h2>\n      <h3 class=\'headline-m\'>\n        {{>user.firstname}}\n        {{>user.lastname}}\n      <\/h3>\n    <\/div>\n    <div class=\'col2of5 text-align-right\'>\n      <div class=\'modal-close\'>{{jed \"Cancel\"/}}<\/div>\n      <button class=\'button green\' disabled=\'disabled\' id=\'submit-booking-calendar\'>{{jed \"Save\"/}}<\/button>\n    <\/div>\n  <\/div>\n  <div id=\'booking-calendar-errors\'><\/div>\n  <div class=\'modal-body\'>\n    <form class=\'padding-inset-m\'>\n      <div class=\'hidden\' id=\'booking-calendar-controls\'>\n        <div class=\'col5of8 float-right\'>\n          <div class=\'row grey padding-bottom-xxs\'>\n            <div class=\'col1of2\'>\n              <div class=\'col1of2 padding-right-xs text-align-left\'>\n                <div class=\'row {{if ~startDateDisabled}} hidden{{/if}}\'>\n                  <span>{{jed \"Start date\"/}}<\/span>\n                  <a class=\'grey fa fa-eye position-absolute-right padding-right-xxs\' id=\'jump-to-start-date\'><\/a>\n                <\/div>\n              <\/div>\n              <div class=\'col1of2 padding-right-xs text-align-left\'>\n                <div class=\'row\'>\n                  <span>{{jed \"End date\"/}}<\/span>\n                  <a class=\'grey fa fa-eye position-absolute-right padding-right-xxs\' id=\'jump-to-end-date\'><\/a>\n                <\/div>\n              <\/div>\n            <\/div>\n            <div class=\'col1of2\'>\n              <div class=\'col2of8 text-align-left\'>{{jed \"Quantity\"/}}<\/div>\n              <div class=\'col6of8 padding-left-xs text-align-left\'>{{jed \"Availability\"/}}<\/div>\n            <\/div>\n          <\/div>\n          <div class=\'row\'>\n            <div class=\'col1of2\'>\n              <div class=\'col1of2 padding-right-xs\'>\n                <div class=\'row {{if ~startDateDisabled}} hidden{{/if}}\'>\n                  <input autocomplete=\'off\' id=\'booking-calendar-start-date\' type=\'text\'>\n                <\/div>\n              <\/div>\n              <div class=\'col1of2 padding-right-xs\'>\n                <input autocomplete=\'off\' id=\'booking-calendar-end-date\' type=\'text\'>\n              <\/div>\n            <\/div>\n            <div class=\'col1of2\'>\n              <div class=\'col2of8\'>\n                {{if ~quantityDisabled}}\n                <input autocomplete=\'off\' class=\'text-align-center\' disabled=\'disabled\' id=\'booking-calendar-quantity\' type=\'text\' value=\'1\'>\n                {{else}}\n                <input autocomplete=\'off\' class=\'text-align-center\' id=\'booking-calendar-quantity\' type=\'text\' value=\'1\'>\n                {{/if}}\n              <\/div>\n              <div class=\'col6of8 padding-left-xs\'>\n                <select class=\'width-full\' id=\'booking-calendar-partitions\'><\/select>\n              <\/div>\n            <\/div>\n          <\/div>\n        <\/div>\n      <\/div>\n      <div class=\'booking-calendar padding-top-xs\' id=\'booking-calendar\'><\/div>\n      <img class=\'loading margin-horziontal-auto margin-vertical-xl\' src=\'/assets/loading-4eebf3d6e9139e863f2be8c14cad4638df21bf050cea16117739b3431837ee0a.gif\'>\n    <\/form>\n    <div id=\'booking-calendar-lines\'>\n      <div class=\'list-of-lines separated-top\'><\/div>\n    <\/div>\n  <\/div>\n  <div class=\'modal-footer\'><\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
+(function($) {$.views.templates("manage/views/booking_calendar/calendar_dialog", "<div class=\'modal fade ui-modal medium\' role=\'dialog\' tabindex=\'-1\'>\n  <div class=\'modal-header row\'>\n    <div class=\'col3of5\'>\n      <h2 class=\'headline-l\'>{{jed \"Edit reservation\"/}}<\/h2>\n      <h3 class=\'headline-m\'>\n        {{>user.firstname}}\n        {{>user.lastname}}\n      <\/h3>\n    <\/div>\n    <div class=\'col2of5 text-align-right\'>\n      <div class=\'modal-close\'>{{jed \"Cancel\"/}}<\/div>\n      <button class=\'button green\' disabled=\'disabled\' id=\'submit-booking-calendar\'>{{jed \"Save\"/}}<\/button>\n    <\/div>\n  <\/div>\n  <div id=\'booking-calendar-errors\'><\/div>\n  <div class=\'modal-body\'>\n    <form class=\'padding-inset-m\'>\n      <div class=\'hidden\' id=\'booking-calendar-controls\'>\n        <div class=\'col5of8 float-right\'>\n          <div class=\'row grey padding-bottom-xxs\'>\n            <div class=\'col1of2\'>\n              <div class=\'col1of2 padding-right-xs text-align-left\'>\n                <div class=\'row {{if ~startDateDisabled}} hidden{{/if}}\'>\n                  <span>{{jed \"Start date\"/}}<\/span>\n                  <a class=\'grey fa fa-eye position-absolute-right padding-right-xxs\' id=\'jump-to-start-date\'><\/a>\n                <\/div>\n              <\/div>\n              <div class=\'col1of2 padding-right-xs text-align-left\'>\n                <div class=\'row\'>\n                  <span>{{jed \"End date\"/}}<\/span>\n                  <a class=\'grey fa fa-eye position-absolute-right padding-right-xxs\' id=\'jump-to-end-date\'><\/a>\n                <\/div>\n              <\/div>\n            <\/div>\n            <div class=\'col1of2\'>\n              <div class=\'col2of8 text-align-left\'>{{jed \"Quantity\"/}}<\/div>\n              <div class=\'col6of8 padding-left-xs text-align-left\'>{{jed \"Availability\"/}}<\/div>\n            <\/div>\n          <\/div>\n          <div class=\'row\'>\n            <div class=\'col1of2\'>\n              <div class=\'col1of2 padding-right-xs\'>\n                <div class=\'row {{if ~startDateDisabled}} hidden{{/if}}\'>\n                  <input autocomplete=\'off\' id=\'booking-calendar-start-date\' type=\'text\'>\n                <\/div>\n              <\/div>\n              <div class=\'col1of2 padding-right-xs\'>\n                <input autocomplete=\'off\' id=\'booking-calendar-end-date\' type=\'text\'>\n              <\/div>\n            <\/div>\n            <div class=\'col1of2\'>\n              <div class=\'col2of8\'>\n                {{if ~quantityDisabled}}\n                <input autocomplete=\'off\' class=\'text-align-center\' disabled=\'disabled\' id=\'booking-calendar-quantity\' type=\'text\' value=\'1\'>\n                {{else}}\n                <input autocomplete=\'off\' class=\'text-align-center\' id=\'booking-calendar-quantity\' type=\'text\' value=\'1\'>\n                {{/if}}\n              <\/div>\n              <div class=\'col6of8 padding-left-xs\'>\n                <select class=\'width-full\' id=\'booking-calendar-partitions\'><\/select>\n              <\/div>\n            <\/div>\n          <\/div>\n          {{if ~timeSlots.length && !~startDateDisabled}}\n          <div class=\'row padding-top-xs\'>\n            <div class=\'col1of2 padding-right-xs text-align-left\'>\n              <div class=\'row grey padding-bottom-xxs\'>{{jed \"Time slot\"/}}<\/div>\n              <select class=\'width-full\' id=\'booking-calendar-time-slot\'>\n                {{if ~mixedTimeSlots}}<option value=\'keep\'>{{jed \"Keep the time slots\"/}}<\/option>{{/if}}\n                <option value=\'\'>{{jed \"Whole day\"/}}<\/option>\n                {{for ~timeSlots}}<option value=\'{{>value}}\'>{{>label}}<\/option>{{/for}}\n              <\/select>\n            <\/div>\n          <\/div>\n          {{/if}}\n        <\/div>\n      <\/div>\n      <div class=\'booking-calendar padding-top-xs\' id=\'booking-calendar\'><\/div>\n      <img class=\'loading margin-horziontal-auto margin-vertical-xl\' src=\'/assets/loading-4eebf3d6e9139e863f2be8c14cad4638df21bf050cea16117739b3431837ee0a.gif\'>\n    <\/form>\n    <div id=\'booking-calendar-lines\'>\n      <div class=\'list-of-lines separated-top\'><\/div>\n    <\/div>\n  <\/div>\n  <div class=\'modal-footer\'><\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/booking_calendar/line", "<div class=\'line row\'>\n  {{if model().availability}}\n  <div class=\'line-info{{if model().availability().withoutLines([#view.data]).maxAvailableForGroups(~start_date, ~end_date, ~groupIds) < (~quantity||quantity)}} red{{/if}}\'><\/div>\n  {{/if}}\n  <div class=\'col1of10 line-col text-align-center\'>\n    <span>\n      {{if ~quantity}}\n      {{>~quantity}}\n      {{else subreservations}}\n      {{sum subreservations \"quantity\"/}}\n      {{else}}\n      {{>quantity}}\n      {{/if}}\n    <\/span>\n    {{if model().availability}}\n    <span class=\'grey-text\'>\n      /\n      {{>effectiveAvailableForUser()}}\n    <\/span>\n    {{/if}}\n  <\/div>\n  <div class=\'col5of10 line-col text-align-left\'>\n    <strong>{{>model().name()}}<\/strong>\n  <\/div>\n  <div class=\'col4of10 line-col\'>\n    {{if model().availability}}\n    {{for model().availability().withoutLines([#view.data]).unavailableRanges((~quantity||quantity), ~groupIds, ~start_date, ~end_date)}}\n    <strong class=\'darkred-text\'>{{date startDate/}}-{{date endDate/}}<\/strong>\n    {{/for}}\n    {{/if}}\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/booking_calendar/partitions", "<option data-value=\'[{{>user}}]\'>{{jed \"Borrower\"/}}<\/option>\n{{if userGroups.length}}\n<optgroup label=\'{{jed \'Entitlement-Groups of this customer\'/}}\'>\n  {{for userGroups}}\n  <option data-value=\'[{{>id}}]\'>{{>name}}<\/option>\n  {{/for}}\n<\/optgroup>\n{{/if}}\n{{if otherGroups.length}}\n<optgroup label=\'{{jed \'Other entitlement-groups\'/}}\'>\n  {{for otherGroups}}\n  <option data-value=\'[{{>id}}]\'>{{>name}}<\/option>\n  {{/for}}\n<\/optgroup>\n{{/if}}\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/categories/filter_list_current", "<a class=\'emboss links black row focus-hover-thin font-size-m padding-horizontal-s padding-vertical-xs round-border-on-hover\' data-id=\'{{>id}}\' data-type=\'category-current\'>\n  <i class=\'arrow left\'><\/i>\n  {{>name}}\n<\/a>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
@@ -13454,7 +13576,7 @@
 (function($) {$.views.templates("manage/views/users/hand_over_documents_dialog", "<div class=\'modal fade ui-modal medium min-height-m\' role=\'dialog\' tabindex=\'-1\'>\n  <div class=\'modal-header row\'>\n    <div class=\'col3of5\'>\n      <h2 class=\'headline-l\'>{{jed \"Hand over completed\"/}}<\/h2>\n      <h3 class=\'headline-m light\'>\n        {{jed itemsCount \"%s item\" \"%s items\" itemsCount/}}\n        {{jed \"to %s\" contract.user().name()/}}\n      <\/h3>\n    <\/div>\n    <div class=\'col2of5 text-align-right\'>\n      <div class=\'multibutton\'>\n        <a class=\'button white text-ellipsis\' href=\'{{dailyPath/}}\'>{{jed \"Finish this hand over\"/}}<\/a>\n        <div class=\'dropdown-holder inline-block\'>\n          <div class=\'button white dropdown-toggle\'>\n            <div class=\'arrow down\'><\/div>\n          <\/div>\n          <ul class=\'dropdown right\'>\n            <li>\n              <a class=\'dropdown-item\' href=\'\'>\n                <i class=\'fa fa-undo\'><\/i>\n                {{jed \"Back to this user\"/}}\n              <\/a>\n            <\/li>\n          <\/ul>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n  <div class=\'modal-body\'>\n    <div class=\'padding-inset-l margin-top-s\'>\n      <div class=\'row emboss padding-inset-s margin-bottom-s\'>\n        <div class=\'col1of3\'><\/div>\n        <div class=\'col1of3\'>\n          <a class=\'button white width-full\' href=\'{{>contract.url()}}\' target=\'_blank\'>\n            <i class=\'fa fa-file-alt\'><\/i>\n            {{jed \"Contract\"/}}\n          <\/a>\n        <\/div>\n        <div class=\'col1of3\'><\/div>\n      <\/div>\n      <div class=\'row emboss padding-inset-s margin-bottom-s\'>\n        <div class=\'col1of3\'><\/div>\n        <div class=\'col1of3\'>\n          <a class=\'button white width-full\' href=\'{{>contract.url(\'value_list\')}}\' target=\'_blank\'>\n            <i class=\'fa fa-list-ol\'><\/i>\n            {{jed \"Value List\"/}}\n          <\/a>\n        <\/div>\n        <div class=\'col1of3\'><\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/users/line", "<div class=\'row line\'>\n  <div class=\'col2of10 line-col\'>\n    <strong data-address=\'{{>address}}\' data-badge_id=\'{{>badge_id}}\' data-city=\'{{>city}}\' data-email=\'{{>email}}\' data-firstname=\'{{>firstname}}\' data-id=\'{{>id}}\' data-image_url=\'{{>image_url}}\' data-lastname=\'{{>lastname}}\' data-phone=\'{{>phone}}\' data-type=\'user-cell\' data-zip=\'{{>zip}}\'>\n      {{>name()}}\n    <\/strong>\n  <\/div>\n  <div class=\'col2of10 line-col text-align-left\'>\n    {{>phone}}\n  <\/div>\n  <div class=\'col1of10 line-col text-align-left\'>\n    {{>roleName()}}\n  <\/div>\n  <div class=\'col2of10 line-col text-align-left darkred-text\'>\n    {{if suspended()}}\n    {{jed \"Suspended until\"/}} {{date suspendedUntil()/}}\n    {{/if}}\n  <\/div>\n  <div class=\'col3of10 line-col line-actions\'>\n    {{if ~currentInventoryPool && accessRight()}}\n    <div class=\'multibutton\'>\n      <a class=\'button white\' href=\'{{>url(\'hand_over\')}}\'>\n        <i class=\'fa fa-mail-forward\'><\/i>\n        {{jed \"Hand Over\"/}}\n      <\/a>\n      <div class=\'dropdown-holder inline-block\'>\n        <div class=\'button white dropdown-toggle\'>\n          <div class=\'arrow down\'><\/div>\n        <\/div>\n        <ul class=\'dropdown right\'>\n          {{if !isDelegation()}}\n          <li>\n            <a class=\'dropdown-item\' href=\'/admin/inventory-pools/{{> ~currentInventoryPool.id}}/users/{{>id}}\'>\n              <i class=\'fa fa-eye\'><\/i>\n              {{jed \"Show user\"/}}\n            <\/a>\n          <\/li>\n          {{else}}\n          <li>\n            <a class=\'dropdown-item\' href=\'/admin/inventory-pools/{{> ~currentInventoryPool.id}}/delegations/{{>id}}\'>\n              <i class=\'fa fa-eye\'><\/i>\n              {{jed \"Show delegation\"/}}\n            <\/a>\n          <\/li>\n          {{/if}}\n          <li>\n            <a class=\'dropdown-item\' href=\'mailto:{{>email}}\'>\n              <i class=\'fa fa-envelope\'><\/i>\n              {{jed \"E-Mail\"/}}\n            <\/a>\n          <\/li>\n        <\/ul>\n      <\/div>\n    <\/div>\n    {{else}}\n    <div class=\'multibutton\'>\n      {{if !isDelegation()}}\n      <a class=\'button white\' href=\'/admin/inventory-pools/{{> ~currentInventoryPool.id}}/users/{{>id}}\'>\n        <i class=\'fa fa-eye\'><\/i>\n        {{jed \"Show user\"/}}\n      <\/a>\n      {{else}}\n        {{if accessRight()}}\n        <a class=\'button white\' href=\'/admin/inventory-pools/{{> ~currentInventoryPool.id}}/delegations/{{>id}}\'>\n          <i class=\'fa fa-eye\'><\/i>\n          {{jed \"Show delegation\"/}}\n        <\/a>\n        {{else}}\n        <a class=\'button white\' href=\'/admin/inventory-pools/{{> ~currentInventoryPool.id}}/delegations/?membership=any&page=1&term={{encodeURIComponent name() /}}\'>\n          <i class=\'fa fa-eye\'><\/i>\n          {{jed \"Show delegation\"/}}\n        <\/a>\n        {{/if}}\n      {{/if}}\n      <div class=\'dropdown-holder inline-block\'>\n        <div class=\'button white dropdown-toggle\'>\n          <div class=\'arrow down\'><\/div>\n        <\/div>\n        <ul class=\'dropdown right\'>\n          <li>\n            <a class=\'dropdown-item\' href=\'mailto:{{>email}}\'>\n              <i class=\'fa fa-envelope\'><\/i>\n              {{jed \"E-Mail\"/}}\n            <\/a>\n          <\/li>\n        <\/ul>\n      <\/div>\n    <\/div>\n    {{/if}}\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/users/search_result_line", "<div class=\'row line\'>\n  <div class=\'col2of8 line-col\'>\n    <strong data-is_suspended=\'{{>isSuspended()}}\' data-suspended_reason=\'{{>suspended_reason}}\' data-address=\'{{>address}}\' data-badge_id=\'{{>badge_id}}\' data-city=\'{{>city}}\' data-email=\'{{>email}}\' data-firstname=\'{{>firstname}}\' data-id=\'{{>id}}\' data-image_url=\'{{>image_url}}\' data-lastname=\'{{>lastname}}\' data-phone=\'{{>phone}}\' data-type=\'user-cell\' data-zip=\'{{>zip}}\'>\n      {{>name()}}\n      {{if isSuspended()}}\n      <span class=\'darkred-text\'>{{jed \"Suspended\"/}}!<\/span>\n      {{/if}}\n    <\/strong>\n  <\/div>\n  <div class=\'col2of8 line-col text-align-left\'>\n    {{>city}}\n  <\/div>\n  <div class=\'col1of8 line-col text-align-left\'>\n    {{if phone}}\n    <div class=\'row grey-text\'>{{jed \'Phone\'/}}<\/div>\n    {{>phone}}\n    {{/if}}\n  <\/div>\n  <div class=\'col1of8 line-col text-align-left\'>\n    {{if badge_id}}\n    <div class=\'row grey-text\'>{{jed \'Badge\'/}}<\/div>\n    {{>badge_id}}\n    {{/if}}\n  <\/div>\n  <div class=\'col2of8 line-col line-actions\'>\n    <div class=\'multibutton\'>\n      <a class=\'button white\' href=\'{{>url(\'hand_over\')}}\'>\n        <i class=\'fa fa-mail-forward\'><\/i>\n        {{jed \"Hand Over\"/}}\n      <\/a>\n      <div class=\'dropdown-holder inline-block\'>\n        <div class=\'button white dropdown-toggle\'>\n          <div class=\'arrow down\'><\/div>\n        <\/div>\n        <ul class=\'dropdown right\'>\n          {{if ~currentInventoryPool}}\n          {{if !isDelegation()}}\n          <li>\n            <a class=\'dropdown-item\' href=\'/admin/inventory-pools/{{> ~currentInventoryPool.id}}/users/{{>id}}\'>\n              <i class=\'fa fa-eye\'><\/i>\n              {{jed \"Show user\"/}}\n            <\/a>\n          <\/li>\n          {{else}}\n          <li>\n            <a class=\'dropdown-item\' href=\'/admin/inventory-pools/{{> ~currentInventoryPool.id}}/delegations/{{>id}}\'>\n              <i class=\'fa fa-eye\'><\/i>\n              {{jed \"Show delegation\"/}}\n            <\/a>\n          <\/li>\n          {{/if}}\n          {{else}}\n          {{if !isDelegation()}}\n           <li>\n            <a class=\'dropdown-item\' href=\'/admin/users/{{>id}}\'>\n              <i class=\'fa fa-eye\'><\/i>\n              {{jed \"Show user\"/}}\n            <\/a>\n          <\/li>\n          \n          {{/if}}\n          {{/if}}\n          <li>\n            <a class=\'dropdown-item\' href=\'mailto:{{>email}}\'>\n              <i class=\'fa fa-envelope\'><\/i>\n              {{jed \"E-Mail\"/}}\n            <\/a>\n          <\/li>\n        <\/ul>\n      <\/div>\n    <\/div>\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
-(function($) {$.views.templates("manage/views/users/take_back_dialog", "<div class=\'modal fade ui-modal medium\' role=\'dialog\' tabindex=\'-1\'>\n  <div class=\'modal-header row\'>\n    <div class=\'col3of5\'>\n      <h2 class=\'headline-l\'>{{jed itemsCount \"Take back of %s item\" \"Take back of %s items\" itemsCount/}}<\/h2>\n      <h3 class=\'headline-m light\'>\n        {{>user.firstname}} {{>user.lastname}}\n      <\/h3>\n    <\/div>\n    <div class=\'col2of5 text-align-right\'>\n      <div class=\'modal-close\'>{{jed \"Cancel\"/}}<\/div>\n      <button class=\'button green\' data-take-back>\n        <i class=\'fa fa-mail-reply\'><\/i>\n        {{jed \"Take Back\"/}}\n      <\/button>\n    <\/div>\n  <\/div>\n  <div class=\'row margin-top-s padding-horizontal-l\'>\n    <div class=\'modal-body\'>\n      {{for groupedLines}}\n      <div class=\'padding-bottom-m margin-bottom-m no-last-child-margin\'>\n        <div class=\'row margin-bottom-s\'>\n          <div class=\'col1of2\'>\n            <p>\n              {{date start_date/}}\n              -\n              {{date end_date/}}\n            <\/p>\n          <\/div>\n          <div class=\'col1of2 text-align-right\'>\n            <strong>{{diffDatesInDays start_date end_date/}}<\/strong>\n          <\/div>\n        <\/div>\n        {{for reservations}}\n        <div class=\'row\'>\n          <div class=\'col1of8 text-align-center\'>\n            <div class=\'paragraph-s\'>\n              {{if ~returnedQuantity[id]}}\n              {{> ~returnedQuantity[id]}}/{{>quantity}}\n              {{else}}\n              {{if subreservations}}\n              {{sum subreservations \"quantity\"/}}\n              {{else}}\n              {{> quantity}}\n              {{/if}}\n              {{/if}}\n            <\/div>\n          <\/div>\n          <div class=\'col7of8\'>\n            <div class=\'paragraph-s\'>\n              <strong>{{>model().name()}}<\/strong>\n            <\/div>\n          <\/div>\n        <\/div>\n        {{/for}}\n      <\/div>\n      {{/for}}\n    <\/div>\n  <\/div>\n  <div class=\'modal-footer\'><\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
+(function($) {$.views.templates("manage/views/users/take_back_dialog", "<div class=\'modal fade ui-modal medium\' role=\'dialog\' tabindex=\'-1\'>\n  <div class=\'modal-header row\'>\n    <div class=\'col3of5\'>\n      <h2 class=\'headline-l\'>{{jed itemsCount \"Take back of %s item\" \"Take back of %s items\" itemsCount/}}<\/h2>\n      <h3 class=\'headline-m light\'>\n        {{>user.firstname}} {{>user.lastname}}\n      <\/h3>\n    <\/div>\n    <div class=\'col2of5 text-align-right\'>\n      <div class=\'modal-close\'>{{jed \"Cancel\"/}}<\/div>\n      <button class=\'button green\' data-take-back>\n        <i class=\'fa fa-mail-reply\'><\/i>\n        {{jed \"Take Back\"/}}\n      <\/button>\n    <\/div>\n  <\/div>\n  <div class=\'row margin-top-s padding-horizontal-l\'>\n    <div class=\'modal-body\'>\n      {{for groupedLines}}\n      <div class=\'padding-bottom-m margin-bottom-m no-last-child-margin\'>\n        <div class=\'row margin-bottom-s\'>\n          <div class=\'col1of2\'>\n            <p>\n              {{date start_date/}}\n              -\n              {{date end_date/}}\n              {{if start_time}}\n              <strong>{{>start_time.substr(0, 5)}}–{{>end_time.substr(0, 5)}}<\/strong>\n              {{/if}}\n            <\/p>\n          <\/div>\n          <div class=\'col1of2 text-align-right\'>\n            <strong>{{diffDatesInDays start_date end_date/}}<\/strong>\n          <\/div>\n        <\/div>\n        {{for reservations}}\n        <div class=\'row\'>\n          <div class=\'col1of8 text-align-center\'>\n            <div class=\'paragraph-s\'>\n              {{if ~returnedQuantity[id]}}\n              {{> ~returnedQuantity[id]}}/{{>quantity}}\n              {{else}}\n              {{if subreservations}}\n              {{sum subreservations \"quantity\"/}}\n              {{else}}\n              {{> quantity}}\n              {{/if}}\n              {{/if}}\n            <\/div>\n          <\/div>\n          <div class=\'col7of8\'>\n            <div class=\'paragraph-s\'>\n              <strong>{{>model().name()}}<\/strong>\n            <\/div>\n          <\/div>\n        <\/div>\n        {{/for}}\n      <\/div>\n      {{/for}}\n    <\/div>\n  <\/div>\n  <div class=\'modal-footer\'><\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/users/take_back_documents_dialog", "<div class=\'modal fade ui-modal medium min-height-m\' role=\'dialog\' tabindex=\'-1\'>\n  <div class=\'modal-header row\'>\n    <div class=\'col3of5\'>\n      <h2 class=\'headline-l\'>{{jed \"Take back completed\"/}}<\/h2>\n      <h3 class=\'headline-m light\'>\n        {{jed itemsCount \"%s item\" \"%s items\" itemsCount/}}\n        {{jed \"from %s\" user.name()/}}\n      <\/h3>\n    <\/div>\n    <div class=\'col2of5 text-align-right\'>\n      <div class=\'multibutton\'>\n        <a class=\'button white text-ellipsis\' href=\'{{dailyPath/}}\'>{{jed \"Finish this take back\"/}}<\/a>\n        <div class=\'dropdown-holder inline-block\'>\n          <div class=\'button white dropdown-toggle\'>\n            <div class=\'arrow down\'><\/div>\n          <\/div>\n          <ul class=\'dropdown right\'>\n            <li>\n              <a class=\'dropdown-item\' href=\'\'>\n                <i class=\'fa fa-undo\'><\/i>\n                {{jed \"Back to this user\"/}}\n              <\/a>\n            <\/li>\n          <\/ul>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n  <div class=\'modal-body\'>\n    <div class=\'padding-inset-l margin-top-s\'>\n      {{for contracts}}\n      <div class=\'row emboss padding-inset-s margin-bottom-s\'>\n        <div class=\'col1of6\'><\/div>\n        <div class=\'col2of6 padding-inset-s\'>\n          <a class=\'button white width-full\' href=\'{{>url()}}\' target=\'_blank\'>\n            <i class=\'fa fa-file-alt\'><\/i>\n            {{jed \"Contract\"/}}\n            {{>compact_id}}\n          <\/a>\n        <\/div>\n        <div class=\'col2of6 padding-inset-s\'>\n          <a class=\'button white width-full\' href=\'{{>url(\'value_list\')}}\' target=\'_blank\'>\n            <i class=\'fa fa-list-ol\'><\/i>\n            {{jed \"Value List\"/}}\n          <\/a>\n        <\/div>\n        <div class=\'col1of6\'><\/div>\n      <\/div>\n      {{/for}}\n    <\/div>\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/users/tooltip", "<div class=\'row width-xl min-height-s padding-right-s padding-left-s\'>\n  <div class=\'col3of4\'>\n    <div class=\'row\'>\n      <h3 class=\'headline-l\'>{{>firstname}} {{>lastname}}<\/h3>\n      <h3 class=\'headline-s light\'>{{>email}}<\/h3>\n    <\/div>\n    {{if delegator_user()}}\n    <div class=\'row margin-top-m\'>\n      <p class=\'paragraph-s line-height-s\'>{{jed \"Responsible\"/}}: {{>delegator_user().name()}}<\/p>\n    <\/div>\n    {{/if}}\n    {{if address}}\n    <div class=\'row margin-top-m\'>\n      <p class=\'paragraph-xs line-height-s\'>{{jed \"Address\"/}}<\/p>\n      <p class=\'paragraph-s line-height-s\'>{{>address}}, {{>zip}} {{>city}}<\/p>\n    <\/div>\n    {{/if}}\n    {{if phone}}\n    <div class=\'row margin-top-m\'>\n      <p class=\'paragraph-xs line-height-s\'>{{jed \"Phone\"/}}<\/p>\n      <p class=\'paragraph-s line-height-s\'>{{>phone}}<\/p>\n    <\/div>\n    {{/if}}\n    {{if badge_id}}\n    <div class=\'row margin-top-m\'>\n      <p class=\'paragraph-xs line-height-s\'>{{jed \"Badge\"/}}<\/p>\n      <p class=\'paragraph-s line-height-s\'>{{>badge_id}}<\/p>\n    <\/div>\n    {{/if}}\n    {{if is_suspended}}\n    <div class=\'row margin-top-m\'>\n      <p class=\"paragraph-xs line-height-s\">{{jed \"Suspended reason\"/}}<\/p>\n      {{for suspended_reason.split(\'&#10;\')}}\n        <div class=\'paragraph-s line-height-s darkred-text\'>\n          <b>{{>#data}}<\/b>\n        <\/div>\n      {{/for}}\n    <\/div>\n    {{/if}}\n  <\/div>\n  <div class=\'col1of4\'>\n    {{if image_url}}\n    <img class=\'max-size-xxs margin-horziontal-auto\' src=\'{{>image_url/}}\' style=\'max-width: 100px; max-height: 100px\'>\n    {{/if}}\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/visits/line", "{{include tmpl=\"manage/views/\"+action+\"s/line\" /}}\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});

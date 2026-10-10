@@ -57762,6 +57762,15 @@ This script provides functionalities for the interactivity with the topbar searc
 
     InventoryPool.configure("InventoryPool", "id", "name", "default_contract_note", "borrow_reservation_advance_days");
 
+    InventoryPool.prototype.timeSlotOptions = function() {
+      return _.map(this.time_slots || [], function(slot) {
+        return {
+          value: slot.start_time + "-" + slot.end_time,
+          label: slot.name + " (" + slot.start_time.slice(0, 5) + "–" + slot.end_time.slice(0, 5) + ")"
+        };
+      });
+    };
+
     InventoryPool.hasMany("availabilities", "App.Availability", "inventory_pool_id");
 
     InventoryPool.hasMany("models", "App.Model", "inventory_pool_id");
@@ -68552,7 +68561,15 @@ window.XhrContext = function () {
               null,
               this._date(groupedLine.start_date),
               ' - ',
-              this._date(groupedLine.end_date)
+              this._date(groupedLine.end_date),
+              groupedLine.start_time ? React.createElement(
+                'strong',
+                null,
+                ' ',
+                groupedLine.start_time.substr(0, 5),
+                '–',
+                groupedLine.end_time.substr(0, 5)
+              ) : null
             )
           ),
           React.createElement(
