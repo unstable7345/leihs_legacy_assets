@@ -663,25 +663,27 @@
 
 }).call(this);
 /*
- * jQuery postMessage Transport Plugin 1.1.1
+ * jQuery postMessage Transport Plugin
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2011, Sebastian Tschan
  * https://blueimp.net
  *
  * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
+ * https://opensource.org/licenses/MIT
  */
 
-/*jslint unparam: true, nomen: true */
-/*global define, window, document */
+/* global define, require, window, document */
 
 
-(function (factory) {
+;(function (factory) {
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
         define(['jquery'], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS:
+        factory(require('jquery'));
     } else {
         // Browser globals:
         factory(window.jQuery);
@@ -727,6 +729,12 @@
                 loc = $('<a>').prop('href', options.postMessage)[0],
                 target = loc.protocol + '//' + loc.host,
                 xhrUpload = options.xhr().upload;
+            // IE always includes the port for the host property of a link
+            // element, but not in the location.host or origin property for the
+            // default http port 80 and https port 443, so we strip it:
+            if (/^(http:\/\/.+:80)|(https:\/\/.+:443)$/.test(target)) {
+              target = target.replace(/:(80|443)$/, '');
+            }
             return {
                 send: function (_, completeCallback) {
                     counter += 1;
@@ -782,28 +790,30 @@
 
 }));
 /*
- * jQuery XDomainRequest Transport Plugin 1.1.3
+ * jQuery XDomainRequest Transport Plugin
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2011, Sebastian Tschan
  * https://blueimp.net
  *
  * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
+ * https://opensource.org/licenses/MIT
  *
  * Based on Julian Aubourg's ajaxHooks xdr.js:
  * https://github.com/jaubourg/ajaxHooks/
  */
 
-/*jslint unparam: true */
-/*global define, window, XDomainRequest */
+/* global define, require, window, XDomainRequest */
 
 
-(function (factory) {
+;(function (factory) {
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
         define(['jquery'], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS:
+        factory(require('jquery'));
     } else {
         // Browser globals:
         factory(window.jQuery);
@@ -870,28 +880,34 @@
     }
 }));
 /*
- * jQuery File Upload Plugin 5.37.0
+ * jQuery File Upload Plugin
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2010, Sebastian Tschan
  * https://blueimp.net
  *
  * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
+ * https://opensource.org/licenses/MIT
  */
 
-/*jslint nomen: true, unparam: true, regexp: true */
-/*global define, window, document, location, File, Blob, FormData */
+/* jshint nomen:false */
+/* global define, require, window, document, location, Blob, FormData */
 
 
-(function (factory) {
+;(function (factory) {
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
         define([
             'jquery',
-            'jquery.ui.widget'
+            'jquery-ui/ui/widget'
         ], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS:
+        factory(
+            require('jquery'),
+            require('./vendor/jquery.ui.widget')
+        );
     } else {
         // Browser globals:
         factory(window.jQuery);
@@ -909,7 +925,7 @@
             '|(Kindle/(1\\.0|2\\.[05]|3\\.0))'
     ).test(window.navigator.userAgent) ||
         // Feature detection for all other devices:
-        $('<input type="file">').prop('disabled'));
+        $('<input type="file"/>').prop('disabled'));
 
     // The FileReader API is not actually used, but works as feature detection,
     // as some Safari versions (5?) support XHR file uploads via the FormData API,
@@ -922,6 +938,25 @@
     // Detect support for Blob slicing (required for chunked uploads):
     $.support.blobSlice = window.Blob && (Blob.prototype.slice ||
         Blob.prototype.webkitSlice || Blob.prototype.mozSlice);
+
+    // Helper function to create drag handlers for dragover/dragenter/dragleave:
+    function getDragHandler(type) {
+        var isDragOver = type === 'dragover';
+        return function (e) {
+            e.dataTransfer = e.originalEvent && e.originalEvent.dataTransfer;
+            var dataTransfer = e.dataTransfer;
+            if (dataTransfer && $.inArray('Files', dataTransfer.types) !== -1 &&
+                    this._trigger(
+                        type,
+                        $.Event(type, {delegatedEvent: e})
+                    ) !== false) {
+                e.preventDefault();
+                if (isDragOver) {
+                    dataTransfer.dropEffect = 'copy';
+                }
+            }
+        };
+    }
 
     // The fileupload widget listens for change events on file input fields defined
     // via fileInput setting and paste or drop events of the given dropZone.
@@ -937,9 +972,9 @@
             // The drop target element(s), by the default the complete document.
             // Set to null to disable drag & drop support:
             dropZone: $(document),
-            // The paste target element(s), by the default the complete document.
-            // Set to null to disable paste support:
-            pasteZone: $(document),
+            // The paste target element(s), by the default undefined.
+            // Set to a DOM node or jQuery object to enable file pasting:
+            pasteZone: undefined,
             // The file input field(s), that are listened to for change events.
             // If undefined, it is set to the file input fields inside
             // of the widget element on plugin initialization.
@@ -962,6 +997,14 @@
             // To limit the number of files uploaded with one XHR request,
             // set the following option to an integer greater than 0:
             limitMultiFileUploads: undefined,
+            // The following option limits the number of files uploaded with one
+            // XHR request to keep the request size under or equal to the defined
+            // limit in bytes:
+            limitMultiFileUploadSize: undefined,
+            // Multipart file uploads add a number of bytes to each uploaded file,
+            // therefore the following option adds an overhead for each file used
+            // in the limitMultiFileUploadSize configuration:
+            limitMultiFileUploadSizeOverhead: 512,
             // Set the following option to true to issue all file upload requests
             // in a sequential order:
             sequentialUploads: false,
@@ -1116,7 +1159,8 @@
             // The following are jQuery ajax settings required for the file uploads:
             processData: false,
             contentType: false,
-            cache: false
+            cache: false,
+            timeout: 0
         },
 
         // A list of options that require reinitializing event listeners and/or
@@ -1157,7 +1201,7 @@
 
         _getFormData: function (options) {
             var formData;
-            if (typeof options.formData === 'function') {
+            if ($.type(options.formData) === 'function') {
                 return options.formData(options.form);
             }
             if ($.isArray(options.formData)) {
@@ -1283,17 +1327,18 @@
                 file = options.files[0],
                 // Ignore non-multipart setting if not supported:
                 multipart = options.multipart || !$.support.xhrFileUpload,
-                paramName = options.paramName[0];
+                paramName = $.type(options.paramName) === 'array' ?
+                    options.paramName[0] : options.paramName;
             options.headers = $.extend({}, options.headers);
             if (options.contentRange) {
                 options.headers['Content-Range'] = options.contentRange;
             }
             if (!multipart || options.blob || !this._isInstanceOf('File', file)) {
                 options.headers['Content-Disposition'] = 'attachment; filename="' +
-                    encodeURI(file.name) + '"';
+                    encodeURI(file.uploadName || file.name) + '"';
             }
             if (!multipart) {
-                options.contentType = file.type;
+                options.contentType = file.type || 'application/octet-stream';
                 options.data = options.blob || file;
             } else if ($.support.xhrFormDataFileUpload) {
                 if (options.postMessage) {
@@ -1310,7 +1355,8 @@
                     } else {
                         $.each(options.files, function (index, file) {
                             formData.push({
-                                name: options.paramName[index] || paramName,
+                                name: ($.type(options.paramName) === 'array' &&
+                                    options.paramName[index]) || paramName,
                                 value: file
                             });
                         });
@@ -1325,7 +1371,11 @@
                         });
                     }
                     if (options.blob) {
-                        formData.append(paramName, options.blob, file.name);
+                        formData.append(
+                            paramName,
+                            options.blob,
+                            file.uploadName || file.name
+                        );
                     } else {
                         $.each(options.files, function (index, file) {
                             // This check allows the tests to run with
@@ -1333,7 +1383,8 @@
                             if (that._isInstanceOf('File', file) ||
                                     that._isInstanceOf('Blob', file)) {
                                 formData.append(
-                                    options.paramName[index] || paramName,
+                                    ($.type(options.paramName) === 'array' &&
+                                        options.paramName[index]) || paramName,
                                     file,
                                     file.uploadName || file.name
                                 );
@@ -1487,7 +1538,7 @@
             data.process = function (resolveFunc, rejectFunc) {
                 if (resolveFunc || rejectFunc) {
                     data._processQueue = this._processQueue =
-                        (this._processQueue || getPromise([this])).pipe(
+                        (this._processQueue || getPromise([this])).then(
                             function () {
                                 if (data.errorThrown) {
                                     return $.Deferred()
@@ -1495,7 +1546,7 @@
                                 }
                                 return getPromise(arguments);
                             }
-                        ).pipe(resolveFunc, rejectFunc);
+                        ).then(resolveFunc, rejectFunc);
                 }
                 return this._processQueue || getPromise([this]);
             };
@@ -1515,7 +1566,8 @@
                     return this.jqXHR.abort();
                 }
                 this.errorThrown = 'abort';
-                return that._getXHRPromise();
+                that._trigger('fail', null, this);
+                return that._getXHRPromise(false);
             };
             data.state = function () {
                 if (this.jqXHR) {
@@ -1564,7 +1616,7 @@
                 promise = dfd.promise(),
                 jqXHR,
                 upload;
-            if (!(this._isXHRUpload(options) && slice && (ub || mcs < fs)) ||
+            if (!(this._isXHRUpload(options) && slice && (ub || ($.type(mcs) === 'function' ? mcs(options) : mcs) < fs)) ||
                     options.data) {
                 return false;
             }
@@ -1587,7 +1639,7 @@
                 o.blob = slice.call(
                     file,
                     ub,
-                    ub + mcs,
+                    ub + ($.type(mcs) === 'function' ? mcs(o) : mcs),
                     file.type
                 );
                 // Store the current chunk size, as the blob itself
@@ -1779,9 +1831,9 @@
                 if (this.options.limitConcurrentUploads > 1) {
                     slot = $.Deferred();
                     this._slots.push(slot);
-                    pipe = slot.pipe(send);
+                    pipe = slot.then(send);
                 } else {
-                    this._sequence = this._sequence.pipe(send, send);
+                    this._sequence = this._sequence.then(send, send);
                     pipe = this._sequence;
                 }
                 // Return the piped Promise object, enhanced with an abort method,
@@ -1806,32 +1858,62 @@
             var that = this,
                 result = true,
                 options = $.extend({}, this.options, data),
+                files = data.files,
+                filesLength = files.length,
                 limit = options.limitMultiFileUploads,
+                limitSize = options.limitMultiFileUploadSize,
+                overhead = options.limitMultiFileUploadSizeOverhead,
+                batchSize = 0,
                 paramName = this._getParamName(options),
                 paramNameSet,
                 paramNameSlice,
                 fileSet,
-                i;
-            if (!(options.singleFileUploads || limit) ||
+                i,
+                j = 0;
+            if (!filesLength) {
+                return false;
+            }
+            if (limitSize && files[0].size === undefined) {
+                limitSize = undefined;
+            }
+            if (!(options.singleFileUploads || limit || limitSize) ||
                     !this._isXHRUpload(options)) {
-                fileSet = [data.files];
+                fileSet = [files];
                 paramNameSet = [paramName];
-            } else if (!options.singleFileUploads && limit) {
+            } else if (!(options.singleFileUploads || limitSize) && limit) {
                 fileSet = [];
                 paramNameSet = [];
-                for (i = 0; i < data.files.length; i += limit) {
-                    fileSet.push(data.files.slice(i, i + limit));
+                for (i = 0; i < filesLength; i += limit) {
+                    fileSet.push(files.slice(i, i + limit));
                     paramNameSlice = paramName.slice(i, i + limit);
                     if (!paramNameSlice.length) {
                         paramNameSlice = paramName;
                     }
                     paramNameSet.push(paramNameSlice);
                 }
+            } else if (!options.singleFileUploads && limitSize) {
+                fileSet = [];
+                paramNameSet = [];
+                for (i = 0; i < filesLength; i = i + 1) {
+                    batchSize += files[i].size + overhead;
+                    if (i + 1 === filesLength ||
+                            ((batchSize + files[i + 1].size + overhead) > limitSize) ||
+                            (limit && i + 1 - j >= limit)) {
+                        fileSet.push(files.slice(j, i + 1));
+                        paramNameSlice = paramName.slice(j, i + 1);
+                        if (!paramNameSlice.length) {
+                            paramNameSlice = paramName;
+                        }
+                        paramNameSet.push(paramNameSlice);
+                        j = i + 1;
+                        batchSize = 0;
+                    }
+                }
             } else {
                 paramNameSet = paramName;
             }
-            data.originalFiles = data.files;
-            $.each(fileSet || data.files, function (index, element) {
+            data.originalFiles = files;
+            $.each(fileSet || files, function (index, element) {
                 var newData = $.extend({}, data);
                 newData.files = fileSet ? element : [element];
                 newData.paramName = paramNameSet[index];
@@ -1848,12 +1930,21 @@
             return result;
         },
 
-        _replaceFileInput: function (input) {
-            var inputClone = input.clone(true);
+        _replaceFileInput: function (data) {
+            var input = data.fileInput,
+                inputClone = input.clone(true),
+                restoreFocus = input.is(document.activeElement);
+            // Add a reference for the new cloned file input to the data argument:
+            data.fileInputClone = inputClone;
             $('<form></form>').append(inputClone)[0].reset();
             // Detaching allows to insert the fileInput on another form
             // without loosing the file input value:
             input.after(inputClone).detach();
+            // If the fileInput had focus before it was detached,
+            // restore focus to the inputClone.
+            if (restoreFocus) {
+                inputClone.focus();
+            }
             // Avoid memory leaks with the detached file input:
             $.cleanData(input.unbind('remove'));
             // Replace the original file input element in the fileInput
@@ -1875,6 +1966,8 @@
         _handleFileTreeEntry: function (entry, path) {
             var that = this,
                 dfd = $.Deferred(),
+                entries = [],
+                dirReader,
                 errorHandler = function (e) {
                     if (e && !e.entry) {
                         e.entry = entry;
@@ -1885,7 +1978,24 @@
                     // to be returned together in one set:
                     dfd.resolve([e]);
                 },
-                dirReader;
+                successHandler = function (entries) {
+                    that._handleFileTreeEntries(
+                        entries,
+                        path + entry.name + '/'
+                    ).done(function (files) {
+                        dfd.resolve(files);
+                    }).fail(errorHandler);
+                },
+                readEntries = function () {
+                    dirReader.readEntries(function (results) {
+                        if (!results.length) {
+                            successHandler(entries);
+                        } else {
+                            entries = entries.concat(results);
+                            readEntries();
+                        }
+                    }, errorHandler);
+                };
             path = path || '';
             if (entry.isFile) {
                 if (entry._file) {
@@ -1900,16 +2010,9 @@
                 }
             } else if (entry.isDirectory) {
                 dirReader = entry.createReader();
-                dirReader.readEntries(function (entries) {
-                    that._handleFileTreeEntries(
-                        entries,
-                        path + entry.name + '/'
-                    ).done(function (files) {
-                        dfd.resolve(files);
-                    }).fail(errorHandler);
-                }, errorHandler);
+                readEntries();
             } else {
-                // Return an empy list for file system items
+                // Return an empty list for file system items
                 // other than files or directories:
                 dfd.resolve([]);
             }
@@ -1923,7 +2026,7 @@
                 $.map(entries, function (entry) {
                     return that._handleFileTreeEntry(entry, path);
                 })
-            ).pipe(function () {
+            ).then(function () {
                 return Array.prototype.concat.apply(
                     [],
                     arguments
@@ -1992,7 +2095,7 @@
             return $.when.apply(
                 $,
                 $.map(fileInput, this._getSingleFileInputFiles)
-            ).pipe(function () {
+            ).then(function () {
                 return Array.prototype.concat.apply(
                     [],
                     arguments
@@ -2009,7 +2112,7 @@
             this._getFileInputFiles(data.fileInput).always(function (files) {
                 data.files = files;
                 if (that.options.replaceFileInput) {
-                    that._replaceFileInput(data.fileInput);
+                    that._replaceFileInput(data);
                 }
                 if (that._trigger(
                         'change',
@@ -2062,24 +2165,21 @@
             }
         },
 
-        _onDragOver: function (e) {
-            e.dataTransfer = e.originalEvent && e.originalEvent.dataTransfer;
-            var dataTransfer = e.dataTransfer;
-            if (dataTransfer && $.inArray('Files', dataTransfer.types) !== -1 &&
-                    this._trigger(
-                        'dragover',
-                        $.Event('dragover', {delegatedEvent: e})
-                    ) !== false) {
-                e.preventDefault();
-                dataTransfer.dropEffect = 'copy';
-            }
-        },
+        _onDragOver: getDragHandler('dragover'),
+
+        _onDragEnter: getDragHandler('dragenter'),
+
+        _onDragLeave: getDragHandler('dragleave'),
 
         _initEventHandlers: function () {
             if (this._isXHRUpload(this.options)) {
                 this._on(this.options.dropZone, {
                     dragover: this._onDragOver,
-                    drop: this._onDrop
+                    drop: this._onDrop,
+                    // event.preventDefault() on dragenter is required for IE10+:
+                    dragenter: this._onDragEnter,
+                    // dragleave is not required, but added for completeness:
+                    dragleave: this._onDragLeave
                 });
                 this._on(this.options.pasteZone, {
                     paste: this._onPaste
@@ -2093,9 +2193,13 @@
         },
 
         _destroyEventHandlers: function () {
-            this._off(this.options.dropZone, 'dragover drop');
+            this._off(this.options.dropZone, 'dragenter dragleave dragover drop');
             this._off(this.options.pasteZone, 'paste');
             this._off(this.options.fileInput, 'change');
+        },
+
+        _destroy: function () {
+            this._destroyEventHandlers();
         },
 
         _setOption: function (key, value) {
@@ -2140,15 +2244,25 @@
 
         _initDataAttributes: function () {
             var that = this,
-                options = this.options;
+                options = this.options,
+                data = this.element.data();
             // Initialize options set via HTML5 data-attributes:
             $.each(
-                $(this.element[0].cloneNode(false)).data(),
-                function (key, value) {
-                    if (that._isRegExpOption(key, value)) {
-                        value = that._getRegExp(value);
+                this.element[0].attributes,
+                function (index, attr) {
+                    var key = attr.name.toLowerCase(),
+                        value;
+                    if (/^data-/.test(key)) {
+                        // Convert hyphen-ated key to camelCase:
+                        key = key.slice(5).replace(/-[a-z]/g, function (str) {
+                            return str.charAt(1).toUpperCase();
+                        });
+                        value = data[key];
+                        if (that._isRegExpOption(key, value)) {
+                            value = that._getRegExp(value);
+                        }
+                        options[key] = value;
                     }
-                    options[key] = value;
                 }
             );
         },
@@ -2228,7 +2342,8 @@
                                 return;
                             }
                             data.files = files;
-                            jqXHR = that._onSend(null, data).then(
+                            jqXHR = that._onSend(null, data);
+                            jqXHR.then(
                                 function (result, textStatus, jqXHR) {
                                     dfd.resolve(result, textStatus, jqXHR);
                                 },
@@ -2252,21 +2367,21 @@
 
 }));
 /*
- * jQuery File Upload Processing Plugin 1.3.0
+ * jQuery File Upload Processing Plugin
  * https://github.com/blueimp/jQuery-File-Upload
  *
  * Copyright 2012, Sebastian Tschan
  * https://blueimp.net
  *
  * Licensed under the MIT license:
- * http://www.opensource.org/licenses/MIT
+ * https://opensource.org/licenses/MIT
  */
 
-/*jslint nomen: true, unparam: true */
-/*global define, window */
+/* jshint nomen:false */
+/* global define, require, window */
 
 
-(function (factory) {
+;(function (factory) {
     'use strict';
     if (typeof define === 'function' && define.amd) {
         // Register as an anonymous AMD module:
@@ -2274,6 +2389,12 @@
             'jquery',
             './jquery.fileupload'
         ], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS:
+        factory(
+            require('jquery'),
+            require('./jquery.fileupload')
+        );
     } else {
         // Browser globals:
         factory(
@@ -2335,7 +2456,7 @@
                         settings
                     );
                 };
-                chain = chain.pipe(func, settings.always && func);
+                chain = chain.then(func, settings.always && func);
             });
             chain
                 .done(function () {
@@ -2402,7 +2523,7 @@
                         };
                     opts.index = index;
                     that._processing += 1;
-                    that._processingQueue = that._processingQueue.pipe(func, func)
+                    that._processingQueue = that._processingQueue.then(func, func)
                         .always(function () {
                             that._processing -= 1;
                             if (that._processing === 0) {
@@ -2811,6 +2932,15 @@
     anyProblems: function() {
       return !!this.getProblems().length;
     },
+    _availabilities: function() {
+      var avail, line;
+      avail = this.model().availability();
+      if (avail == null) {
+        return [];
+      }
+      line = this.subreservations != null ? this.subreservations[0] : this;
+      return avail.forTimeWindow(line.start_time, line.end_time);
+    },
     _isSoftOverbooked: function(avail, reservationsToExclude) {
       return _.any(avail.changes, (function(_this) {
         return function(change) {
@@ -2823,31 +2953,40 @@
       })(this));
     },
     effectiveAvailableForUser: function() {
-      var avail, maxAvailableForUser, quantity, reservationsToExclude;
+      var avails, quantity, reservationsToExclude;
       if (this.model_id == null) {
         return null;
       }
-      avail = this.model().availability();
-      if (avail == null) {
+      avails = this._availabilities();
+      if (!avails.length) {
         return null;
       }
       reservationsToExclude = this.subreservations != null ? this.subreservations : [this];
-      maxAvailableForUser = avail.withoutLines(reservationsToExclude).maxAvailableForGroups(this.start_date, this.end_date, this.user().groupIds);
       quantity = this.subreservations != null ? _.reduce(this.subreservations, (function(mem, l) {
         return mem + l.quantity;
       }), 0) : this.quantity;
-      if (this._isSoftOverbooked(avail, reservationsToExclude)) {
-        return maxAvailableForUser - quantity;
-      } else {
-        return maxAvailableForUser;
-      }
+      return _.min(_.map(avails, (function(_this) {
+        return function(avail) {
+          var maxAvailableForUser;
+          maxAvailableForUser = avail.withoutLines(reservationsToExclude).maxAvailableForGroups(_this.start_date, _this.end_date, _this.user().groupIds);
+          if (_this._isSoftOverbooked(avail, reservationsToExclude)) {
+            return maxAvailableForUser - quantity;
+          } else {
+            return maxAvailableForUser;
+          }
+        };
+      })(this)));
     },
     getProblems: function() {
       var avail, days, effectiveAvailable, maxAvailableForUser, maxAvailableInTotal, problems, quantity, reservationsToExclude, softOverbooked;
       problems = [];
       if (this.model_id != null) {
         reservationsToExclude = this.subreservations != null ? this.subreservations : [this];
-        avail = this.model().availability();
+        avail = _.min(this._availabilities(), (function(_this) {
+          return function(a) {
+            return a.withoutLines(reservationsToExclude).maxAvailableForGroups(_this.start_date, _this.end_date, _this.user().groupIds);
+          };
+        })(this));
         maxAvailableForUser = avail.withoutLines(reservationsToExclude).maxAvailableForGroups(this.start_date, this.end_date, this.user().groupIds);
         softOverbooked = this._isSoftOverbooked(avail, reservationsToExclude);
         quantity = this.subreservations != null ? _.reduce(this.subreservations, (function(mem, l) {
@@ -5848,14 +5987,19 @@
       return this.el = this.modal.el;
     };
 
-    HandOverDialogController.prototype.handOver = function() {
+    HandOverDialogController.prototype.handOver = function(e, confirmEarlyHandOver) {
       var ref;
-      if (this.purpose.length) {
-        if (this.purposeTextArea.val()) {
-          this.purpose = this.purpose + "; " + (this.purposeTextArea.val());
+      if (confirmEarlyHandOver == null) {
+        confirmEarlyHandOver = false;
+      }
+      if (!confirmEarlyHandOver) {
+        if (this.purpose.length) {
+          if (this.purposeTextArea.val()) {
+            this.purpose = this.purpose + "; " + (this.purposeTextArea.val());
+          }
+        } else {
+          this.purpose = this.purposeTextArea.val();
         }
-      } else {
-        this.purpose = this.purposeTextArea.val();
       }
       if (this.validatePurpose() && this.validateDelegatedUser()) {
         return App.Contract.create({
@@ -5865,11 +6009,16 @@
           }),
           purpose: this.purpose,
           note: this.noteTextArea.val(),
-          delegated_user_id: (ref = this.delegatedUser) != null ? ref.id : void 0
+          delegated_user_id: (ref = this.delegatedUser) != null ? ref.id : void 0,
+          confirm_early_hand_over: confirmEarlyHandOver
         }).fail((function(_this) {
           return function(e) {
-            _this.errorContainer.find("strong").html(e.responseText);
-            return _this.errorContainer.removeClass("hidden");
+            if (e.status === 409 && confirm(e.responseText)) {
+              return _this.handOver(null, true);
+            } else {
+              _this.errorContainer.find("strong").html(e.responseText);
+              return _this.errorContainer.removeClass("hidden");
+            }
           };
         })(this)).done((function(_this) {
           return function(data) {
@@ -13268,7 +13417,7 @@
 (function($) {$.views.templates("manage/views/reservations/assign/autocomplete_element", "<li class=\'separated-bottom exclude-last-child width-xl\'>\n  <a>\n    <div class=\'row\'>\n      <div class=\'col1of3\'>\n        <strong>\n          {{>inventoryCode}}\n        <\/strong>\n      <\/div>\n      <div class=\'col2of3 text-ellipsis\' title=\'{{>name}}\'>\n        <span class=\'grey-text\'>{{>name}}<\/span>\n      <\/div>\n    <\/div>\n  <\/a>\n<\/li>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/reservations/cell", "{{>quantity()}}\n{{jed quantity() \"Item\" \"Items\"/}}\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/reservations/explorative_add_dialog", "<div class=\'modal fade ui-modal medium\' role=\'dialog\' tabindex=\'-1\'>\n  <div class=\'modal-header row padding-bottom-s\'>\n    <div class=\'col4of5\'>\n      <h2 class=\'headline-l\'>{{jed \'Models\'/}} {{jed \'by browsing categories\'/}}<\/h2>\n      <h3 class=\'headline-m light\'>({{date startDate/}} - {{date endDate/}})<\/h3>\n    <\/div>\n    <div class=\'col1of5 text-align-right\'>\n      <div class=\'modal-close\'>{{jed \"Cancel\"/}}<\/div>\n    <\/div>\n  <\/div>\n  <div class=\'modal-body separated-top\'>\n    <div class=\'table\'>\n      <div class=\'table-row\'>\n        <div class=\'col1of4 table-cell separated-right padding-inset-m\' id=\'categories\'>\n          <div class=\'row padding-inset-s\'>\n            <input autocomplete=\'off\' class=\'small\' id=\'category-search\' placeholder=\'{{jed \'Search category\'/}}\' type=\'text\'>\n          <\/div>\n          <div id=\'category-root\'><\/div>\n          <div id=\'category-current\'><\/div>\n          <div class=\'row padding-bottom-s\' id=\'category-list\'>\n            <div class=\'height-xs\'><\/div>\n            <img class=\'margin-horziontal-auto margin-top-xxl margin-bottom-xxl\' src=\'/assets/loading-4eebf3d6e9139e863f2be8c14cad4638df21bf050cea16117739b3431837ee0a.gif\'>\n          <\/div>\n        <\/div>\n        <div class=\'table-cell col3of4 list-of-lines even min-height-l\' id=\'models\'>\n          <div class=\'height-s\'><\/div>\n          <img class=\'margin-horziontal-auto margin-top-xxl margin-bottom-xxl\' src=\'/assets/loading-4eebf3d6e9139e863f2be8c14cad4638df21bf050cea16117739b3431837ee0a.gif\'>\n          <div class=\'height-s\'><\/div>\n        <\/div>\n      <\/div>\n    <\/div>\n  <\/div>\n  <div class=\'modal-footer\'><\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
-(function($) {$.views.templates("manage/views/reservations/grouped_lines", "<div class=\'emboss deep padding-bottom-s margin-bottom-m\' data-selected-lines-container>\n  <div class=\'row\'>\n    <div class=\'col1of2 padding-vertical-s\'>\n      <label class=\'padding-inset-s inline\'>\n        <input autocomplete=\'off\' data-select-lines type=\'checkbox\'>\n      <\/label>\n      <p class=\'paragraph-s inline\'>\n        {{day start_date/}}\n        {{date start_date/}}\n        -\n        {{day end_date/}}\n        {{date end_date/}}\n      <\/p>\n    <\/div>\n    <div class=\'col1of2 padding-inset-s text-align-right\'>\n      <p class=\'paragraph-s inline\'>\n        {{diffDatesInDays start_date end_date/}}\n      <\/p>\n    <\/div>\n  <\/div>\n  <div class=\'row\'>\n    {{partial ~linePartial reservations #view.ctx/}}\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
+(function($) {$.views.templates("manage/views/reservations/grouped_lines", "<div class=\'emboss deep padding-bottom-s margin-bottom-m\' data-selected-lines-container>\n  <div class=\'row\'>\n    <div class=\'col1of2 padding-vertical-s\'>\n      <label class=\'padding-inset-s inline\'>\n        <input autocomplete=\'off\' data-select-lines type=\'checkbox\'>\n      <\/label>\n      <p class=\'paragraph-s inline\'>\n        {{day start_date/}}\n        {{date start_date/}}\n        -\n        {{day end_date/}}\n        {{date end_date/}}\n        {{if start_time}}\n        <strong>{{>start_time.substr(0, 5)}}–{{>end_time.substr(0, 5)}}<\/strong>\n        {{/if}}\n      <\/p>\n    <\/div>\n    <div class=\'col1of2 padding-inset-s text-align-right\'>\n      <p class=\'paragraph-s inline\'>\n        {{diffDatesInDays start_date end_date/}}\n      <\/p>\n    <\/div>\n  <\/div>\n  <div class=\'row\'>\n    {{partial ~linePartial reservations #view.ctx/}}\n  <\/div>\n<\/div>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/reservations/grouped_lines_with_action_date", "<h3 class=\'headline-s padding-inset-s\'>\n  {{if ~moment(date).endOf(\"day\").diff(~moment().endOf(\"day\"), \"days\") == 0}}\n  <strong>{{jed \"Today\"/}}<\/strong>\n  {{else}}\n  {{day date/}}\n  {{date date/}}\n  {{/if}}\n<\/h3>\n{{partial \"manage/views/reservations/grouped_lines\" groups #view.ctx/}}\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/reservations/hand_over_line", "{{if model_id}}\n{{partial \'manage/views/reservations/hand_over_line/item_line\' #view.data #view.ctx/}}\n{{else option_id}}\n{{partial \'manage/views/reservations/hand_over_line/option_line\' #view.data #view.ctx/}}\n{{/if}}\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
 (function($) {$.views.templates("manage/views/reservations/hand_over_line/assigned_item", "<input autocomplete=\'off\' class=\'small width-full has-addon text-align-center\' data-assign-item disabled id=\'assigned-item-{{>id}}\' type=\'text\' value=\'{{>item().inventory_code}}\'>\n<label class=\'addon small transparent no-padding\' data-remove-assignment for=\'assigned-item-{{>id}}\'>\n  <span class=\'link grey padding-inset-xs vertical-align-middle\'>\n    <i class=\'fa fa-times-circle\'><\/i>\n  <\/span>\n<\/label>\n");})((typeof jQuery !== "undefined" && jQuery !== null) ? jQuery : {views: jsviews});
