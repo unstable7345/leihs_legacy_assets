@@ -57757,7 +57757,6 @@ This script provides functionalities for the interactivity with the topbar searc
       this.hasEnoughReservationAdvanceDays = bind(this.hasEnoughReservationAdvanceDays, this);
       this.isVisitPossible = bind(this.isVisitPossible, this);
       this.isClosedOn = bind(this.isClosedOn, this);
-      this.timeSlotOptions = bind(this.timeSlotOptions, this);
       return InventoryPool.__super__.constructor.apply(this, arguments);
     }
 
@@ -63385,7 +63384,7 @@ window.SerializeItem = {
                     'button',
                     { onClick: function (e) {
                         return undo(e);
-                      }, className: 'button small inset', 'data-remove': '', title: 'Entfernen' },
+                      }, className: 'button small inset', 'data-remove': '', title: _jed('Remove') },
                     _jed('undo')
                   )
                 )
@@ -63600,7 +63599,7 @@ window.SerializeItem = {
                     { onClick: function (e) {
                         return onRemoveExisting(e);
                       }, className: 'button small inset', 'data-image-id': image.id, 'data-remove': '' },
-                    'Entfernen'
+                    _jed('Remove')
                   )
                 )
               );
@@ -65783,7 +65782,7 @@ window.BackwardTestCompatibility = {
           { onClick: function (event) {
               return _this2._removeNewFile(index);
             }, className: 'button small inset', 'data-remove': '', type: 'button' },
-          'Entfernen'
+          _jed('Remove')
         );
       }
     },
@@ -65810,7 +65809,7 @@ window.BackwardTestCompatibility = {
               { onClick: function (event) {
                   return _this3._removeNewFile(index);
                 }, className: 'button small inset', 'data-remove': '', type: 'button' },
-              'Entfernen'
+              _jed('Remove')
             )
           )
         );
@@ -68562,7 +68561,15 @@ window.XhrContext = function () {
               null,
               this._date(groupedLine.start_date),
               ' - ',
-              this._date(groupedLine.end_date)
+              this._date(groupedLine.end_date),
+              groupedLine.start_time ? React.createElement(
+                'strong',
+                null,
+                ' ',
+                groupedLine.start_time.substr(0, 5),
+                '–',
+                groupedLine.end_time.substr(0, 5)
+              ) : null
             )
           ),
           React.createElement(
