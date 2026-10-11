@@ -60002,7 +60002,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               'data-toggle': 'tooltip',
               id: 'show-all-fields',
               style: displayAllStyle,
-              title: 'Alle versteckten Felder wieder anzeigen' },
+              title: _jed('Reset visibility of all fields on the item forms') },
             'Alle Felder anzeigen'
           ),
           React.createElement(
@@ -60085,7 +60085,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             'data-toggle': 'tooltip',
             id: 'show-all-fields',
             style: displayAllStyle,
-            title: 'Alle versteckten Felder wieder anzeigen' },
+            title: _jed('Reset visibility of all fields on the item forms') },
           'Alle Felder anzeigen'
         ),
         React.createElement(
@@ -62567,7 +62567,7 @@ window.SerializeItem = {
         ),
         React.createElement(
           'a',
-          { key: 'key2', className: 'no-colors transparent-hover position-absolute-topright height-full padding-horizontal-m', 'data-remove': 'true', title: 'Hide notification' },
+          { key: 'key2', className: 'no-colors transparent-hover position-absolute-topright height-full padding-horizontal-m', 'data-remove': 'true', title: _jed('Hide notification') },
           React.createElement(
             'div',
             { className: 'table' },
@@ -63355,7 +63355,7 @@ window.SerializeItem = {
                 { key: 'property_' + index, className: 'row line font-size-xs focus-hover-thin striked', 'data-type': 'inline-entry' },
                 React.createElement(
                   'div',
-                  { className: 'line-col', title: 'Wird beim speichern entfernt' },
+                  { className: 'line-col', title: _jed('Removed on save') },
                   React.createElement('i', { className: 'fa fa-trash' })
                 ),
                 React.createElement(
@@ -63384,7 +63384,7 @@ window.SerializeItem = {
                     'button',
                     { onClick: function (e) {
                         return undo(e);
-                      }, className: 'button small inset', 'data-remove': '', title: 'Entfernen' },
+                      }, className: 'button small inset', 'data-remove': '', title: _jed('Remove') },
                     _jed('undo')
                   )
                 )
@@ -63523,7 +63523,7 @@ window.SerializeItem = {
                 { key: 'image_' + image.id, className: 'row line font-size-xs focus-hover-thin striked', 'data-type': 'inline-entry' },
                 React.createElement(
                   'div',
-                  { className: 'line-col col1of10', title: 'Wird beim speichern entfernt' },
+                  { className: 'line-col col1of10', title: _jed('Removed on save') },
                   React.createElement('i', { className: 'fa fa-trash' })
                 ),
                 React.createElement(
@@ -63599,7 +63599,7 @@ window.SerializeItem = {
                     { onClick: function (e) {
                         return onRemoveExisting(e);
                       }, className: 'button small inset', 'data-image-id': image.id, 'data-remove': '' },
-                    'Entfernen'
+                    _jed('Remove')
                   )
                 )
               );
@@ -63611,7 +63611,7 @@ window.SerializeItem = {
               { key: 'image_' + image.id, className: 'row line font-size-xs focus-hover-thin', 'data-new': '', 'data-type': 'inline-entry' },
               React.createElement(
                 'div',
-                { className: 'line-col col1of10 text-align-center', title: 'File has to be uploaded on save' },
+                { className: 'line-col col1of10 text-align-center', title: _jed('File has to be uploaded on save') },
                 React.createElement('i', { className: 'fa fa-cloud-upload' })
               ),
               React.createElement(
@@ -63692,7 +63692,7 @@ window.SerializeItem = {
                 { key: 'attachment_' + attachment.id, className: 'row line font-size-xs focus-hover-thin striked', 'data-type': 'inline-entry' },
                 React.createElement(
                   'div',
-                  { className: 'line-col', title: 'Wird beim speichern entfernt' },
+                  { className: 'line-col', title: _jed('Removed on save') },
                   React.createElement('i', { className: 'fa fa-trash' })
                 ),
                 React.createElement(
@@ -63750,7 +63750,7 @@ window.SerializeItem = {
               { key: 'attachment_' + attachment.id, className: 'row line font-size-xs focus-hover-thin', 'data-new': '', 'data-type': 'inline-entry' },
               React.createElement(
                 'div',
-                { className: 'line-col col1of10 text-align-center', title: 'File has to be uploaded on save' },
+                { className: 'line-col col1of10 text-align-center', title: _jed('File has to be uploaded on save') },
                 React.createElement('i', { className: 'fa fa-cloud-upload' })
               ),
               React.createElement(
@@ -63823,7 +63823,7 @@ window.SerializeItem = {
               { key: 'accessory_' + index, className: 'row line font-size-xs focus-hover-thin striked', 'data-type': 'inline-entry' },
               React.createElement(
                 'div',
-                { className: 'line-col', title: 'Wird beim speichern entfernt' },
+                { className: 'line-col', title: _jed('Removed on save') },
                 React.createElement('i', { className: 'fa fa-trash' })
               ),
               React.createElement(
@@ -63957,7 +63957,7 @@ window.SerializeItem = {
                 red,
                 React.createElement(
                   'div',
-                  { className: 'line-col', title: 'Wird beim speichern entfernt' },
+                  { className: 'line-col', title: _jed('Removed on save') },
                   React.createElement('i', { className: 'fa fa-trash' })
                 ),
                 React.createElement(
@@ -64032,7 +64032,7 @@ window.SerializeItem = {
                 { key: s.id, className: 'row line font-size-xs focus-hover-thin striked', 'data-type': 'inline-entry' },
                 React.createElement(
                   'div',
-                  { className: 'line-col', title: 'Wird beim speichern entfernt' },
+                  { className: 'line-col', title: _jed('Removed on save') },
                   React.createElement('i', { className: 'fa fa-trash' })
                 ),
                 React.createElement(
@@ -65280,8 +65280,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     propTypes: {},
 
     _monthTexts: function () {
+      return window.i18n.months.full;
+    },
 
-      return ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+    // Monday first, as the table is rendered
+    _weekdays: function () {
+      var days = window.i18n.days;
+      return [1, 2, 3, 4, 5, 6, 0].map(function (i) {
+        return { full: days.full[i], trunc: days.trunc[i] };
+      });
     },
 
     _getMonthText: function () {
@@ -65512,69 +65519,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             React.createElement(
               'tr',
               null,
-              React.createElement(
-                'th',
-                { scope: 'col' },
-                React.createElement(
-                  'span',
-                  { title: 'Montag' },
-                  'Mo'
-                )
-              ),
-              React.createElement(
-                'th',
-                { scope: 'col' },
-                React.createElement(
-                  'span',
-                  { title: 'Dienstag' },
-                  'Di'
-                )
-              ),
-              React.createElement(
-                'th',
-                { scope: 'col' },
-                React.createElement(
-                  'span',
-                  { title: 'Mittwoch' },
-                  'Mi'
-                )
-              ),
-              React.createElement(
-                'th',
-                { scope: 'col' },
-                React.createElement(
-                  'span',
-                  { title: 'Donnerstag' },
-                  'Do'
-                )
-              ),
-              React.createElement(
-                'th',
-                { scope: 'col' },
-                React.createElement(
-                  'span',
-                  { title: 'Freitag' },
-                  'Fr'
-                )
-              ),
-              React.createElement(
-                'th',
-                { scope: 'col', className: 'ui-datepicker-week-end' },
-                React.createElement(
-                  'span',
-                  { title: 'Samstag' },
-                  'Sa'
-                )
-              ),
-              React.createElement(
-                'th',
-                { scope: 'col', className: 'ui-datepicker-week-end' },
-                React.createElement(
-                  'span',
-                  { title: 'Sonntag' },
-                  'So'
-                )
-              )
+              this._weekdays().map(function (day, index) {
+                return React.createElement(
+                  'th',
+                  { key: index, scope: 'col', className: index > 4 ? 'ui-datepicker-week-end' : null },
+                  React.createElement(
+                    'span',
+                    { title: day.full },
+                    day.trunc
+                  )
+                );
+              })
             )
           ),
           React.createElement(
@@ -65747,7 +65702,7 @@ window.BackwardTestCompatibility = {
 
       return React.createElement(
         'div',
-        { className: 'line-col text-align-center', title: 'Datei wird beim speichern hochgeladen' },
+        { className: 'line-col text-align-center', title: _jed('File has to be uploaded on save') },
         React.createElement('i', { className: 'fa fa-cloud-upload' })
       );
     },
@@ -65757,7 +65712,7 @@ window.BackwardTestCompatibility = {
       if (fileModel['delete']) {
         return React.createElement(
           'div',
-          { className: 'line-col text-align-center', title: 'Datei wird beim speichern hochgeladen' },
+          { className: 'line-col text-align-center', title: _jed('File has to be uploaded on save') },
           React.createElement('i', { className: 'fa fa-trash' })
         );
       } else {
@@ -65782,7 +65737,7 @@ window.BackwardTestCompatibility = {
           { onClick: function (event) {
               return _this2._removeNewFile(index);
             }, className: 'button small inset', 'data-remove': '', type: 'button' },
-          'Entfernen'
+          _jed('Remove')
         );
       }
     },
@@ -65809,7 +65764,7 @@ window.BackwardTestCompatibility = {
               { onClick: function (event) {
                   return _this3._removeNewFile(index);
                 }, className: 'button small inset', 'data-remove': '', type: 'button' },
-              'Entfernen'
+              _jed('Remove')
             )
           )
         );
@@ -65899,7 +65854,7 @@ window.BackwardTestCompatibility = {
               { onClick: function (event) {
                   return _this4.inputElement.click();
                 }, type: 'button', className: 'button inset width-full', 'data-type': 'select' },
-              'Datei auswählen'
+              _jed('Select File')
             ),
             React.createElement('input', { ref: function (input) {
                 return _this4.inputElement = input;
@@ -66595,7 +66550,7 @@ window.BackwardTestCompatibility = {
               { onClick: function (event) {
                   return _this._undoRemoveAllocation(event, index);
                 }, className: 'button inset small', 'data-remove': '' },
-              'rückgängig'
+              _jed('undo')
             )
           )
         );
@@ -67369,7 +67324,7 @@ window.FieldSwitch = {
         'a',
         { onClick: function (event) {
             return _this2.props._onDeselect(event, selectedValue.field);
-          }, className: 'font-size-m link grey padding-inset-xs', 'data-placement': 'top', 'data-toggle': 'tooltip', 'data-type': 'remove-field', title: 'Dieses Feld beim Editieren von Gegenständen nicht mehr anzeigen' },
+          }, className: 'font-size-m link grey padding-inset-xs', 'data-placement': 'top', 'data-toggle': 'tooltip', 'data-type': 'remove-field', title: _jed('Hide this field from all item forms') },
         React.createElement('i', { className: 'fa fa-times-circle' })
       );
     },
@@ -67795,7 +67750,7 @@ window.FieldSwitch = {
               { className: 'col1of2' },
               React.createElement(
                 'button',
-                { onClick: _onItemClick, className: 'button inset small width-full', title: 'Gegenstände' },
+                { onClick: _onItemClick, className: 'button inset small width-full', title: _jed('Items') },
                 downArrow,
                 React.createElement(
                   'span',
@@ -67838,13 +67793,13 @@ window.FieldSwitch = {
           { className: 'col1of5 line-col text-align-center' },
           React.createElement(
             'span',
-            { title: 'auf Lager' },
+            { title: _jed('in stock') },
             availability.in_stock
           ),
           '/',
           React.createElement(
             'span',
-            { title: 'verleihbar' },
+            { title: _jed('borrowable') },
             availability.total_rentable
           )
         ),
@@ -68561,7 +68516,15 @@ window.XhrContext = function () {
               null,
               this._date(groupedLine.start_date),
               ' - ',
-              this._date(groupedLine.end_date)
+              this._date(groupedLine.end_date),
+              groupedLine.start_time ? React.createElement(
+                'strong',
+                null,
+                ' ',
+                groupedLine.start_time.substr(0, 5),
+                '–',
+                groupedLine.end_time.substr(0, 5)
+              ) : null
             )
           ),
           React.createElement(
@@ -71010,7 +70973,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 'button',
                 { onClick: function (event) {
                     return _this15._onToggleModel(event, model);
-                  }, className: 'button inset small width-full', 'data-type': 'inventory-expander', title: 'Packages' },
+                  }, className: 'button inset small width-full', 'data-type': 'inventory-expander', title: _jed('Packages') },
                 this._renderArrow(model),
                 ' ',
                 React.createElement(
@@ -72804,17 +72767,17 @@ window.TimelineNewAlgorithm = {
           { style: { position: 'absolute', top: topReservations + 'px', left: '0px', width: wholeWidth + 'px' } },
           TimelineRenderReservations.renderReservations(allLayoutedReservationFrames, firstMoment, lastMoment, this.props.timeline_availability, this.state.preprocessedData.invalidReservations, this._onToggle)
         ),
-        TimelineRender.renderLabelSmall(firstMoment, 'Total:', topTotalQuantities),
+        TimelineRender.renderLabelSmall(firstMoment, _jed('Total') + ':', topTotalQuantities),
         TimelineRender.renderIndexedQuantitiesSmall(null, function (i) {
           return relevantItemsCount;
         }, firstMoment, lastMoment, unusedColors, topTotalQuantities, wholeWidth, undefined),
         TimelineRender.renderEntitlementQuantityLabels(entitlementLineHeight, this.props.timeline_availability, this.state.preprocessedData.changesForDays, reservationsInGroups, entitlementQuantities, topEntitlementQuantities, wholeWidth, firstMoment, lastMoment, relevantItemsCount),
         TimelineRender.renderEntitlementQuantities(entitlementLineHeight, this.props.timeline_availability, this.state.preprocessedData.changesForDays, reservationsInGroups, entitlementQuantities, topEntitlementQuantities + 20, wholeWidth, firstMoment, lastMoment, relevantItemsCount),
-        TimelineRender.renderBoldLabel(null, topTest, wholeWidth, 'müssen aus fremden Gruppen genommen werden', undefined, firstMoment),
+        TimelineRender.renderBoldLabel(null, topTest, wholeWidth, _jed('must be taken from other groups'), undefined, firstMoment),
         TimelineRender.renderNotAssignable(entitlementLineHeight, this.props.timeline_availability, this.state.preprocessedData.changesForDays, reservationsInGroups, entitlementQuantities, topTest + 20, wholeWidth, firstMoment, lastMoment, relevantItemsCount, unusedCounts),
-        TimelineRender.renderBoldLabel(null, topTest2, wholeWidth, 'Überbuchungen', undefined, firstMoment),
+        TimelineRender.renderBoldLabel(null, topTest2, wholeWidth, _jed('Overbooking'), undefined, firstMoment),
         TimelineRender.renderNotEnough(entitlementLineHeight, this.props.timeline_availability, this.state.preprocessedData.changesForDays, reservationsInGroups, entitlementQuantities, topTest2 + 20, wholeWidth, firstMoment, lastMoment, relevantItemsCount, unusedCounts),
-        TimelineRender.renderLabelSmall(firstMoment, 'Verfügbar:', topAvailabilities),
+        TimelineRender.renderLabelSmall(firstMoment, _jed('Available') + ':', topAvailabilities),
         TimelineRender.renderIndexedQuantities(function (i) {
           return unusedCounts[i];
         }, firstMoment, lastMoment, unusedColors, topAvailabilities, wholeWidth, null),
@@ -73721,10 +73684,10 @@ window.TimelineRender = {
       quantity = 0;
     }
     if (groupId == '') {
-      label = quantity + ' verfügbar für Allgemein, davon zugewiesen';
+      label = _jed('%s available for general use, of which assigned', [quantity]);
     } else {
       var name = TimelineRender.entitlementGroupNameForId(timeline_availability, groupId);
-      label = quantity + ' reserviert für Gruppe ' + name + ', davon zugewiesen';
+      label = _jed('%s reserved for group %s, of which assigned', [quantity, name]);
     }
 
     return TimelineRender.renderBoldLabel(title, top, wholeWidth, label, 'label_' + groupId, firstMoment);
