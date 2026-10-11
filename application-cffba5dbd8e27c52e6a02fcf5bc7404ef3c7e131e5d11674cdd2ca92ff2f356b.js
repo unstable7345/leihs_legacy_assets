@@ -60003,7 +60003,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               id: 'show-all-fields',
               style: displayAllStyle,
               title: _jed('Reset visibility of all fields on the item forms') },
-            'Alle Felder anzeigen'
+            _jed('Show all fields')
           ),
           React.createElement(
             'a',
@@ -60086,7 +60086,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             id: 'show-all-fields',
             style: displayAllStyle,
             title: _jed('Reset visibility of all fields on the item forms') },
-          'Alle Felder anzeigen'
+          _jed('Show all fields')
         ),
         React.createElement(
           'a',
@@ -60207,7 +60207,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     React.createElement(
                       'button',
                       { type: 'button', className: 'button small white', onClick: onClick },
-                      'Close'
+                      _jed('Close')
                     )
                   )
                 )
@@ -60533,7 +60533,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         return _.compact([React.createElement('div', { key: 'separator', className: 'separated-top margin-bottom-m' }), React.createElement(
           'h2',
           { key: 'title', className: 'headline-m padding-bottom-m', style: { clear: 'both' } },
-          'Software'
+          _jed('Software')
         ), React.createElement(
           'div',
           { key: 'content', className: 'row margin-bottom-l' },
@@ -61068,7 +61068,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             React.createElement(
               'span',
               null,
-              'Only visible if owner'
+              _jed('Only visible if owner')
             )
           )
         );
@@ -62777,7 +62777,7 @@ window.SerializeItem = {
             { className: 'col1of2 text-align-right' },
             React.createElement(
               'a',
-              { className: 'button grey', href: 'javascript:history.back()' },
+              { className: 'button grey', href: this.props.return_url || this.props.inventory_path },
               _jed('Cancel')
             ),
             React.createElement(
@@ -64977,7 +64977,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           React.createElement(
             'div',
             { className: 'row text-ellipsis', style: { textAlign: 'center', fontStyle: 'italic', padding: '10px', color: '#aaa', cursor: 'default' } },
-            _jed('has ' + this.props.hasMore + ' more...')
+            _jed('has %s more...', [this.props.hasMore])
           )
         );
       }
@@ -65729,7 +65729,7 @@ window.BackwardTestCompatibility = {
           { onClick: function (event) {
               return _this2._undoRemove(index);
             }, className: 'button small inset', 'data-remove': '', type: 'button' },
-          'Undo'
+          _jed('undo')
         );
       } else {
         return React.createElement(
@@ -66187,13 +66187,15 @@ window.BackwardTestCompatibility = {
         React.createElement(
           'div',
           { className: 'col1of2' },
-          'min:',
+          _jed('min'),
+          ':',
           React.createElement('input', { autoComplete: 'off', className: 'width-full', type: 'text', value: selectedValue.value.from, onChange: this._onChangeFrom })
         ),
         React.createElement(
           'div',
           { className: 'col1of2' },
-          'max:',
+          _jed('max'),
+          ':',
           React.createElement('input', { autoComplete: 'off', className: 'width-full', type: 'text', value: selectedValue.value.to, onChange: this._onChangeTo })
         )
       );
@@ -66236,13 +66238,15 @@ window.BackwardTestCompatibility = {
         React.createElement(
           'div',
           { className: 'col1of2' },
-          'von:',
+          _jed('from'),
+          ':',
           React.createElement(DatePickerWithInput, { value: selectedValue.value.from, onChange: this._onChangeFrom })
         ),
         React.createElement(
           'div',
           { className: 'col1of2' },
-          'bis:',
+          _jed('until'),
+          ':',
           React.createElement(DatePickerWithInput, { value: selectedValue.value.to, onChange: this._onChangeTo })
         )
       );
@@ -66515,13 +66519,14 @@ window.BackwardTestCompatibility = {
           { key: 'key_' + index, className: 'row line font-size-xs focus-hover-thin striked', 'data-type': 'inline-entry' },
           React.createElement(
             'div',
-            { className: 'line-col', title: 'Wird beim speichern entfernt' },
+            { className: 'line-col', title: _jed('Removed on save') },
             React.createElement('i', { className: 'fa fa-trash' })
           ),
           React.createElement(
             'div',
             { className: 'line-col col1of10 text-align-center' },
-            'Quantity:'
+            _jed('Quantity'),
+            ':'
           ),
           React.createElement(
             'div',
@@ -66533,7 +66538,8 @@ window.BackwardTestCompatibility = {
           React.createElement(
             'div',
             { className: 'line-col col1of10 text-align-center' },
-            'Location:'
+            _jed('Location'),
+            ':'
           ),
           React.createElement(
             'div',
@@ -66561,7 +66567,8 @@ window.BackwardTestCompatibility = {
           React.createElement(
             'div',
             { className: 'line-col col1of10 text-align-center' },
-            'Quantity:'
+            _jed('Quantity'),
+            ':'
           ),
           React.createElement(
             'div',
@@ -66573,7 +66580,8 @@ window.BackwardTestCompatibility = {
           React.createElement(
             'div',
             { className: 'line-col col1of10 text-align-center' },
-            'Location:'
+            _jed('Location'),
+            ':'
           ),
           React.createElement(
             'div',
@@ -66590,7 +66598,7 @@ window.BackwardTestCompatibility = {
               { onClick: function (event) {
                   return _this._removeAllocation(event, index);
                 }, className: 'button inset small', 'data-remove': '' },
-              'Remove'
+              _jed('Remove')
             )
           )
         );
@@ -67461,7 +67469,7 @@ window.FieldSwitch = {
         packageText = React.createElement(
           'div',
           { className: 'grey-text' },
-          'Package'
+          _jed('Package')
         );
       }
 
@@ -67730,7 +67738,7 @@ window.FieldSwitch = {
         packageText = React.createElement(
           'div',
           { className: 'grey-text' },
-          'Package'
+          _jed('Package')
         );
       }
 
@@ -70754,7 +70762,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         React.createElement(
           'label',
           { className: 'row' },
-          React.createElement('input', { value: arguments.value, onChange: arguments.onChange, onFocus: arguments.onFocus, autoComplete: 'off', className: 'has-addon hasDatepicker', name: 'before_last_check', placeholder: 'Inventur vor', type: 'text', id: 'dp1509973221981' }),
+          React.createElement('input', { value: arguments.value, onChange: arguments.onChange, onFocus: arguments.onFocus, autoComplete: 'off', className: 'has-addon hasDatepicker', name: 'before_last_check', placeholder: _jed('Last checked before'), type: 'text', id: 'dp1509973221981' }),
           React.createElement(
             'span',
             { className: 'addon', onClick: arguments.onFocus },
@@ -72005,7 +72013,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 React.createElement(
                   'a',
                   { className: 'active float-left margin-right-xxs navigation-tab-item padding-horizontal-m' },
-                  'Rooms Diff'
+                  _jed('Rooms Diff')
                 )
               )
             )
@@ -72023,7 +72031,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               React.createElement(
                 'h1',
                 { className: 'headline-xl' },
-                'CSV import'
+                _jed('CSV import')
               )
             )
           ),
@@ -72036,7 +72044,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               React.createElement(
                 'h2',
                 null,
-                'Laden Sie eine Komma-separierte CSV-Datei hoch (UTF-8 Kodierung).'
+                _jed('Upload a comma separated CSV file (UTF-8 encoding).')
               )
             ),
             React.createElement(
@@ -72048,7 +72056,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 React.createElement(
                   'h3',
                   null,
-                  'Akzeptierte Spalten:'
+                  _jed('Accepted columns'),
+                  ':'
                 ),
                 React.createElement(
                   'ul',
@@ -72059,7 +72068,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     React.createElement(
                       'b',
                       null,
-                      'Liegenschaft (zwingend)'
+                      _jed('Building'),
+                      ' (',
+                      _jed('required'),
+                      ')'
                     )
                   ),
                   React.createElement(
@@ -72068,14 +72080,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     React.createElement(
                       'b',
                       null,
-                      'Raumnummer (zwingend)'
+                      _jed('Room number'),
+                      ' (',
+                      _jed('required'),
+                      ')'
                     )
                   )
                 ),
                 React.createElement(
                   'h3',
                   null,
-                  'Alle weiteren Kolonnen werden ignoriert.'
+                  _jed('All other columns are ignored.')
                 )
               ),
               React.createElement(
@@ -72097,7 +72112,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     React.createElement(
                       'button',
                       { className: 'button green' },
-                      'Import',
+                      _jed('Import'),
                       React.createElement('i', { className: 'fa fa-share-alt' })
                     )
                   )
@@ -72748,7 +72763,7 @@ window.TimelineNewAlgorithm = {
             React.createElement(
               'div',
               { style: { borderRadius: '5px', color: '#eee', textAlign: 'center', fontSize: '12px', padding: '6px', backgroundColor: '#4e4e4e', width: '200px', margin: '5px auto 5px auto' } },
-              'Old Version'
+              _jed('Old version')
             )
           )
         ),
@@ -73585,7 +73600,7 @@ window.TimelineRender = {
       React.createElement(
         'div',
         { style: { fontSize: '14px', paddingTop: '10px', textAlign: 'center', position: 'absolute', top: '0px', left: '0px', bottom: '0px', right: '0px', border: border, borderWidth: '0px 1px 0px 0px' } },
-        monthFrom.format('MMMM')
+        window.i18n.months.full[monthFrom.month()]
       )
     );
   },
