@@ -4812,22 +4812,6 @@ window.i18n.locale_data = {
          null,
          "%{model} está reservado para %{slot}. Si se entrega ahora, faltará para otras reservas antes de las %{start}. ¿Entregarlo de todos modos?"
       ],
-      "The inventory pool does not offer this time slot.": [
-         null,
-         "El grupo de inventario no ofrece esta franja horaria."
-      ],
-      "A time slot can only be reserved for a single day": [
-         null,
-         "Una franja horaria solo se puede reservar para un único día"
-      ],
-      "Keep the time slots": [
-         null,
-         "Mantener las franjas horarias"
-      ],
-      "Time slot": [
-         null,
-         "Franja horaria"
-      ],
       "Whole day": [
          null,
          "Día completo"
@@ -5031,6 +5015,126 @@ window.i18n.locale_data = {
       "max. %s": [
          null,
          "máx. %s"
+      ],
+      "must be taken from other groups": [
+         null,
+         "hay que tomarlos de otros grupos"
+      ],
+      "%s available for general use, of which assigned": [
+         null,
+         "%s disponibles para uso general; de ellos, asignados"
+      ],
+      "%s reserved for group %s, of which assigned": [
+         null,
+         "%s reservados para el grupo %s; de ellos, asignados"
+      ],
+      "Last checked before": [
+         null,
+         "Última revisión antes de"
+      ],
+      "Only visible if owner": [
+         null,
+         "Solo visible para el propietario"
+      ],
+      "min": [
+         null,
+         "mín."
+      ],
+      "max": [
+         null,
+         "máx."
+      ],
+      "Old version": [
+         null,
+         "Versión anterior"
+      ],
+      "Upload a comma separated CSV file (UTF-8 encoding).": [
+         null,
+         "Suba un archivo CSV separado por comas (codificación UTF-8)."
+      ],
+      "Room number": [
+         null,
+         "Número de sala"
+      ],
+      "has %s more...": [
+         null,
+         "%s más..."
+      ],
+      "The assigned contract reservations have to be marked either as signed or as closed": [
+         null,
+         "Las reservas asignadas al contrato deben estar marcadas como firmadas o cerradas"
+      ],
+      "Challenge Response/System ID": [
+         null,
+         "Challenge Response/ID del sistema"
+      ],
+      "Citrix": [
+         null,
+         "Citrix"
+      ],
+      "Dongle": [
+         null,
+         "Dongle"
+      ],
+      "Dongle ID": [
+         null,
+         "ID del dongle"
+      ],
+      "Linux": [
+         null,
+         "Linux"
+      ],
+      "Mac OS X": [
+         null,
+         "Mac OS X"
+      ],
+      "Web": [
+         null,
+         "Web"
+      ],
+      "Windows": [
+         null,
+         "Windows"
+      ],
+      "iOS": [
+         null,
+         "iOS"
+      ],
+      "Start time": [
+         null,
+         "Hora de inicio"
+      ],
+      "End time": [
+         null,
+         "Hora de fin"
+      ],
+      "Keep the times": [
+         null,
+         "Mantener los horarios"
+      ],
+      "Choose both times, or none for whole days": [
+         null,
+         "Elige las dos horas, o ninguna para días completos"
+      ],
+      "The end has to be after the start": [
+         null,
+         "El fin tiene que ser posterior al inicio"
+      ],
+      "The inventory pool does not offer reservations by the hour.": [
+         null,
+         "El grupo de inventario no ofrece reservas por horas."
+      ],
+      "Choose both times within the hours of the inventory pool, or none for whole days.": [
+         null,
+         "Elige las dos horas dentro del horario del grupo de inventario, o ninguna para días completos."
+      ],
+      "Max. hours per reservation": [
+         null,
+         "Máx. horas por reserva"
+      ],
+      "No limit": [
+         null,
+         "Sin límite"
       ]
    }
 }

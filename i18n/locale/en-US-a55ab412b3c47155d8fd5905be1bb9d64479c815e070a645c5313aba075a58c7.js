@@ -4037,23 +4037,127 @@ window.i18n.locale_data = {
          null,
          ""
       ],
-      "The inventory pool does not offer this time slot.": [
-         null,
-         ""
-      ],
-      "A time slot can only be reserved for a single day": [
-         null,
-         ""
-      ],
-      "Keep the time slots": [
-         null,
-         ""
-      ],
-      "Time slot": [
-         null,
-         ""
-      ],
       "Whole day": [
+         null,
+         ""
+      ],
+      "must be taken from other groups": [
+         null,
+         ""
+      ],
+      "%s available for general use, of which assigned": [
+         null,
+         ""
+      ],
+      "%s reserved for group %s, of which assigned": [
+         null,
+         ""
+      ],
+      "Last checked before": [
+         null,
+         ""
+      ],
+      "Only visible if owner": [
+         null,
+         ""
+      ],
+      "min": [
+         null,
+         ""
+      ],
+      "max": [
+         null,
+         ""
+      ],
+      "Old version": [
+         null,
+         ""
+      ],
+      "Upload a comma separated CSV file (UTF-8 encoding).": [
+         null,
+         ""
+      ],
+      "Room number": [
+         null,
+         ""
+      ],
+      "The assigned contract reservations have to be marked either as signed or as closed": [
+         null,
+         ""
+      ],
+      "Challenge Response/System ID": [
+         null,
+         ""
+      ],
+      "Citrix": [
+         null,
+         ""
+      ],
+      "Dongle": [
+         null,
+         ""
+      ],
+      "Dongle ID": [
+         null,
+         ""
+      ],
+      "Linux": [
+         null,
+         ""
+      ],
+      "Mac OS X": [
+         null,
+         ""
+      ],
+      "Web": [
+         null,
+         ""
+      ],
+      "Windows": [
+         null,
+         ""
+      ],
+      "iOS": [
+         null,
+         ""
+      ],
+      "legacy_manage_inventory_pool_admin_section_notice": [
+         null,
+         "Except for the management of entitlement groups are all other functions in the Admin section."
+      ],
+      "Start time": [
+         null,
+         ""
+      ],
+      "End time": [
+         null,
+         ""
+      ],
+      "Keep the times": [
+         null,
+         ""
+      ],
+      "Choose both times, or none for whole days": [
+         null,
+         ""
+      ],
+      "The end has to be after the start": [
+         null,
+         ""
+      ],
+      "The inventory pool does not offer reservations by the hour.": [
+         null,
+         ""
+      ],
+      "Choose both times within the hours of the inventory pool, or none for whole days.": [
+         null,
+         ""
+      ],
+      "Max. hours per reservation": [
+         null,
+         ""
+      ],
+      "No limit": [
          null,
          ""
       ]

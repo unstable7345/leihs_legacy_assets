@@ -57272,7 +57272,7 @@ This script provides functionalities for the interactivity with the topbar searc
     Availability.prototype.forTimeWindow = function(startTime, endTime) {
       var byWindow, keys, windowed;
       byWindow = this.changes_by_window || {};
-      keys = startTime != null ? [startTime + "-" + endTime] : _.keys(byWindow);
+      keys = (startTime != null) && startTime < endTime ? [startTime + "-" + endTime] : _.keys(byWindow);
       windowed = _.compact(_.map(keys, (function(_this) {
         return function(key) {
           var clone;
@@ -57762,11 +57762,11 @@ This script provides functionalities for the interactivity with the topbar searc
 
     InventoryPool.configure("InventoryPool", "id", "name", "default_contract_note", "borrow_reservation_advance_days");
 
-    InventoryPool.prototype.timeSlotOptions = function() {
-      return _.map(this.time_slots || [], function(slot) {
+    InventoryPool.prototype.timeOptions = function() {
+      return _.map(this.hourly_time_options || [], function(time) {
         return {
-          value: slot.start_time + "-" + slot.end_time,
-          label: slot.name + " (" + slot.start_time.slice(0, 5) + "–" + slot.end_time.slice(0, 5) + ")"
+          value: time,
+          label: time.slice(0, 5)
         };
       });
     };
@@ -62777,7 +62777,7 @@ window.SerializeItem = {
             { className: 'col1of2 text-align-right' },
             React.createElement(
               'a',
-              { className: 'button grey', href: 'javascript:history.back()' },
+              { className: 'button grey', href: this.props.return_url || this.props.inventory_path },
               _jed('Cancel')
             ),
             React.createElement(
@@ -73180,7 +73180,7 @@ window.TimelinePreprocessData = {
 
   changesAlgorithm: function (timeline_availability, changes, userEntitlementGroupsForModel, relevantItemsCount) {
     return changes.map(function (c) {
-      var reservations = TimelineUtil.concurrentReservations(TimelinePreprocessData.calculateChangesReservations(timeline_availability, c));
+      var reservations = TimelineUtil.concurrentReservations(TimelinePreprocessData.calculateChangesReservations(timeline_availability, c), moment(c));
       return {
         change: c,
         date: c,
@@ -73233,19 +73233,22 @@ window.TimelinePreprocessData = {
     var relevantItemsCount = TimelinePreprocessData.relevantItemsCount(timeline_availability);
     var totalCounts = TimelinePreprocessData.totalCounts(lastMoment, relevantItemsCount);
     var handouts = TimelinePreprocessData.handoutCounts(timeline_availability, lastMoment);
-    var handoutCounts = handouts.map(function (hc) {
-      return -TimelineUtil.concurrentReservations(hc).length;
+    var dayOf = function (i) {
+      return moment().add(i, 'days');
+    };
+    var handoutCounts = handouts.map(function (hc, i) {
+      return -TimelineUtil.concurrentReservations(hc, dayOf(i)).length;
     });
     var borrowableCounts = _.zip(totalCounts, handoutCounts).map(function (p) {
       return _.first(p) + _.last(p);
     });
     var reservationsOfDays = TimelinePreprocessData.reservationCounts(timeline_availability, lastMoment);
-    var reservationCounts = reservationsOfDays.map(function (rc) {
-      return -TimelineUtil.concurrentReservations(rc).length;
+    var reservationCounts = reservationsOfDays.map(function (rc, i) {
+      return -TimelineUtil.concurrentReservations(rc, dayOf(i)).length;
     });
     // morning and afternoon reservations of the same day can share the items
-    var unusedCounts = _.zip(totalCounts, handouts, reservationsOfDays).map(function (p) {
-      return p[0] - TimelineUtil.concurrentReservations(p[1].concat(p[2])).length;
+    var unusedCounts = _.zip(totalCounts, handouts, reservationsOfDays).map(function (p, i) {
+      return p[0] - TimelineUtil.concurrentReservations(p[1].concat(p[2]), dayOf(i)).length;
     });
     var allLayoutedReservationFrames = TimelinePreprocessData.layoutReservationFrames(timeline_availability.running_reservations);
     var userEntitlementGroupsForModel = TimelinePreprocessData.userEntitlementGroupsForModel(timeline_availability);
@@ -73600,7 +73603,7 @@ window.TimelineRender = {
       React.createElement(
         'div',
         { style: { fontSize: '14px', paddingTop: '10px', textAlign: 'center', position: 'absolute', top: '0px', left: '0px', bottom: '0px', right: '0px', border: border, borderWidth: '0px 1px 0px 0px' } },
-        monthFrom.format('MMMM')
+        window.i18n.months.full[monthFrom.month()]
       )
     );
   },
@@ -73855,7 +73858,7 @@ window.TimelineUtil = {
     return r.status == 'signed' && !r.returned_date && TimelineUtil.isBefore(moment(r.end_date), moment());
   },
 
-  // "HH:MM" of a time slot reservation, null for whole days
+  // "HH:MM" of a reservation by the hour, null for whole days
   timeSlotTime: function (t) {
     return t ? String(t).substr(0, 5) : null;
   },
@@ -73867,16 +73870,29 @@ window.TimelineUtil = {
     return TimelineUtil.timeSlotTime(r.start_time) + '–' + TimelineUtil.timeSlotTime(r.end_time);
   },
 
+  // The times a reservation by the hour takes on a day (["HH:MM:SS",
+  // "HH:MM:SS"]): from its start time on its first day, until its end time on
+  // its last day, the whole of the days between. Without a day, its times.
+  dailyWindow: function (r, day) {
+    if (!day) {
+      return [r.start_time, r.end_time];
+    }
+    var d = moment(day).format('YYYY-MM-DD');
+    return [d == moment(r.start_date).format('YYYY-MM-DD') ? r.start_time : '00:00:00', d == moment(r.end_date).format('YYYY-MM-DD') ? r.end_time : '24:00:00'];
+  },
+
   // The reservations of a day which need items at the same time: the whole-day
-  // (and late) ones plus the time slot ones of the most booked time window.
-  concurrentReservations: function (reservations) {
+  // (and late) ones plus the ones by the hour of the most booked time window.
+  concurrentReservations: function (reservations, day) {
     var isSlot = function (r) {
       return r.start_time && !TimelineUtil.late(r);
     };
     var wholeDay = _.reject(reservations, isSlot);
     var slots = _.filter(reservations, isSlot);
     var overlap = function (a, b) {
-      return a.start_time < b.end_time && b.start_time < a.end_time;
+      var wa = TimelineUtil.dailyWindow(a, day);
+      var wb = TimelineUtil.dailyWindow(b, day);
+      return wa[0] < wb[1] && wb[0] < wa[1];
     };
     var busiest = _.max(slots.map(function (w) {
       return _.filter(slots, function (r) {
