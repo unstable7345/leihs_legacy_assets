@@ -58011,7 +58011,10 @@ This script provides functionalities for the interactivity with the topbar searc
     };
 
     Model.prototype.name = function() {
-      return [this.product, this.version].join(" ").trim();
+      var ref;
+      return [((ref = this.manufacturer) != null ? ref : "").trim(), this.product, this.version].filter(function(part) {
+        return part;
+      }).join(" ");
     };
 
     return Model;
@@ -60373,7 +60376,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderModelLabel: function (parent) {
-      return parent.model.product + (parent.model.version ? ' ' + parent.model.version : '') + ' ' + parent.inventory_code;
+      return (parent.model.name || parent.model.product + (parent.model.version ? ' ' + parent.model.version : '')) + ' ' + parent.inventory_code;
     },
 
     _renderPackageInfo: function () {
@@ -60742,7 +60745,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderModelName: function (model) {
-      if (model.version) {
+      if (model.name) {
+        return model.name;
+      } else if (model.version) {
         return model.product + ' ' + model.version;
       } else {
         return model.product;
@@ -61049,9 +61054,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             return { text: itemValue };
           }
         case 'autocomplete-search':
-          var base = this._itemValue(field.item_value_label, item);
-          var ext = this._itemValue(field.item_value_label_ext, item);
-          text = base + (ext ? ' ' + ext : '');
+          // NOTE: a model (e.g. item.model) shows its name, which includes the manufacturer
+          var target = this._itemValue(_.initial(field.item_value_label), item);
+          if (target && target.name) {
+            text = target.name;
+          } else {
+            var base = this._itemValue(field.item_value_label, item);
+            var ext = this._itemValue(field.item_value_label_ext, item);
+            text = base + (ext ? ' ' + ext : '');
+          }
           return {
             text: text,
             id: itemValue
@@ -62416,7 +62427,7 @@ window.SerializeItem = {
                 callback(_.map(data, function (d) {
                   return {
                     id: d.id,
-                    label: d.product + (d.version ? ' ' + d.version : '')
+                    label: d.name || d.product + (d.version ? ' ' + d.version : '')
                   };
                 }));
               });
@@ -64381,9 +64392,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     React.createElement(
                       'a',
                       { target: '_blank', href: modelLink },
-                      model.product,
-                      ' ',
-                      model.version
+                      model.name
                     )
                   )
                 ),
@@ -66017,9 +66026,13 @@ window.BackwardTestCompatibility = {
 
       return result.map(function (entry) {
 
-        var label = entry.product;
-        if (entry.version) {
-          label += ' ' + entry.version;
+        // NOTE: models come with their name, which includes the manufacturer
+        var label = entry.name;
+        if (!label) {
+          label = entry.product;
+          if (entry.version) {
+            label += ' ' + entry.version;
+          }
         }
 
         return {
