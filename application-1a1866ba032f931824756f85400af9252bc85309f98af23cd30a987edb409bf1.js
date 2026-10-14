@@ -58011,7 +58011,10 @@ This script provides functionalities for the interactivity with the topbar searc
     };
 
     Model.prototype.name = function() {
-      return [this.product, this.version].join(" ").trim();
+      var ref;
+      return [((ref = this.manufacturer) != null ? ref : "").trim(), this.product, this.version].filter(function(part) {
+        return part;
+      }).join(" ");
     };
 
     return Model;
@@ -59444,7 +59447,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     childContextTypes: {
       hackyForPackage: PropTypes.bool,
       isBatchCreate: PropTypes.bool,
-      batchCreateInventoryCodePrefix: PropTypes.string
+      batchCreateInventoryCodePrefix: PropTypes.string,
+      codePattern: PropTypes.object,
+      codePatternPreview: PropTypes.object,
+      onCodePatternChange: PropTypes.func
     },
     // NOTE: We need this hack to pass the forPackage value to the mdoel_id input since
     // the current field config does not let us pass this information if we
@@ -59453,13 +59459,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       return {
         hackyForPackage: this.props.for_package,
         isBatchCreate: this._isBatchCreate(),
-        batchCreateInventoryCodePrefix: this.props.code_prefix
+        batchCreateInventoryCodePrefix: this.props.code_prefix,
+        codePattern: this.state.codePattern,
+        codePatternPreview: this.state.codePatternPreview,
+        onCodePatternChange: this.onCodePatternChange
       };
     },
 
     getInitialState: function () {
       return {
         quantity: 1,
+        // NOTE: inventory codes when creating multiple items, e.g. MIC-TLM-01, MIC-TLM-02, ...
+        codePattern: { parts: ['', '', ''], separator: '-', digits: 2 },
+        codePatternPreview: null,
         loadingFields: 'initial',
         fields: null,
         showInvalids: false,
@@ -59508,6 +59520,53 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       this._fetchFields();
     },
 
+    componentDidUpdate: function (prevProps, prevState) {
+      if (this._isBatchCreate() && (prevState.quantity !== this.state.quantity || prevState.codePattern !== this.state.codePattern)) {
+        clearTimeout(this._codePatternPreviewTimeout);
+        this._codePatternPreviewTimeout = setTimeout(this._fetchCodePatternPreview, 300);
+      }
+    },
+
+    componentWillUnmount: function () {
+      clearTimeout(this._codePatternPreviewTimeout);
+    },
+
+    onCodePatternChange: function (codePattern) {
+      this.setState({ codePattern: codePattern });
+    },
+
+    _codePatternForSubmit: function () {
+      var _state$codePattern = this.state.codePattern;
+      var parts = _state$codePattern.parts;
+      var separator = _state$codePattern.separator;
+      var digits = _state$codePattern.digits;
+
+      return { parts: f.compact(parts), separator: separator, digits: digits };
+    },
+
+    _fetchCodePatternPreview: function () {
+      var _this2 = this;
+
+      var quantity = this.state.quantity;
+      var codePattern = this.state.codePattern;
+      $.ajax({
+        url: this.props.code_pattern_preview_path,
+        data: { quantity: quantity, code_pattern: this._codePatternForSubmit() },
+        dataType: 'json',
+        method: 'GET'
+      }).done(function (data) {
+        // ignore answers to outdated requests
+        if (quantity === _this2.state.quantity && codePattern === _this2.state.codePattern) {
+          _this2.setState({ codePatternPreview: data });
+        }
+      }).error(function (res) {
+        if (quantity === _this2.state.quantity && codePattern === _this2.state.codePattern) {
+          var message = f.get(res, 'responseJSON.message');
+          _this2.setState({ codePatternPreview: message ? { error: message } : null });
+        }
+      });
+    },
+
     _fieldSwitch: function () {
       return {
         _hasValidValue: CreateItemFieldSwitch._hasValidValue,
@@ -59548,7 +59607,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _onShowAll: function () {
-      var _this2 = this;
+      var _this3 = this;
 
       var url = '/manage/' + this.props.inventory_pool.id + '/fields';
       $.ajax({
@@ -59559,17 +59618,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         }
       }).done(function () {
         var l = window.lodash;
-        var fieldModels = l.cloneDeep(_this2.state.fieldModels);
+        var fieldModels = l.cloneDeep(_this3.state.fieldModels);
         _.each(fieldModels, function (fm) {
           fm.hidden = false;
         });
 
-        _this2.setState({ fieldModels: fieldModels });
+        _this3.setState({ fieldModels: fieldModels });
       });
     },
 
     _onClose: function (fieldModel) {
-      var _this3 = this;
+      var _this4 = this;
 
       var url = '/manage/' + this.props.inventory_pool.id + '/fields/' + fieldModel.field.id;
       $.ajax({
@@ -59577,14 +59636,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         type: 'post'
       }).done(function () {
         var l = window.lodash;
-        var fieldModels = l.cloneDeep(_this3.state.fieldModels);
+        var fieldModels = l.cloneDeep(_this4.state.fieldModels);
         _.each(fieldModels, function (fm) {
           if (fm.field.id == fieldModel.field.id) {
             fm.hidden = true;
           }
         });
 
-        _this3.setState({ fieldModels: fieldModels });
+        _this4.setState({ fieldModels: fieldModels });
       });
     },
 
@@ -59616,7 +59675,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _readyContent: function () {
-      var _this4 = this;
+      var _this5 = this;
 
       var isBatch = this._isBatchCreate();
       var isCreating = !this.props.edit;
@@ -59661,7 +59720,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 value: this.state.quantity,
                 onChange: function (_ref) {
                   var num = _ref.target.value;
-                  return _this4.setState({ quantity: Math.min(num, BATCH_CREATE_MAX_QUANTITY) });
+                  return _this5.setState({ quantity: Math.min(num, BATCH_CREATE_MAX_QUANTITY) });
                 },
                 className: 'width-full',
                 autoComplete: 'off',
@@ -59767,10 +59826,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _fieldModelsForSubmit: function () {
-      var _this5 = this;
+      var _this6 = this;
 
       return _.filter(this._flatFieldModels(), function (fieldModel) {
-        return _this5._isFieldModelForSubmit(fieldModel);
+        return _this6._isFieldModelForSubmit(fieldModel);
       });
     },
 
@@ -59819,7 +59878,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _uploadFileCallback: function (itemId, fileModels, callback) {
-      var _this6 = this;
+      var _this7 = this;
 
       return function (answer) {
         if (answer.result != 'success') {
@@ -59828,7 +59887,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           answer.fileModel.result = 'success';
         }
 
-        _this6._uploadFiles(itemId, _.rest(fileModels), callback);
+        _this7._uploadFiles(itemId, _.rest(fileModels), callback);
       };
     },
 
@@ -59870,14 +59929,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _submitAttachmentsCallback: function (itemId, redirectUrl) {
-      var _this7 = this;
+      var _this8 = this;
 
       return function () {
-        if (!_this7._allUploadsSuccessful()) {
-          _this7._showAttachmentsHintIfNeeded();
-          window.location = _this7._editItemPath(itemId);
+        if (!_this8._allUploadsSuccessful()) {
+          _this8._showAttachmentsHintIfNeeded();
+          window.location = _this8._editItemPath(itemId);
         } else {
-          _this7._forward(redirectUrl, null);
+          _this8._forward(redirectUrl, null);
         }
       };
     },
@@ -59906,7 +59965,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _save: function (bypassSerialNumberValidation, copy) {
-      var _this8 = this;
+      var _this9 = this;
 
       if (!this._clientValidation()) {
         this._showSuccessFlash();
@@ -59926,6 +59985,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       if (isBatch) {
         this.setState({ isSaving: true });
         data.quantity = this.state.quantity;
+        data.code_pattern = this._codePatternForSubmit();
       }
 
       if (this.props.for_package) {
@@ -59957,19 +60017,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         dataType: 'json',
         method: this.props.edit ? 'PUT' : 'POST'
       }).done(function (data) {
-        if (_this8._newAttachementFiles().length > 0) {
-          _this8._submitAttachments(data.id, data.redirect_url);
+        if (_this9._newAttachementFiles().length > 0) {
+          _this9._submitAttachments(data.id, data.redirect_url);
         } else {
-          _this8._forward(data.redirect_url, null, showMessage);
+          _this9._forward(data.redirect_url, null, showMessage);
         }
       }).error(function (res) {
         var data = res && res.responseJSON;
         if (data && data.can_bypass_unique_serial_number_validation) {
-          _this8._showSerialNumberModal(res.responseJSON.message, copy);
+          _this9._showSerialNumberModal(res.responseJSON.message, copy);
         } else if (data) {
-          _this8._showErrorMessage(res.responseJSON.message);
+          _this9._showErrorMessage(res.responseJSON.message);
         } else {
-          _this8._showErrorMessage('Unexpected Error!\n' + res.statusText + '\n\n' + res.responseText);
+          _this9._showErrorMessage('Unexpected Error!\n' + res.statusText + '\n\n' + res.responseText);
         }
       });
     },
@@ -59992,7 +60052,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _onDelete: function (event) {
-      var _this9 = this;
+      var _this10 = this;
 
       event.preventDefault();
 
@@ -60003,13 +60063,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         dataType: 'json',
         method: 'DELETE'
       }).done(function (data) {
-        _this9._forward(_this9.props.inventory_path, 'Item deleted.');
+        _this10._forward(_this10.props.inventory_path, 'Item deleted.');
       }).error(function (res) {
         var data = res && res.responseJSON;
         if (data) {
-          _this9._showErrorMessage(data.message);
+          _this10._showErrorMessage(data.message);
         } else {
-          _this9._showErrorMessage('Unexpected Error!\n' + res.statusText + '\n\n' + res.responseText);
+          _this10._showErrorMessage('Unexpected Error!\n' + res.statusText + '\n\n' + res.responseText);
         }
       });
     },
@@ -60184,12 +60244,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderErrorMessage: function () {
-      var _this10 = this;
+      var _this11 = this;
 
       if (this.state.showError) {
         var onClick = function (event) {
           event.preventDefault();
-          _this10.setState({ showError: false, errorMessage: '' });
+          _this11.setState({ showError: false, errorMessage: '' });
         };
 
         return React.createElement(
@@ -60685,7 +60745,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderModelName: function (model) {
-      if (model.version) {
+      if (model.name) {
+        return model.name;
+      } else if (model.version) {
         return model.product + ' ' + model.version;
       } else {
         return model.product;
@@ -62359,7 +62421,7 @@ window.SerializeItem = {
                 callback(_.map(data, function (d) {
                   return {
                     id: d.id,
-                    label: d.product + (d.version ? ' ' + d.version : '')
+                    label: d.name || d.product + (d.version ? ' ' + d.version : '')
                   };
                 }));
               });
@@ -64324,9 +64386,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     React.createElement(
                       'a',
                       { target: '_blank', href: modelLink },
-                      model.product,
-                      ' ',
-                      model.version
+                      model.name
                     )
                   )
                 ),
@@ -66349,6 +66409,9 @@ window.BackwardTestCompatibility = {
     contextTypes: {
       isBatchCreate: PropTypes.bool,
       batchCreateInventoryCodePrefix: PropTypes.string,
+      codePattern: PropTypes.object,
+      codePatternPreview: PropTypes.object,
+      onCodePatternChange: PropTypes.func,
       batchCreateItemFieldsDisabled: PropTypes.arrayOf(PropTypes.string.isRequired)
     },
 
@@ -66434,6 +66497,127 @@ window.BackwardTestCompatibility = {
       );
     },
 
+    _changeCodePattern: function (key, value) {
+      var codePattern = window.lodash.cloneDeep(this.context.codePattern);
+      window.lodash.set(codePattern, key, value);
+      this.context.onCodePatternChange(codePattern);
+    },
+
+    _renderCodePatternPreview: function () {
+      var preview = this.context.codePatternPreview;
+      if (!preview) {
+        return null;
+      } else if (preview.error) {
+        return React.createElement(
+          'p',
+          { className: 'font-size-s margin-top-xs red' },
+          preview.error
+        );
+      } else {
+        return React.createElement(
+          'p',
+          { className: 'font-size-s margin-top-xs', id: 'code-pattern-preview' },
+          React.createElement(
+            'strong',
+            null,
+            _jed('create_multiple_items_code_preview'),
+            ':'
+          ),
+          ' ',
+          preview.first === preview.last ? preview.first : preview.first + ' … ' + preview.last
+        );
+      }
+    },
+
+    _renderCodePattern: function () {
+      var _this = this;
+
+      var codePattern = this.context.codePattern;
+      // NOTE: no spaces in codes
+      var noSpaces = function (value) {
+        return value.replace(/\s/g, '');
+      };
+      var inputStyle = { width: '5.5em', marginRight: '4px' };
+
+      return React.createElement(
+        'div',
+        { className: 'row margin-top-xs', id: 'code-pattern' },
+        React.createElement(
+          'div',
+          { className: 'col1of2 padding-vertical-xs' },
+          _jed('create_multiple_items_code_parts')
+        ),
+        React.createElement(
+          'div',
+          { className: 'col1of2' },
+          codePattern.parts.map(function (part, i) {
+            return React.createElement('input', {
+              key: i,
+              type: 'text',
+              name: 'code_pattern[parts][' + i + ']',
+              value: part,
+              placeholder: ['MIC', 'TLM', ''][i],
+              onChange: function (_ref) {
+                var value = _ref.target.value;
+                return _this._changeCodePattern(['parts', i], noSpaces(value));
+              },
+              style: inputStyle,
+              maxLength: 20,
+              autoComplete: 'off'
+            });
+          })
+        ),
+        React.createElement(
+          'div',
+          { className: 'col1of2 padding-vertical-xs' },
+          _jed('create_multiple_items_code_separator')
+        ),
+        React.createElement(
+          'div',
+          { className: 'col1of2 padding-vertical-xxs' },
+          React.createElement('input', {
+            type: 'text',
+            name: 'code_pattern[separator]',
+            value: codePattern.separator,
+            onChange: function (_ref2) {
+              var value = _ref2.target.value;
+              return _this._changeCodePattern('separator', noSpaces(value));
+            },
+            style: inputStyle,
+            maxLength: 3,
+            autoComplete: 'off'
+          })
+        ),
+        React.createElement(
+          'div',
+          { className: 'col1of2 padding-vertical-xs' },
+          _jed('create_multiple_items_code_digits')
+        ),
+        React.createElement(
+          'div',
+          { className: 'col1of2' },
+          React.createElement(
+            'select',
+            {
+              name: 'code_pattern[digits]',
+              value: codePattern.digits,
+              onChange: function (_ref3) {
+                var value = _ref3.target.value;
+                return _this._changeCodePattern('digits', parseInt(value, 10));
+              },
+              style: inputStyle },
+            [1, 2, 3, 4, 5, 6].map(function (n) {
+              return React.createElement(
+                'option',
+                { key: n, value: n },
+                window.lodash.padStart('1', n, '0')
+              );
+            })
+          )
+        )
+      );
+    },
+
     render: function () {
       var props = this.props;
       var selectedValue = props.selectedValue;
@@ -66462,14 +66646,16 @@ window.BackwardTestCompatibility = {
                 className: 'width-full',
                 disabled: true,
                 readOnly: true,
-                defaultValue: this.context.batchCreateInventoryCodePrefix + '…'
+                value: window.lodash.some(this.context.codePattern.parts) ? window.lodash.compact(this.context.codePattern.parts).concat(window.lodash.repeat('#', this.context.codePattern.digits)).join(this.context.codePattern.separator) : this.context.batchCreateInventoryCodePrefix + '…'
               })
             )
           ),
+          this._renderCodePattern(),
+          this._renderCodePatternPreview(),
           React.createElement(
             'p',
             { className: 'font-size-s margin-top-xs' },
-            _jed('create_multiple_items_inv_code_notice')
+            window.lodash.some(this.context.codePattern.parts) ? _jed('create_multiple_items_code_pattern_notice') : _jed('create_multiple_items_inv_code_notice')
           )
         );
       }
