@@ -4299,6 +4299,26 @@ window.i18n.locale_data = {
          null,
          "no se pudo asignar a la devolución"
       ],
+      "create_multiple_items_code_digits": [
+         null,
+         "Dígitos del contador"
+      ],
+      "create_multiple_items_code_parts": [
+         null,
+         "Campos del código"
+      ],
+      "create_multiple_items_code_pattern_notice": [
+         null,
+         "Los códigos se forman con los campos unidos por el separador y un contador. El contador sigue después del código más alto que ya exista con los mismos campos."
+      ],
+      "create_multiple_items_code_preview": [
+         null,
+         "Códigos"
+      ],
+      "create_multiple_items_code_separator": [
+         null,
+         "Separador"
+      ],
       "create_multiple_items_inv_code_notice": [
          null,
          "Cuando se crean varios artículos a la vez, el código de inventario no se puede establecer individualmente. En su lugar, se genera automáticamente la menor lista continua posible de códigos de inventario."
@@ -4806,7 +4826,7 @@ window.i18n.locale_data = {
       ],
       "The time slot %{slot} of %{model} is already over.": [
          null,
-         "La franja %{slot} de %{model} ya terminó."
+         "El horario %{slot} de %{model} ya terminó."
       ],
       "%{model} is reserved for %{slot}. Handed over now, it is missing for other reservations before %{start}. Hand over anyway?": [
          null,
@@ -5135,6 +5155,16 @@ window.i18n.locale_data = {
       "No limit": [
          null,
          "Sin límite"
+      ],
+      "Hour": [
+         "Hours",
+         "Hora",
+         "Horas"
+      ],
+      "hour": [
+         "hours",
+         "hora",
+         "horas"
       ]
    }
 }
