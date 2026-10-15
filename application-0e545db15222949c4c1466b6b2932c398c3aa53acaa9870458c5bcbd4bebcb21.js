@@ -59609,9 +59609,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     title: selected ? _jed('Remove') : _jed('Add'),
                     style: {
                       margin: '0 4px 4px 0',
-                      padding: '2px 9px',
-                      borderRadius: '10px',
+                      padding: '1px 8px',
+                      borderRadius: '9px',
                       border: '2px solid ' + tag.color,
+                      fontSize: '11px',
+                      lineHeight: '15px',
                       backgroundColor: selected ? tag.color : '#ffffff',
                       color: selected ? '#ffffff' : tag.color,
                       fontWeight: 'bold',
@@ -59623,7 +59625,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             ),
             React.createElement(
               'div',
-              { className: 'row', style: { display: 'flex' } },
+              { className: 'row', style: { display: 'flex', alignItems: 'center' } },
               React.createElement('input', {
                 type: 'text',
                 name: 'new_tag_name',
@@ -59637,11 +59639,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 },
                 maxLength: 40,
                 autoComplete: 'off',
-                style: { flex: 1, minWidth: 0 }
+                style: { flex: 1, minWidth: 0, marginRight: '8px' }
               }),
               React.createElement(
                 'button',
-                { type: 'button', className: 'button small white', onClick: this._createTag },
+                {
+                  type: 'button',
+                  className: 'button small white',
+                  onClick: this._createTag,
+                  style: { alignSelf: 'center' } },
                 _jed('Add')
               )
             )
@@ -59874,12 +59880,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           onSelectChildItem: this.onSelectChildItem,
           onRemoveChildItem: this.onRemoveChildItem,
           packageChildItems: this.state.packageChildItems,
-          quantitySelector: React.createElement(
-            'div',
-            null,
-            quantitySelector,
-            this._renderTags()
-          )
+          quantitySelector: quantitySelector,
+          tagsSelector: this._renderTags()
         })
       );
     },
@@ -60991,6 +60993,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     render: function () {
+      var _this6 = this;
+
       var createItemProps = this.props.createItemProps;
       var quantitySelector = this.props.quantitySelector || null;
 
@@ -61002,9 +61006,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           highest_code: createItemProps.highest_code
         };
 
-        return CreateItemFieldSwitch.renderField(fieldModel, dependencyValue, dataDependency, function (value) {
+        var renderedField = CreateItemFieldSwitch.renderField(fieldModel, dependencyValue, dataDependency, function (value) {
           return onChange(fieldModel.field.id, value);
         }, item, inventoryCodeProps, showInvalids, onClose, true);
+
+        // NOTE: the tags of the item go right under its model
+        if (_this6.props.tagsSelector && (fieldModel.field.id == 'model_id' || fieldModel.field.id == 'software_model_id')) {
+          return React.createElement(
+            React.Fragment,
+            null,
+            renderedField,
+            _this6.props.tagsSelector
+          );
+        } else {
+          return renderedField;
+        }
       };
 
       var formClass = null;
@@ -71799,17 +71815,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           'span',
           {
             key: tag.id,
-            className: 'font-size-xs',
             title: tag.name,
             style: {
-              display: 'inline-block',
               marginLeft: '6px',
-              padding: '1px 7px',
-              borderRadius: '9px',
+              padding: '0 7px',
+              borderRadius: '8px',
               backgroundColor: tag.color,
               color: '#ffffff',
+              fontSize: '10px',
+              lineHeight: '16px',
               fontWeight: 'bold',
-              verticalAlign: 'middle'
+              whiteSpace: 'nowrap'
             } },
           tag.name
         );
@@ -71831,7 +71847,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           { className: 'col2of5 line-col text-align-left' },
           React.createElement(
             'div',
-            { className: 'row' },
+            { className: 'row', style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap' } },
             this._itemInventoryCode(item),
             this._renderItemTags(item)
           ),
@@ -72975,6 +72991,248 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       );
     }
   });
+})();
+;(function () {
+  // NOTE: only for linter and clarity:
+  /* global _jed, $, React */
+
+  var f = window.lodash;
+
+  var chipStyle = function (color) {
+    return {
+      display: 'inline-block',
+      padding: '2px 10px',
+      borderRadius: '10px',
+      backgroundColor: color,
+      color: '#ffffff',
+      fontWeight: 'bold'
+    };
+  };
+
+  // The tags of the pool ("Etiquetado", ...): create, rename, recolor, delete
+  window.TagsIndex = window.createReactClass({
+    propTypes: {},
+
+    getInitialState: function () {
+      return {
+        tags: this.props.tags,
+        // NOTE: what is typed in a row before saving it, by tag id
+        edits: {},
+        newName: '',
+        error: null
+      };
+    },
+
+    _request: function (options, done) {
+      var _this = this;
+
+      this.setState({ error: null });
+      $.ajax(f.extend({ contentType: 'application/json', dataType: 'json' }, options)).done(done).error(function (res) {
+        _this.setState({ error: f.get(res, 'responseJSON.message') || res.statusText });
+      });
+    },
+
+    _sorted: function (tags) {
+      return f.sortBy(tags, function (t) {
+        return t.name.toLowerCase();
+      });
+    },
+
+    _create: function (event) {
+      var _this2 = this;
+
+      event.preventDefault();
+      var name = this.state.newName.trim();
+      if (!name) return;
+      this._request({ url: this.props.create_path, method: 'POST', data: JSON.stringify({ name: name }) }, function (tag) {
+        return _this2.setState({ tags: _this2._sorted(_this2.state.tags.concat([tag])), newName: '' });
+      });
+    },
+
+    _edited: function (tag) {
+      return f.extend({}, tag, this.state.edits[tag.id]);
+    },
+
+    _edit: function (tag, attrs) {
+      var edits = f.clone(this.state.edits);
+      edits[tag.id] = f.extend({}, edits[tag.id], attrs);
+      this.setState({ edits: edits });
+    },
+
+    _isChanged: function (tag) {
+      var edited = this._edited(tag);
+      return edited.name !== tag.name || edited.color !== tag.color;
+    },
+
+    _save: function (tag) {
+      var _this3 = this;
+
+      var edited = this._edited(tag);
+      this._request({
+        url: this.props.tags_path + '/' + tag.id,
+        method: 'PUT',
+        data: JSON.stringify({ name: edited.name.trim(), color: edited.color })
+      }, function (saved) {
+        return _this3.setState({
+          tags: _this3._sorted(_this3.state.tags.map(function (t) {
+            return t.id === saved.id ? saved : t;
+          })),
+          edits: f.omit(_this3.state.edits, tag.id)
+        });
+      });
+    },
+
+    _delete: function (tag) {
+      var _this4 = this;
+
+      if (!window.confirm(_jed('tags_delete_confirmation', [tag.name, tag.items_count]))) return;
+      this._request({ url: this.props.tags_path + '/' + tag.id, method: 'DELETE', dataType: 'text' }, function () {
+        return _this4.setState({
+          tags: f.reject(_this4.state.tags, function (t) {
+            return t.id === tag.id;
+          }),
+          edits: f.omit(_this4.state.edits, tag.id)
+        });
+      });
+    },
+
+    _renderRow: function (tag) {
+      var _this5 = this;
+
+      var edited = this._edited(tag);
+      return React.createElement(
+        'div',
+        { key: tag.id, className: 'line row focus-hover-thin', 'data-id': tag.id, 'data-type': 'tag' },
+        React.createElement(
+          'div',
+          { className: 'col1of5 line-col' },
+          React.createElement(
+            'span',
+            { style: chipStyle(edited.color) },
+            edited.name || '…'
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'col2of5 line-col text-align-left' },
+          React.createElement('input', {
+            type: 'color',
+            value: edited.color,
+            onChange: function (event) {
+              return _this5._edit(tag, { color: event.target.value });
+            },
+            title: _jed('Color'),
+            style: { width: '40px', height: '30px', padding: 0, marginRight: '8px', verticalAlign: 'middle' }
+          }),
+          React.createElement('input', {
+            type: 'text',
+            value: edited.name,
+            onChange: function (event) {
+              return _this5._edit(tag, { name: event.target.value });
+            },
+            onKeyDown: function (event) {
+              if (event.key === 'Enter' && _this5._isChanged(tag)) _this5._save(tag);
+            },
+            maxLength: 40,
+            autoComplete: 'off',
+            style: { width: '60%', verticalAlign: 'middle', fontSize: '14px' }
+          })
+        ),
+        React.createElement(
+          'div',
+          { className: 'col1of5 line-col text-align-center' },
+          _jed('Items'),
+          ': ',
+          tag.items_count
+        ),
+        React.createElement(
+          'div',
+          { className: 'col1of5 line-col line-actions padding-right-xs text-align-right' },
+          React.createElement(
+            'button',
+            {
+              type: 'button',
+              className: 'button green',
+              disabled: !this._isChanged(tag),
+              onClick: function () {
+                return _this5._save(tag);
+              } },
+            _jed('Save')
+          ),
+          ' ',
+          React.createElement(
+            'button',
+            { type: 'button', className: 'button white', onClick: function () {
+                return _this5._delete(tag);
+              } },
+            React.createElement('i', { className: 'fa fa-trash' }),
+            ' ',
+            _jed('Delete')
+          )
+        )
+      );
+    },
+
+    render: function () {
+      var _this6 = this;
+
+      return React.createElement(
+        'div',
+        { className: 'row content-wrapper min-height-xl min-width-full straight-top' },
+        React.createElement(
+          'div',
+          { className: 'margin-top-l padding-horizontal-m' },
+          React.createElement(
+            'div',
+            { className: 'row' },
+            React.createElement(
+              'h1',
+              { className: 'headline-xl' },
+              _jed('Tags')
+            ),
+            React.createElement(
+              'p',
+              { className: 'paragraph-s margin-top-s' },
+              _jed('tags_explanation')
+            )
+          )
+        ),
+        React.createElement(
+          'form',
+          { className: 'row margin-top-m padding-horizontal-m', onSubmit: this._create },
+          React.createElement('input', {
+            type: 'text',
+            name: 'new_tag_name',
+            value: this.state.newName,
+            placeholder: _jed('New tag'),
+            onChange: function (event) {
+              return _this6.setState({ newName: event.target.value });
+            },
+            maxLength: 40,
+            autoComplete: 'off',
+            style: { width: '300px', marginRight: '8px' }
+          }),
+          React.createElement(
+            'button',
+            { type: 'submit', className: 'button white' },
+            _jed('Add')
+          )
+        ),
+        this.state.error && React.createElement(
+          'p',
+          { className: 'emboss red padding-inset-s margin-top-s margin-horizontal-m text-align-center' },
+          this.state.error
+        ),
+        React.createElement(
+          'div',
+          { className: 'list-of-lines even margin-top-m' },
+          this.state.tags.map(this._renderRow)
+        )
+      );
+    }
+  });
+
+  window.TagsIndex.displayName = 'TagsIndex';
 })();
 window.TimelineNewAlgorithm = {
 
