@@ -3024,6 +3024,22 @@ window.i18n.locale_data = {
          null,
          "Ali Grätepärk"
       ],
+      "All rooms": [
+         null,
+         "Alli Rüüm"
+      ],
+      "All tags": [
+         null,
+         "Alli Etikette"
+      ],
+      "Tags": [
+         null,
+         "Etikette"
+      ],
+      "New tag": [
+         null,
+         "Neui Etikette"
+      ],
       "Inventory pools": [
          null,
          "Grätepärk"
@@ -3955,6 +3971,26 @@ window.i18n.locale_data = {
       "legacy_manage_group_new_admin_section_notice": [
          null,
          "Die Gruppene werde im noie Admin-Bereich verwaltet."
+      ],
+      "create_multiple_items_code_digits": [
+         null,
+         "Stellen des Zählers"
+      ],
+      "create_multiple_items_code_parts": [
+         null,
+         "Felder des Codes"
+      ],
+      "create_multiple_items_code_pattern_notice": [
+         null,
+         "Die Codes bestehen aus den Feldern, verbunden durch das Trennzeichen, und einem Zähler. Der Zähler setzt nach dem höchsten bestehenden Code mit denselben Feldern fort."
+      ],
+      "create_multiple_items_code_preview": [
+         null,
+         "Codes"
+      ],
+      "create_multiple_items_code_separator": [
+         null,
+         "Trennzeichen"
       ],
       "create_multiple_items_inv_code_notice": [
          null,

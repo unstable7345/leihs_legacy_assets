@@ -449,6 +449,22 @@ window.i18n.locale_data = {
          null,
          "Tots els grups d'inventari"
       ],
+      "All rooms": [
+         null,
+         "Totes les sales"
+      ],
+      "All tags": [
+         null,
+         "Totes les etiquetes"
+      ],
+      "Tags": [
+         null,
+         "Etiquetes"
+      ],
+      "New tag": [
+         null,
+         "Nova etiqueta"
+      ],
       "All other columns are ignored.": [
          null,
          "La resta de columnes s'ignoren."
@@ -4298,6 +4314,26 @@ window.i18n.locale_data = {
       "could not be assigned for take back": [
          null,
          "no s'ha pogut assignar a la devolució"
+      ],
+      "create_multiple_items_code_digits": [
+         null,
+         "Dígits del comptador"
+      ],
+      "create_multiple_items_code_parts": [
+         null,
+         "Camps del codi"
+      ],
+      "create_multiple_items_code_pattern_notice": [
+         null,
+         "Els codis es formen amb els camps units pel separador i un comptador. El comptador continua després del codi més alt que ja existeixi amb els mateixos camps."
+      ],
+      "create_multiple_items_code_preview": [
+         null,
+         "Codis"
+      ],
+      "create_multiple_items_code_separator": [
+         null,
+         "Separador"
       ],
       "create_multiple_items_inv_code_notice": [
          null,

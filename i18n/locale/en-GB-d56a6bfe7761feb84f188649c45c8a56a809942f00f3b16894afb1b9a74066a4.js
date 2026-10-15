@@ -2972,6 +2972,22 @@ window.i18n.locale_data = {
          null,
          ""
       ],
+      "All rooms": [
+         null,
+         "All rooms"
+      ],
+      "All tags": [
+         null,
+         "All tags"
+      ],
+      "Tags": [
+         null,
+         "Tags"
+      ],
+      "New tag": [
+         null,
+         "New tag"
+      ],
       "Inventory pools": [
          null,
          ""
@@ -3722,6 +3738,26 @@ window.i18n.locale_data = {
       "legacy_manage_inventory_pool_admin_section_notice": [
          null,
          "Except for the management of entitlement groups are all other functions in the Admin section."
+      ],
+      "create_multiple_items_code_digits": [
+         null,
+         "Counter digits"
+      ],
+      "create_multiple_items_code_parts": [
+         null,
+         "Code fields"
+      ],
+      "create_multiple_items_code_pattern_notice": [
+         null,
+         "The codes are made of the fields joined by the separator, plus a counter. The counter continues after the highest existing code with the same fields."
+      ],
+      "create_multiple_items_code_preview": [
+         null,
+         "Codes"
+      ],
+      "create_multiple_items_code_separator": [
+         null,
+         "Separator"
       ],
       "create_multiple_items_inv_code_notice": [
          null,

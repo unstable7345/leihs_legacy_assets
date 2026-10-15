@@ -449,6 +449,22 @@ window.i18n.locale_data = {
          null,
          "Todos los grupos de inventario"
       ],
+      "All rooms": [
+         null,
+         "Todas las salas"
+      ],
+      "All tags": [
+         null,
+         "Todas las etiquetas"
+      ],
+      "Tags": [
+         null,
+         "Etiquetas"
+      ],
+      "New tag": [
+         null,
+         "Nueva etiqueta"
+      ],
       "All other columns are ignored.": [
          null,
          "Las demás columnas se ignoran."
@@ -4298,6 +4314,26 @@ window.i18n.locale_data = {
       "could not be assigned for take back": [
          null,
          "no se pudo asignar a la devolución"
+      ],
+      "create_multiple_items_code_digits": [
+         null,
+         "Dígitos del contador"
+      ],
+      "create_multiple_items_code_parts": [
+         null,
+         "Campos del código"
+      ],
+      "create_multiple_items_code_pattern_notice": [
+         null,
+         "Los códigos se forman con los campos unidos por el separador y un contador. El contador sigue después del código más alto que ya exista con los mismos campos."
+      ],
+      "create_multiple_items_code_preview": [
+         null,
+         "Códigos"
+      ],
+      "create_multiple_items_code_separator": [
+         null,
+         "Separador"
       ],
       "create_multiple_items_inv_code_notice": [
          null,

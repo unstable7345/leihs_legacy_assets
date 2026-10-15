@@ -3127,6 +3127,22 @@ window.i18n.locale_data = {
          null,
          "Tous les inventaires"
       ],
+      "All rooms": [
+         null,
+         "Toutes les salles"
+      ],
+      "All tags": [
+         null,
+         "Toutes les étiquettes"
+      ],
+      "Tags": [
+         null,
+         "Étiquettes"
+      ],
+      "New tag": [
+         null,
+         "Nouvelle étiquette"
+      ],
       "Inventory pools": [
          null,
          "Groupe d'inventaire"
@@ -4519,6 +4535,26 @@ window.i18n.locale_data = {
       "legacy_manage_group_new_admin_section_notice": [
          null,
          "Les groupes sont gérés dans la nouvelle section d'Admin"
+      ],
+      "create_multiple_items_code_digits": [
+         null,
+         "Chiffres du compteur"
+      ],
+      "create_multiple_items_code_parts": [
+         null,
+         "Champs du code"
+      ],
+      "create_multiple_items_code_pattern_notice": [
+         null,
+         "Les codes sont composés des champs reliés par le séparateur et d'un compteur. Le compteur continue après le code existant le plus élevé ayant les mêmes champs."
+      ],
+      "create_multiple_items_code_preview": [
+         null,
+         "Codes"
+      ],
+      "create_multiple_items_code_separator": [
+         null,
+         "Séparateur"
       ],
       "create_multiple_items_inv_code_notice": [
          null,

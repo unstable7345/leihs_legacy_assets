@@ -3117,6 +3117,22 @@ window.i18n.locale_data = {
          null,
          "Alle Geräteparks"
       ],
+      "All rooms": [
+         null,
+         "Alle Räume"
+      ],
+      "All tags": [
+         null,
+         "Alle Etiketten"
+      ],
+      "Tags": [
+         null,
+         "Etiketten"
+      ],
+      "New tag": [
+         null,
+         "Neue Etikette"
+      ],
       "Inventory pools": [
          null,
          "Geräteparks"
@@ -4777,6 +4793,26 @@ window.i18n.locale_data = {
       "legacy_manage_inventory_pool_admin_section_notice": [
          null,
          "Bis auf die Verwaltung der Anspruchsgruppen sind alle Funktionen im Admin-Bereich verfügbar."
+      ],
+      "create_multiple_items_code_digits": [
+         null,
+         "Stellen des Zählers"
+      ],
+      "create_multiple_items_code_parts": [
+         null,
+         "Felder des Codes"
+      ],
+      "create_multiple_items_code_pattern_notice": [
+         null,
+         "Die Codes bestehen aus den Feldern, verbunden durch das Trennzeichen, und einem Zähler. Der Zähler setzt nach dem höchsten bestehenden Code mit denselben Feldern fort."
+      ],
+      "create_multiple_items_code_preview": [
+         null,
+         "Codes"
+      ],
+      "create_multiple_items_code_separator": [
+         null,
+         "Trennzeichen"
       ],
       "create_multiple_items_inv_code_notice": [
          null,

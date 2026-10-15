@@ -59472,6 +59472,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         // NOTE: inventory codes when creating multiple items, e.g. MIC-TLM-01, MIC-TLM-02, ...
         codePattern: { parts: ['', '', ''], separator: '-', digits: 2 },
         codePatternPreview: null,
+        // NOTE: tags of the pool ("Etiquetado", ...) and the ones on this item
+        tags: this.props.tags || [],
+        selectedTagIds: this.props.item_tag_ids || [],
+        newTagName: '',
         loadingFields: 'initial',
         fields: null,
         showInvalids: false,
@@ -59531,6 +59535,121 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       clearTimeout(this._codePatternPreviewTimeout);
     },
 
+    _toggleTag: function (tagId) {
+      var selected = this.state.selectedTagIds;
+      this.setState({
+        selectedTagIds: f.includes(selected, tagId) ? f.without(selected, tagId) : selected.concat([tagId])
+      });
+    },
+
+    _createTag: function (event) {
+      var _this2 = this;
+
+      event.preventDefault();
+      var name = this.state.newTagName.trim();
+      if (!name) return;
+      $.ajax({
+        url: this.props.create_tag_path,
+        data: JSON.stringify({ name: name }),
+        contentType: 'application/json',
+        dataType: 'json',
+        method: 'POST'
+      }).done(function (tag) {
+        _this2.setState({
+          tags: f.sortBy(_this2.state.tags.concat([tag]), function (t) {
+            return t.name.toLowerCase();
+          }),
+          selectedTagIds: _this2.state.selectedTagIds.concat([tag.id]),
+          newTagName: ''
+        });
+      }).error(function (res) {
+        _this2._showErrorMessage(f.get(res, 'responseJSON.message') || res.statusText);
+      });
+    },
+
+    _renderTags: function () {
+      var _this3 = this;
+
+      if (!this.props.create_tag_path) return null;
+
+      return React.createElement(
+        'div',
+        {
+          className: 'field row emboss padding-inset-xs margin-vertical-xxs margin-right-xs',
+          'data-id': 'item_tags',
+          'data-type': 'field' },
+        React.createElement(
+          'div',
+          { className: 'row' },
+          React.createElement(
+            'div',
+            { className: 'col1of2 padding-vertical-xs', 'data-type': 'key' },
+            React.createElement(
+              'strong',
+              { className: 'font-size-m inline-block' },
+              _jed('Tags')
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'col1of2', 'data-type': 'value' },
+            React.createElement(
+              'div',
+              { className: 'row' },
+              this.state.tags.map(function (tag) {
+                var selected = f.includes(_this3.state.selectedTagIds, tag.id);
+                return React.createElement(
+                  'button',
+                  {
+                    key: tag.id,
+                    type: 'button',
+                    onClick: function () {
+                      return _this3._toggleTag(tag.id);
+                    },
+                    title: selected ? _jed('Remove') : _jed('Add'),
+                    style: {
+                      margin: '0 4px 4px 0',
+                      padding: '2px 9px',
+                      borderRadius: '10px',
+                      border: '2px solid ' + tag.color,
+                      backgroundColor: selected ? tag.color : '#ffffff',
+                      color: selected ? '#ffffff' : tag.color,
+                      fontWeight: 'bold',
+                      cursor: 'pointer'
+                    } },
+                  tag.name
+                );
+              })
+            ),
+            React.createElement(
+              'div',
+              { className: 'row', style: { display: 'flex' } },
+              React.createElement('input', {
+                type: 'text',
+                name: 'new_tag_name',
+                value: this.state.newTagName,
+                placeholder: _jed('New tag'),
+                onChange: function (event) {
+                  return _this3.setState({ newTagName: event.target.value });
+                },
+                onKeyDown: function (event) {
+                  if (event.key === 'Enter') _this3._createTag(event);
+                },
+                maxLength: 40,
+                autoComplete: 'off',
+                style: { flex: 1, minWidth: 0 }
+              }),
+              React.createElement(
+                'button',
+                { type: 'button', className: 'button small white', onClick: this._createTag },
+                _jed('Add')
+              )
+            )
+          )
+        )
+      );
+    },
+
     onCodePatternChange: function (codePattern) {
       this.setState({ codePattern: codePattern });
     },
@@ -59545,7 +59664,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _fetchCodePatternPreview: function () {
-      var _this2 = this;
+      var _this4 = this;
 
       var quantity = this.state.quantity;
       var codePattern = this.state.codePattern;
@@ -59556,13 +59675,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         method: 'GET'
       }).done(function (data) {
         // ignore answers to outdated requests
-        if (quantity === _this2.state.quantity && codePattern === _this2.state.codePattern) {
-          _this2.setState({ codePatternPreview: data });
+        if (quantity === _this4.state.quantity && codePattern === _this4.state.codePattern) {
+          _this4.setState({ codePatternPreview: data });
         }
       }).error(function (res) {
-        if (quantity === _this2.state.quantity && codePattern === _this2.state.codePattern) {
+        if (quantity === _this4.state.quantity && codePattern === _this4.state.codePattern) {
           var message = f.get(res, 'responseJSON.message');
-          _this2.setState({ codePatternPreview: message ? { error: message } : null });
+          _this4.setState({ codePatternPreview: message ? { error: message } : null });
         }
       });
     },
@@ -59607,7 +59726,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _onShowAll: function () {
-      var _this3 = this;
+      var _this5 = this;
 
       var url = '/manage/' + this.props.inventory_pool.id + '/fields';
       $.ajax({
@@ -59618,17 +59737,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         }
       }).done(function () {
         var l = window.lodash;
-        var fieldModels = l.cloneDeep(_this3.state.fieldModels);
+        var fieldModels = l.cloneDeep(_this5.state.fieldModels);
         _.each(fieldModels, function (fm) {
           fm.hidden = false;
         });
 
-        _this3.setState({ fieldModels: fieldModels });
+        _this5.setState({ fieldModels: fieldModels });
       });
     },
 
     _onClose: function (fieldModel) {
-      var _this4 = this;
+      var _this6 = this;
 
       var url = '/manage/' + this.props.inventory_pool.id + '/fields/' + fieldModel.field.id;
       $.ajax({
@@ -59636,14 +59755,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         type: 'post'
       }).done(function () {
         var l = window.lodash;
-        var fieldModels = l.cloneDeep(_this4.state.fieldModels);
+        var fieldModels = l.cloneDeep(_this6.state.fieldModels);
         _.each(fieldModels, function (fm) {
           if (fm.field.id == fieldModel.field.id) {
             fm.hidden = true;
           }
         });
 
-        _this4.setState({ fieldModels: fieldModels });
+        _this6.setState({ fieldModels: fieldModels });
       });
     },
 
@@ -59675,7 +59794,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _readyContent: function () {
-      var _this5 = this;
+      var _this7 = this;
 
       var isBatch = this._isBatchCreate();
       var isCreating = !this.props.edit;
@@ -59720,7 +59839,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 value: this.state.quantity,
                 onChange: function (_ref) {
                   var num = _ref.target.value;
-                  return _this5.setState({ quantity: Math.min(num, BATCH_CREATE_MAX_QUANTITY) });
+                  return _this7.setState({ quantity: Math.min(num, BATCH_CREATE_MAX_QUANTITY) });
                 },
                 className: 'width-full',
                 autoComplete: 'off',
@@ -59755,7 +59874,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           onSelectChildItem: this.onSelectChildItem,
           onRemoveChildItem: this.onRemoveChildItem,
           packageChildItems: this.state.packageChildItems,
-          quantitySelector: quantitySelector
+          quantitySelector: React.createElement(
+            'div',
+            null,
+            quantitySelector,
+            this._renderTags()
+          )
         })
       );
     },
@@ -59826,10 +59950,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _fieldModelsForSubmit: function () {
-      var _this6 = this;
+      var _this8 = this;
 
       return _.filter(this._flatFieldModels(), function (fieldModel) {
-        return _this6._isFieldModelForSubmit(fieldModel);
+        return _this8._isFieldModelForSubmit(fieldModel);
       });
     },
 
@@ -59878,7 +60002,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _uploadFileCallback: function (itemId, fileModels, callback) {
-      var _this7 = this;
+      var _this9 = this;
 
       return function (answer) {
         if (answer.result != 'success') {
@@ -59887,7 +60011,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           answer.fileModel.result = 'success';
         }
 
-        _this7._uploadFiles(itemId, _.rest(fileModels), callback);
+        _this9._uploadFiles(itemId, _.rest(fileModels), callback);
       };
     },
 
@@ -59929,14 +60053,14 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _submitAttachmentsCallback: function (itemId, redirectUrl) {
-      var _this8 = this;
+      var _this10 = this;
 
       return function () {
-        if (!_this8._allUploadsSuccessful()) {
-          _this8._showAttachmentsHintIfNeeded();
-          window.location = _this8._editItemPath(itemId);
+        if (!_this10._allUploadsSuccessful()) {
+          _this10._showAttachmentsHintIfNeeded();
+          window.location = _this10._editItemPath(itemId);
         } else {
-          _this8._forward(redirectUrl, null);
+          _this10._forward(redirectUrl, null);
         }
       };
     },
@@ -59965,7 +60089,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _save: function (bypassSerialNumberValidation, copy) {
-      var _this9 = this;
+      var _this11 = this;
 
       if (!this._clientValidation()) {
         this._showSuccessFlash();
@@ -59986,6 +60110,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         this.setState({ isSaving: true });
         data.quantity = this.state.quantity;
         data.code_pattern = this._codePatternForSubmit();
+      }
+
+      if (this.props.create_tag_path) {
+        data.tag_ids = this.state.selectedTagIds;
       }
 
       if (this.props.for_package) {
@@ -60017,19 +60145,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         dataType: 'json',
         method: this.props.edit ? 'PUT' : 'POST'
       }).done(function (data) {
-        if (_this9._newAttachementFiles().length > 0) {
-          _this9._submitAttachments(data.id, data.redirect_url);
+        if (_this11._newAttachementFiles().length > 0) {
+          _this11._submitAttachments(data.id, data.redirect_url);
         } else {
-          _this9._forward(data.redirect_url, null, showMessage);
+          _this11._forward(data.redirect_url, null, showMessage);
         }
       }).error(function (res) {
         var data = res && res.responseJSON;
         if (data && data.can_bypass_unique_serial_number_validation) {
-          _this9._showSerialNumberModal(res.responseJSON.message, copy);
+          _this11._showSerialNumberModal(res.responseJSON.message, copy);
         } else if (data) {
-          _this9._showErrorMessage(res.responseJSON.message);
+          _this11._showErrorMessage(res.responseJSON.message);
         } else {
-          _this9._showErrorMessage('Unexpected Error!\n' + res.statusText + '\n\n' + res.responseText);
+          _this11._showErrorMessage('Unexpected Error!\n' + res.statusText + '\n\n' + res.responseText);
         }
       });
     },
@@ -60052,7 +60180,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _onDelete: function (event) {
-      var _this10 = this;
+      var _this12 = this;
 
       event.preventDefault();
 
@@ -60063,13 +60191,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         dataType: 'json',
         method: 'DELETE'
       }).done(function (data) {
-        _this10._forward(_this10.props.inventory_path, 'Item deleted.');
+        _this12._forward(_this12.props.inventory_path, 'Item deleted.');
       }).error(function (res) {
         var data = res && res.responseJSON;
         if (data) {
-          _this10._showErrorMessage(data.message);
+          _this12._showErrorMessage(data.message);
         } else {
-          _this10._showErrorMessage('Unexpected Error!\n' + res.statusText + '\n\n' + res.responseText);
+          _this12._showErrorMessage('Unexpected Error!\n' + res.statusText + '\n\n' + res.responseText);
         }
       });
     },
@@ -60244,12 +60372,12 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderErrorMessage: function () {
-      var _this11 = this;
+      var _this13 = this;
 
       if (this.state.showError) {
         var onClick = function (event) {
           event.preventDefault();
-          _this11.setState({ showError: false, errorMessage: '' });
+          _this13.setState({ showError: false, errorMessage: '' });
         };
 
         return React.createElement(
@@ -60376,7 +60504,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderModelLabel: function (parent) {
-      return parent.model.product + (parent.model.version ? ' ' + parent.model.version : '') + ' ' + parent.inventory_code;
+      return (parent.model.name || parent.model.product + (parent.model.version ? ' ' + parent.model.version : '')) + ' ' + parent.inventory_code;
     },
 
     _renderPackageInfo: function () {
@@ -61054,9 +61182,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             return { text: itemValue };
           }
         case 'autocomplete-search':
-          var base = this._itemValue(field.item_value_label, item);
-          var ext = this._itemValue(field.item_value_label_ext, item);
-          text = base + (ext ? ' ' + ext : '');
+          // NOTE: a model (e.g. item.model) shows its name, which includes the manufacturer
+          var target = this._itemValue(_.initial(field.item_value_label), item);
+          if (target && target.name) {
+            text = target.name;
+          } else {
+            var base = this._itemValue(field.item_value_label, item);
+            var ext = this._itemValue(field.item_value_label_ext, item);
+            text = base + (ext ? ' ' + ext : '');
+          }
           return {
             text: text,
             id: itemValue
@@ -66020,9 +66154,13 @@ window.BackwardTestCompatibility = {
 
       return result.map(function (entry) {
 
-        var label = entry.product;
-        if (entry.version) {
-          label += ' ' + entry.version;
+        // NOTE: models come with their name, which includes the manufacturer
+        var label = entry.name;
+        if (!label) {
+          label = entry.product;
+          if (entry.version) {
+            label += ' ' + entry.version;
+          }
         }
 
         return {
@@ -70111,6 +70249,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         used: this.state.used,
         is_borrowable: this.state.is_borrowable,
         responsible_inventory_pool_id: this.state.responsible_inventory_pool_id,
+        room_id: this.state.room_id,
+        tag_id: this.state.tag_id,
         search_term: this.state.search_term,
         owned: this.state.owned,
         in_stock: this.state.in_stock,
@@ -70163,6 +70303,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           used: filterAllModels ? '' : inventoryFilter.used,
           is_borrowable: inventoryFilter.is_borrowable,
           responsible_inventory_pool_id: inventoryFilter.responsible_inventory_pool_id,
+          room_id: inventoryFilter.room_id || '',
+          tag_id: inventoryFilter.tag_id || '',
           search_term: inventoryFilter.search_term,
           owned: inventoryFilter.owned,
           in_stock: inventoryFilter.in_stock,
@@ -70179,6 +70321,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           used: filterAllModels ? '' : 'true',
           is_borrowable: '',
           responsible_inventory_pool_id: '',
+          room_id: '',
+          tag_id: '',
           search_term: '',
           owned: false,
           in_stock: false,
@@ -70218,6 +70362,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         params.retired = this._selectionFromState('retired');
         params.is_borrowable = this._selectionFromState('is_borrowable');
         params.responsible_inventory_pool_id = this._selectionFromState('responsible_inventory_pool_id');
+        params.room_id = this._selectionFromState('room_id');
+        params.tag_id = this._selectionFromState('tag_id');
 
         params.used = this._selectionFromState('used');
 
@@ -70859,7 +71005,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           { className: formClass, 'data-filter': 'true' },
           React.createElement(
             'div',
-            { className: 'col1of4 padding-right-xs' },
+            { className: 'col1of6 padding-right-xs' },
             React.createElement(InventoryFilterSelect, {
               hide: false,
               name: 'retired',
@@ -70872,7 +71018,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           ),
           React.createElement(
             'div',
-            { className: 'col1of4 padding-right-xs' },
+            { className: 'col1of6 padding-right-xs' },
             React.createElement(InventoryFilterSelect, {
               hide: false,
               name: 'used',
@@ -70885,7 +71031,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           ),
           React.createElement(
             'div',
-            { className: 'col1of4 padding-right-xs' },
+            { className: 'col1of6 padding-right-xs' },
             React.createElement(InventoryFilterSelect, {
               hide: false,
               name: 'is_borrowable',
@@ -70898,7 +71044,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           ),
           React.createElement(
             'div',
-            { className: 'col1of4 padding-right-xs' },
+            { className: 'col1of6 padding-right-xs' },
             React.createElement(InventoryFilterSelect, {
               hide: false,
               name: 'responsible_inventory_pool_id',
@@ -70908,6 +71054,36 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               value: this.state.responsible_inventory_pool_id,
               values: [{ value: '', label: _jed('All inventory pools') }].concat(_.map(this.props.responsibles, function (r) {
                 return { value: r.id, label: r.name };
+              }))
+            })
+          ),
+          React.createElement(
+            'div',
+            { className: 'col1of6 padding-right-xs' },
+            React.createElement(InventoryFilterSelect, {
+              hide: false,
+              name: 'room_id',
+              onChange: function (value) {
+                return _this14.setState({ room_id: value }, _this14._writeFilterAndReloadList);
+              },
+              value: this.state.room_id,
+              values: [{ value: '', label: _jed('All rooms') }].concat(_.map(this.props.rooms, function (r) {
+                return { value: r.id, label: r.name };
+              }))
+            })
+          ),
+          React.createElement(
+            'div',
+            { className: 'col1of6 padding-right-xs' },
+            React.createElement(InventoryFilterSelect, {
+              hide: false,
+              name: 'tag_id',
+              onChange: function (value) {
+                return _this14.setState({ tag_id: value }, _this14._writeFilterAndReloadList);
+              },
+              value: this.state.tag_id,
+              values: [{ value: '', label: _jed('All tags') }].concat(_.map(this.props.tags, function (t) {
+                return { value: t.id, label: t.name };
               }))
             })
           )
@@ -71617,6 +71793,29 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       );
     },
 
+    _renderItemTags: function (item) {
+      return _.map(item.tags || [], function (tag) {
+        return React.createElement(
+          'span',
+          {
+            key: tag.id,
+            className: 'font-size-xs',
+            title: tag.name,
+            style: {
+              display: 'inline-block',
+              marginLeft: '6px',
+              padding: '1px 7px',
+              borderRadius: '9px',
+              backgroundColor: tag.color,
+              color: '#ffffff',
+              fontWeight: 'bold',
+              verticalAlign: 'middle'
+            } },
+          tag.name
+        );
+      });
+    },
+
     _renderItemLine: function (item) {
 
       return React.createElement(
@@ -71633,7 +71832,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           React.createElement(
             'div',
             { className: 'row' },
-            this._itemInventoryCode(item)
+            this._itemInventoryCode(item),
+            this._renderItemTags(item)
           ),
           this._renderItemDetail(item)
         ),
