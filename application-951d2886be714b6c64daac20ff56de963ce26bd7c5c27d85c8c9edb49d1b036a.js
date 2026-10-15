@@ -58011,18 +58011,10 @@ This script provides functionalities for the interactivity with the topbar searc
     };
 
     Model.prototype.name = function() {
-      return [this.product, this.version].join(" ").trim();
-    };
-
-    Model.prototype.nameWithManufacturer = function() {
-      var manufacturer, name, ref;
-      name = this.name();
-      manufacturer = ((ref = this.manufacturer) != null ? ref : "").trim();
-      if (manufacturer && name.toLowerCase().indexOf(manufacturer.toLowerCase()) !== 0) {
-        return manufacturer + " " + name;
-      } else {
-        return name;
-      }
+      var ref;
+      return [((ref = this.manufacturer) != null ? ref : "").trim(), this.product, this.version].filter(function(part) {
+        return part;
+      }).join(" ");
     };
 
     return Model;
@@ -60384,7 +60376,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderModelLabel: function (parent) {
-      return parent.model.product + (parent.model.version ? ' ' + parent.model.version : '') + ' ' + parent.inventory_code;
+      return (parent.model.name || parent.model.product + (parent.model.version ? ' ' + parent.model.version : '')) + ' ' + parent.inventory_code;
     },
 
     _renderPackageInfo: function () {
@@ -60753,7 +60745,9 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderModelName: function (model) {
-      if (model.version) {
+      if (model.name) {
+        return model.name;
+      } else if (model.version) {
         return model.product + ' ' + model.version;
       } else {
         return model.product;
@@ -61060,9 +61054,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             return { text: itemValue };
           }
         case 'autocomplete-search':
-          var base = this._itemValue(field.item_value_label, item);
-          var ext = this._itemValue(field.item_value_label_ext, item);
-          text = base + (ext ? ' ' + ext : '');
+          // NOTE: a model (e.g. item.model) shows its name, which includes the manufacturer
+          var target = this._itemValue(_.initial(field.item_value_label), item);
+          if (target && target.name) {
+            text = target.name;
+          } else {
+            var base = this._itemValue(field.item_value_label, item);
+            var ext = this._itemValue(field.item_value_label_ext, item);
+            text = base + (ext ? ' ' + ext : '');
+          }
           return {
             text: text,
             id: itemValue
@@ -62427,7 +62427,7 @@ window.SerializeItem = {
                 callback(_.map(data, function (d) {
                   return {
                     id: d.id,
-                    label: d.product + (d.version ? ' ' + d.version : '')
+                    label: d.name || d.product + (d.version ? ' ' + d.version : '')
                   };
                 }));
               });
@@ -64392,9 +64392,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     React.createElement(
                       'a',
                       { target: '_blank', href: modelLink },
-                      model.product,
-                      ' ',
-                      model.version
+                      model.name
                     )
                   )
                 ),
@@ -66028,9 +66026,13 @@ window.BackwardTestCompatibility = {
 
       return result.map(function (entry) {
 
-        var label = entry.product;
-        if (entry.version) {
-          label += ' ' + entry.version;
+        // NOTE: models come with their name, which includes the manufacturer
+        var label = entry.name;
+        if (!label) {
+          label = entry.product;
+          if (entry.version) {
+            label += ' ' + entry.version;
+          }
         }
 
         return {
@@ -70119,6 +70121,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         used: this.state.used,
         is_borrowable: this.state.is_borrowable,
         responsible_inventory_pool_id: this.state.responsible_inventory_pool_id,
+        room_id: this.state.room_id,
         search_term: this.state.search_term,
         owned: this.state.owned,
         in_stock: this.state.in_stock,
@@ -70171,6 +70174,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           used: filterAllModels ? '' : inventoryFilter.used,
           is_borrowable: inventoryFilter.is_borrowable,
           responsible_inventory_pool_id: inventoryFilter.responsible_inventory_pool_id,
+          room_id: inventoryFilter.room_id || '',
           search_term: inventoryFilter.search_term,
           owned: inventoryFilter.owned,
           in_stock: inventoryFilter.in_stock,
@@ -70187,6 +70191,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           used: filterAllModels ? '' : 'true',
           is_borrowable: '',
           responsible_inventory_pool_id: '',
+          room_id: '',
           search_term: '',
           owned: false,
           in_stock: false,
@@ -70226,6 +70231,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         params.retired = this._selectionFromState('retired');
         params.is_borrowable = this._selectionFromState('is_borrowable');
         params.responsible_inventory_pool_id = this._selectionFromState('responsible_inventory_pool_id');
+        params.room_id = this._selectionFromState('room_id');
 
         params.used = this._selectionFromState('used');
 
@@ -70867,7 +70873,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           { className: formClass, 'data-filter': 'true' },
           React.createElement(
             'div',
-            { className: 'col1of4 padding-right-xs' },
+            { className: 'col1of5 padding-right-xs' },
             React.createElement(InventoryFilterSelect, {
               hide: false,
               name: 'retired',
@@ -70880,7 +70886,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           ),
           React.createElement(
             'div',
-            { className: 'col1of4 padding-right-xs' },
+            { className: 'col1of5 padding-right-xs' },
             React.createElement(InventoryFilterSelect, {
               hide: false,
               name: 'used',
@@ -70893,7 +70899,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           ),
           React.createElement(
             'div',
-            { className: 'col1of4 padding-right-xs' },
+            { className: 'col1of5 padding-right-xs' },
             React.createElement(InventoryFilterSelect, {
               hide: false,
               name: 'is_borrowable',
@@ -70906,7 +70912,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           ),
           React.createElement(
             'div',
-            { className: 'col1of4 padding-right-xs' },
+            { className: 'col1of5 padding-right-xs' },
             React.createElement(InventoryFilterSelect, {
               hide: false,
               name: 'responsible_inventory_pool_id',
@@ -70915,6 +70921,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               },
               value: this.state.responsible_inventory_pool_id,
               values: [{ value: '', label: _jed('All inventory pools') }].concat(_.map(this.props.responsibles, function (r) {
+                return { value: r.id, label: r.name };
+              }))
+            })
+          ),
+          React.createElement(
+            'div',
+            { className: 'col1of5 padding-right-xs' },
+            React.createElement(InventoryFilterSelect, {
+              hide: false,
+              name: 'room_id',
+              onChange: function (value) {
+                return _this14.setState({ room_id: value }, _this14._writeFilterAndReloadList);
+              },
+              value: this.state.room_id,
+              values: [{ value: '', label: _jed('All rooms') }].concat(_.map(this.props.rooms, function (r) {
                 return { value: r.id, label: r.name };
               }))
             })
