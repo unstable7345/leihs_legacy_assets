@@ -59609,9 +59609,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                     title: selected ? _jed('Remove') : _jed('Add'),
                     style: {
                       margin: '0 4px 4px 0',
-                      padding: '2px 9px',
-                      borderRadius: '10px',
+                      padding: '1px 8px',
+                      borderRadius: '9px',
                       border: '2px solid ' + tag.color,
+                      fontSize: '11px',
+                      lineHeight: '15px',
                       backgroundColor: selected ? tag.color : '#ffffff',
                       color: selected ? '#ffffff' : tag.color,
                       fontWeight: 'bold',
@@ -59878,12 +59880,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           onSelectChildItem: this.onSelectChildItem,
           onRemoveChildItem: this.onRemoveChildItem,
           packageChildItems: this.state.packageChildItems,
-          quantitySelector: React.createElement(
-            'div',
-            null,
-            quantitySelector,
-            this._renderTags()
-          )
+          quantitySelector: quantitySelector,
+          tagsSelector: this._renderTags()
         })
       );
     },
@@ -60995,6 +60993,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     render: function () {
+      var _this6 = this;
+
       var createItemProps = this.props.createItemProps;
       var quantitySelector = this.props.quantitySelector || null;
 
@@ -61006,9 +61006,21 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           highest_code: createItemProps.highest_code
         };
 
-        return CreateItemFieldSwitch.renderField(fieldModel, dependencyValue, dataDependency, function (value) {
+        var renderedField = CreateItemFieldSwitch.renderField(fieldModel, dependencyValue, dataDependency, function (value) {
           return onChange(fieldModel.field.id, value);
         }, item, inventoryCodeProps, showInvalids, onClose, true);
+
+        // NOTE: the tags of the item go right under its model
+        if (_this6.props.tagsSelector && (fieldModel.field.id == 'model_id' || fieldModel.field.id == 'software_model_id')) {
+          return React.createElement(
+            React.Fragment,
+            null,
+            renderedField,
+            _this6.props.tagsSelector
+          );
+        } else {
+          return renderedField;
+        }
       };
 
       var formClass = null;
@@ -71803,20 +71815,98 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           'span',
           {
             key: tag.id,
-            className: 'font-size-xs',
             title: tag.name,
             style: {
-              display: 'inline-block',
               marginLeft: '6px',
-              padding: '1px 7px',
-              borderRadius: '9px',
+              padding: '0 7px',
+              borderRadius: '8px',
               backgroundColor: tag.color,
               color: '#ffffff',
+              fontSize: '10px',
+              lineHeight: '16px',
               fontWeight: 'bold',
-              verticalAlign: 'middle'
+              whiteSpace: 'nowrap'
             } },
           tag.name
         );
+      });
+    },
+
+    // a menu to put and remove the tags of the pool right in the list
+    _renderItemTagsMenu: function (item) {
+      var _this18 = this;
+
+      if (!this._hasEditRights() || _.isEmpty(this.props.tags)) {
+        return null;
+      }
+
+      var itemTagIds = _.map(item.tags || [], function (t) {
+        return t.id;
+      });
+
+      return React.createElement(
+        'div',
+        { className: 'dropdown-holder inline-block', style: { marginLeft: '6px' } },
+        React.createElement(
+          'div',
+          {
+            className: 'button white small dropdown-toggle',
+            title: _jed('Tags'),
+            style: { padding: '0 6px', lineHeight: '16px', fontSize: '10px' } },
+          React.createElement('i', { className: 'fa fa-tag' })
+        ),
+        React.createElement(
+          'ul',
+          { className: 'dropdown', style: { minWidth: 0, padding: '4px 0' } },
+          _.map(this.props.tags, function (tag) {
+            var checked = _.contains(itemTagIds, tag.id);
+            return React.createElement(
+              'li',
+              { key: tag.id },
+              React.createElement(
+                'a',
+                {
+                  className: 'dropdown-item',
+                  onClick: function (event) {
+                    return _this18._onToggleItemTag(event, item, tag);
+                  },
+                  style: { fontSize: '12px', lineHeight: '16px', padding: '4px 12px', whiteSpace: 'nowrap', cursor: 'pointer' } },
+                React.createElement('i', { className: 'fa ' + (checked ? 'fa-check-square-o' : 'fa-square-o'), style: { color: tag.color, width: '14px' } }),
+                ' ',
+                tag.name
+              )
+            );
+          })
+        )
+      );
+    },
+
+    _onToggleItemTag: function (event, item, tag) {
+      var _this19 = this;
+
+      event.preventDefault();
+      var tagIds = _.map(item.tags || [], function (t) {
+        return t.id;
+      });
+      tagIds = _.contains(tagIds, tag.id) ? _.without(tagIds, tag.id) : tagIds.concat([tag.id]);
+
+      $.ajax({
+        url: App.Inventory.url().replace('/inventory', '') + '/items/' + item.id + '/tags',
+        method: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({ tag_ids: tagIds })
+      }).done(function (tags) {
+        // NOTE: App.Item.find returns clones of the stored item, so the
+        // stored one gets the tags, for the next render too
+        var stored = App.Item.irecords[item.id];
+        if (stored) {
+          stored.tags = tags;
+        }
+        item.tags = tags;
+        _this19.forceUpdate();
+      }).error(function (res) {
+        App.Flash({ type: 'error', message: res.responseJSON && res.responseJSON.message || res.statusText });
       });
     },
 
@@ -71835,9 +71925,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           { className: 'col2of5 line-col text-align-left' },
           React.createElement(
             'div',
-            { className: 'row' },
+            { className: 'row', style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap' } },
             this._itemInventoryCode(item),
-            this._renderItemTags(item)
+            this._renderItemTags(item),
+            this._renderItemTagsMenu(item)
           ),
           this._renderItemDetail(item)
         ),
@@ -71868,10 +71959,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderItemItems: function (item) {
-      var _this18 = this;
+      var _this20 = this;
 
       return _.flatten(item.children().all().map(function (item) {
-        return _this18._renderItem(item);
+        return _this20._renderItem(item);
       }));
     },
 
@@ -71904,10 +71995,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderModelItems: function (model) {
-      var _this19 = this;
+      var _this21 = this;
 
       return _.flatten(this._modelItems(model).all().map(function (item) {
-        return _this19._renderItem(item);
+        return _this21._renderItem(item);
       }));
     },
 
@@ -71933,18 +72024,18 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderPage: function (page) {
-      var _this20 = this;
+      var _this22 = this;
 
       return _.flatten(page.map(function (model) {
-        return _this20._renderModelWithItems(model);
+        return _this22._renderModelWithItems(model);
       }));
     },
 
     _renderPages: function (pages) {
-      var _this21 = this;
+      var _this23 = this;
 
       return _.flatten(pages.map(function (page) {
-        return _this21._renderPage(page);
+        return _this23._renderPage(page);
       }));
     },
 
@@ -73123,7 +73214,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
             },
             maxLength: 40,
             autoComplete: 'off',
-            style: { width: '60%', verticalAlign: 'middle' }
+            style: { width: '60%', verticalAlign: 'middle', fontSize: '14px' }
           })
         ),
         React.createElement(
