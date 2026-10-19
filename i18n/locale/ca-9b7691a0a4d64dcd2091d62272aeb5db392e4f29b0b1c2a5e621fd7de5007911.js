@@ -457,6 +457,14 @@ window.i18n.locale_data = {
          null,
          "Totes les etiquetes"
       ],
+      "%s tags": [
+         null,
+         "%s etiquetes"
+      ],
+      "Edit inventory code": [
+         null,
+         "Editar el codi d'inventari"
+      ],
       "Tags": [
          null,
          "Etiquetes"
@@ -464,6 +472,18 @@ window.i18n.locale_data = {
       "New tag": [
          null,
          "Nova etiqueta"
+      ],
+      "Color": [
+         null,
+         "Color"
+      ],
+      "tags_explanation": [
+         null,
+         "Les etiquetes d'aquest pool, per marcar articles (per exemple «Etiquetat»). Es posen al formulari de cada article i s'hi pot filtrar a la llista d'Inventari."
+      ],
+      "tags_delete_confirmation": [
+         null,
+         "Eliminar l'etiqueta «%s»? Es traurà de %s articles."
       ],
       "All other columns are ignored.": [
          null,

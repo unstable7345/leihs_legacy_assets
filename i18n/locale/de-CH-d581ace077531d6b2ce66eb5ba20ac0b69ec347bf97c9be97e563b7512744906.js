@@ -3125,6 +3125,14 @@ window.i18n.locale_data = {
          null,
          "Alle Etiketten"
       ],
+      "%s tags": [
+         null,
+         "%s Etiketten"
+      ],
+      "Edit inventory code": [
+         null,
+         "Inventarcode bearbeiten"
+      ],
       "Tags": [
          null,
          "Etiketten"
@@ -3132,6 +3140,18 @@ window.i18n.locale_data = {
       "New tag": [
          null,
          "Neue Etikette"
+      ],
+      "Color": [
+         null,
+         "Farbe"
+      ],
+      "tags_explanation": [
+         null,
+         "Die Etiketten dieses Pools, um Gegenstände zu markieren. Sie werden im Formular jedes Gegenstands gesetzt und können in der Inventarliste gefiltert werden."
+      ],
+      "tags_delete_confirmation": [
+         null,
+         "Etikette «%s» löschen? Sie wird von %s Gegenständen entfernt."
       ],
       "Inventory pools": [
          null,

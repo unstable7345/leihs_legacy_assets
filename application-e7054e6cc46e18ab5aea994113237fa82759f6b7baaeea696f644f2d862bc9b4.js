@@ -60836,19 +60836,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           { className: 'ui-menu-item-wrapper' },
           React.createElement(
             'div',
-            { className: 'row text-ellipsis' },
+            { className: 'row', style: { display: 'flex', alignItems: 'baseline' } },
             React.createElement(
-              'div',
-              { className: 'col1of3' },
-              React.createElement(
-                'strong',
-                null,
-                row.inventoryCode
-              )
+              'strong',
+              { style: { flex: '0 0 auto', marginRight: '12px', whiteSpace: 'nowrap' } },
+              row.inventoryCode
             ),
             React.createElement(
               'div',
-              { className: 'col2of3 text-ellipsis', title: _this4._renderModelName(row.value.model) },
+              { style: { flex: '1 1 auto', minWidth: 0 } },
               _this4._renderModelName(row.value.model)
             )
           )
@@ -60863,7 +60859,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           inputClassName: 'has-addon width-full',
           element: 'div',
           inputId: 'search-item',
-          dropdownWidth: '424px',
+          dropdownWidth: '100%',
           label: '',
           _makeCall: makeCall,
           onChange: this.props.onSelectChildItem,
@@ -61047,6 +61043,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
   window.CreateItemContent.displayName = 'CreateItemContent';
 })();
+/* NOTE: the code takes what it needs, the model name the rest, on more lines if needed */;
 ;(function () {
   // NOTE: only for linter and clarity:
   /* global _, _jed, moment, accounting, i18n, React, PropTypes, App, CreateItemFieldSwitch, RenderFieldLabel, InputInventoryCode, InputCheckbox, InputInventoryCode, InputQuantityAllocations, InputAttachment, InputText, InputAutocompleteSearch, InputAutocomplete, InputTextarea, InputSelect, InputRadio, InputDate, InputCheckbox */
@@ -70266,7 +70263,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         is_borrowable: this.state.is_borrowable,
         responsible_inventory_pool_id: this.state.responsible_inventory_pool_id,
         room_id: this.state.room_id,
-        tag_id: this.state.tag_id,
+        tag_ids: this.state.tag_ids,
         search_term: this.state.search_term,
         owned: this.state.owned,
         in_stock: this.state.in_stock,
@@ -70308,7 +70305,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
         currentPage: 1,
 
-        delayedReloads: []
+        delayedReloads: [],
+
+        // NOTE: the inventory code being changed right in the list, e.g. {itemId: ..., value: 'MIC-01'}
+        editingCode: null
       };
 
       if (inventoryFilter && !filterReset) {
@@ -70320,7 +70320,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           is_borrowable: inventoryFilter.is_borrowable,
           responsible_inventory_pool_id: inventoryFilter.responsible_inventory_pool_id,
           room_id: inventoryFilter.room_id || '',
-          tag_id: inventoryFilter.tag_id || '',
+          // NOTE: earlier only one tag could be chosen (tag_id)
+          tag_ids: inventoryFilter.tag_ids || (inventoryFilter.tag_id ? [inventoryFilter.tag_id] : []),
           search_term: inventoryFilter.search_term,
           owned: inventoryFilter.owned,
           in_stock: inventoryFilter.in_stock,
@@ -70338,7 +70339,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           is_borrowable: '',
           responsible_inventory_pool_id: '',
           room_id: '',
-          tag_id: '',
+          tag_ids: [],
           search_term: '',
           owned: false,
           in_stock: false,
@@ -70379,7 +70380,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         params.is_borrowable = this._selectionFromState('is_borrowable');
         params.responsible_inventory_pool_id = this._selectionFromState('responsible_inventory_pool_id');
         params.room_id = this._selectionFromState('room_id');
-        params.tag_id = this._selectionFromState('tag_id');
+        params.tag_ids = _.isEmpty(this.state.tag_ids) ? null : this.state.tag_ids;
 
         params.used = this._selectionFromState('used');
 
@@ -71091,16 +71092,19 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           React.createElement(
             'div',
             { className: 'col1of6 padding-right-xs' },
-            React.createElement(InventoryFilterSelect, {
-              hide: false,
-              name: 'tag_id',
+            React.createElement(InventoryFilterMultiSelect, {
+              name: 'tag_ids',
               onChange: function (value) {
-                return _this14.setState({ tag_id: value }, _this14._writeFilterAndReloadList);
+                return _this14.setState({ tag_ids: value }, _this14._writeFilterAndReloadList);
               },
-              value: this.state.tag_id,
-              values: [{ value: '', label: _jed('All tags') }].concat(_.map(this.props.tags, function (t) {
-                return { value: t.id, label: t.name };
-              }))
+              value: this.state.tag_ids,
+              allLabel: _jed('All tags'),
+              severalLabel: function (count) {
+                return _jed('%s tags', count);
+              },
+              values: _.map(this.props.tags, function (t) {
+                return { value: t.id, label: t.name, color: t.color };
+              })
             })
           )
         ),
@@ -71686,37 +71690,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     },
 
-    _renderItemPackageInfo: function (item) {
-      var _this17 = this;
-
-      if (!this._itemIsPackage(item)) {
-        return null;
-      }
-
-      return React.createElement(
-        'div',
-        { className: 'row' },
-        React.createElement('div', { className: 'col1of2' }),
-        React.createElement(
-          'div',
-          { className: 'col1of2' },
-          React.createElement(
-            'button',
-            { onClick: function (event) {
-                return _this17._onToggleItem(event, item);
-              }, className: 'button inset small width-full', 'data-type': 'inventory-expander' },
-            this._renderItemArrow(item),
-            ' ',
-            React.createElement(
-              'span',
-              null,
-              this._itemChildCount(item)
-            )
-          )
-        )
-      );
-    },
-
     _itemProblems: function (item) {
       return item.getProblems();
     },
@@ -71834,7 +71807,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     // a menu to put and remove the tags of the pool right in the list
     _renderItemTagsMenu: function (item) {
-      var _this18 = this;
+      var _this17 = this;
 
       if (!this._hasEditRights() || _.isEmpty(this.props.tags)) {
         return null;
@@ -71846,18 +71819,18 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
       return React.createElement(
         'div',
-        { className: 'dropdown-holder inline-block', style: { marginLeft: '6px' } },
+        { className: 'dropdown-holder inline-block', style: { marginLeft: '4px' } },
         React.createElement(
           'div',
           {
             className: 'button white small dropdown-toggle',
             title: _jed('Tags'),
-            style: { padding: '0 6px', lineHeight: '16px', fontSize: '10px' } },
+            style: this._itemIconButtonStyle() },
           React.createElement('i', { className: 'fa fa-tag' })
         ),
         React.createElement(
           'ul',
-          { className: 'dropdown' },
+          { className: 'dropdown', style: { minWidth: 0, padding: '4px 0' } },
           _.map(this.props.tags, function (tag) {
             var checked = _.contains(itemTagIds, tag.id);
             return React.createElement(
@@ -71865,10 +71838,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               { key: tag.id },
               React.createElement(
                 'a',
-                { className: 'dropdown-item', onClick: function (event) {
-                    return _this18._onToggleItemTag(event, item, tag);
-                  } },
-                React.createElement('i', { className: 'fa ' + (checked ? 'fa-check-square-o' : 'fa-square-o'), style: { color: tag.color } }),
+                {
+                  className: 'dropdown-item',
+                  onClick: function (event) {
+                    return _this17._onToggleItemTag(event, item, tag);
+                  },
+                  style: { fontSize: '12px', lineHeight: '16px', padding: '4px 12px', whiteSpace: 'nowrap', cursor: 'pointer' } },
+                React.createElement('i', { className: 'fa ' + (checked ? 'fa-check-square-o' : 'fa-square-o'), style: { color: tag.color, width: '14px' } }),
                 ' ',
                 tag.name
               )
@@ -71879,7 +71855,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _onToggleItemTag: function (event, item, tag) {
-      var _this19 = this;
+      var _this18 = this;
 
       event.preventDefault();
       var tagIds = _.map(item.tags || [], function (t) {
@@ -71894,11 +71870,150 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         dataType: 'json',
         data: JSON.stringify({ tag_ids: tagIds })
       }).done(function (tags) {
+        // NOTE: App.Item.find returns clones of the stored item, so the
+        // stored one gets the tags, for the next render too
+        var stored = App.Item.irecords[item.id];
+        if (stored) {
+          stored.tags = tags;
+        }
         item.tags = tags;
-        _this19.forceUpdate();
+        _this18.forceUpdate();
       }).error(function (res) {
         App.Flash({ type: 'error', message: res.responseJSON && res.responseJSON.message || res.statusText });
       });
+    },
+
+    _itemIconButtonStyle: function () {
+      return { padding: '0 6px', lineHeight: '16px', fontSize: '10px', width: '24px', textAlign: 'center' };
+    },
+
+    // NOTE: like the field in the item form: inventory managers of the owner pool
+    _canEditItemCode: function (item) {
+      return this._appAccessRight().atLeastRole(this._appCurrentUserRole(), 'inventory_manager') && item.owner_id == App.InventoryPool.current.id;
+    },
+
+    _renderItemCodeEditButton: function (item) {
+      var _this19 = this;
+
+      if (!this._hasEditRights()) {
+        return null;
+      }
+
+      // NOTE: an empty place where the code can't be changed, so that the tags
+      // button stays at the same place in all lines
+      var canEdit = this._canEditItemCode(item);
+      return React.createElement(
+        'div',
+        {
+          className: 'button white small',
+          title: _jed('Edit inventory code'),
+          onClick: function () {
+            return canEdit && _this19.setState({ editingCode: { itemId: item.id, value: item.inventory_code } });
+          },
+          style: _.extend(this._itemIconButtonStyle(), canEdit ? {} : { visibility: 'hidden' }) },
+        React.createElement('i', { className: 'fa fa-pencil' })
+      );
+    },
+
+    _saveItemCode: function (item) {
+      var _this20 = this;
+
+      var code = this.state.editingCode.value.trim();
+      if (code == '' || code == item.inventory_code) {
+        this.setState({ editingCode: null });
+        return;
+      }
+
+      $.ajax({
+        url: App.Inventory.url().replace('/inventory', '') + '/items/' + item.id + '/inventory_code',
+        method: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({ inventory_code: code })
+      }).done(function (data) {
+        // NOTE: App.Item.find returns clones of the stored item (see the tags)
+        var stored = App.Item.irecords[item.id];
+        if (stored) {
+          stored.inventory_code = data.inventory_code;
+        }
+        item.inventory_code = data.inventory_code;
+        _this20.setState({ editingCode: null });
+      }).error(function (res) {
+        App.Flash({ type: 'error', message: res.responseJSON && res.responseJSON.message || res.statusText });
+      });
+    },
+
+    _renderItemCode: function (item) {
+      var _this21 = this;
+
+      var editing = this.state.editingCode;
+      if (!editing || editing.itemId != item.id) {
+        return this._itemInventoryCode(item);
+      }
+
+      return React.createElement(
+        'span',
+        { style: { display: 'inline-flex', alignItems: 'center' } },
+        React.createElement('input', {
+          type: 'text',
+          autoFocus: true,
+          value: editing.value,
+          onChange: function (event) {
+            return _this21.setState({ editingCode: { itemId: item.id, value: event.target.value } });
+          },
+          onKeyDown: function (event) {
+            if (event.key == 'Enter') {
+              event.preventDefault();
+              _this21._saveItemCode(item);
+            } else if (event.key == 'Escape') {
+              _this21.setState({ editingCode: null });
+            }
+          },
+          style: { fontSize: '12px', padding: '2px 6px', width: '16em' }
+        }),
+        React.createElement(
+          'div',
+          { className: 'button white small', title: _jed('Save'), onClick: function () {
+              return _this21._saveItemCode(item);
+            },
+            style: _.extend(this._itemIconButtonStyle(), { marginLeft: '4px' }) },
+          React.createElement('i', { className: 'fa fa-check' })
+        ),
+        React.createElement(
+          'div',
+          { className: 'button white small', title: _jed('Cancel'), onClick: function () {
+              return _this21.setState({ editingCode: null });
+            },
+            style: _.extend(this._itemIconButtonStyle(), { marginLeft: '4px' }) },
+          React.createElement('i', { className: 'fa fa-times' })
+        )
+      );
+    },
+
+    _renderItemPackageExpander: function (item) {
+      var _this22 = this;
+
+      if (!this._itemIsPackage(item)) {
+        return null;
+      }
+
+      return React.createElement(
+        'div',
+        { style: { width: '50%', marginLeft: '8px' } },
+        React.createElement(
+          'button',
+          { onClick: function (event) {
+              return _this22._onToggleItem(event, item);
+            }, className: 'button inset small width-full', 'data-type': 'inventory-expander' },
+          this._renderItemArrow(item),
+          ' ',
+          React.createElement(
+            'span',
+            null,
+            this._itemChildCount(item)
+          )
+        )
+      );
     },
 
     _renderItemLine: function (item) {
@@ -71909,7 +72024,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         React.createElement(
           'div',
           { className: 'col1of5 line-col' },
-          this._renderItemPackageInfo(item)
+          React.createElement(
+            'div',
+            { style: { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '12px' } },
+            this._renderItemCodeEditButton(item),
+            this._renderItemTagsMenu(item),
+            this._renderItemPackageExpander(item)
+          )
         ),
         React.createElement(
           'div',
@@ -71917,9 +72038,8 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           React.createElement(
             'div',
             { className: 'row', style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap' } },
-            this._itemInventoryCode(item),
-            this._renderItemTags(item),
-            this._renderItemTagsMenu(item)
+            this._renderItemCode(item),
+            this._renderItemTags(item)
           ),
           this._renderItemDetail(item)
         ),
@@ -71950,10 +72070,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderItemItems: function (item) {
-      var _this20 = this;
+      var _this23 = this;
 
       return _.flatten(item.children().all().map(function (item) {
-        return _this20._renderItem(item);
+        return _this23._renderItem(item);
       }));
     },
 
@@ -71986,10 +72106,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderModelItems: function (model) {
-      var _this21 = this;
+      var _this24 = this;
 
       return _.flatten(this._modelItems(model).all().map(function (item) {
-        return _this21._renderItem(item);
+        return _this24._renderItem(item);
       }));
     },
 
@@ -72015,18 +72135,18 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderPage: function (page) {
-      var _this22 = this;
+      var _this25 = this;
 
       return _.flatten(page.map(function (model) {
-        return _this22._renderModelWithItems(model);
+        return _this25._renderModelWithItems(model);
       }));
     },
 
     _renderPages: function (pages) {
-      var _this23 = this;
+      var _this26 = this;
 
       return _.flatten(pages.map(function (page) {
-        return _this23._renderPage(page);
+        return _this26._renderPage(page);
       }));
     },
 
@@ -72087,6 +72207,165 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         { className: 'row content-wrapper min-height-xl min-width-full straight-top' },
         this._renderHeader(),
         this._renderContent()
+      );
+    }
+  });
+})();
+(function () {
+  // NOTE: only for linter and clarity:
+  /* global _ */
+  /* global _jed */
+  var React = window.React;
+
+  // A filter like InventoryFilterSelect, but with a checkbox per value to
+  // choose several ones. The select only shows what is chosen; a click on it
+  // opens the checkboxes instead of its own list.
+  window.InventoryFilterMultiSelect = window.createReactClass({
+    propTypes: {},
+
+    getInitialState: function () {
+      return { open: false };
+    },
+
+    componentDidMount: function () {
+      document.addEventListener('mousedown', this._onDocumentMouseDown);
+    },
+
+    componentWillUnmount: function () {
+      document.removeEventListener('mousedown', this._onDocumentMouseDown);
+    },
+
+    _onDocumentMouseDown: function (event) {
+      if (this.state.open && this.holder && !this.holder.contains(event.target)) {
+        this.setState({ open: false });
+      }
+    },
+
+    _toggleOpen: function (event) {
+      event.preventDefault();
+      this.setState({ open: !this.state.open });
+    },
+
+    _toggleValue: function (value) {
+      var selected = this.props.value || [];
+      this.props.onChange(_.contains(selected, value) ? _.without(selected, value) : selected.concat([value]));
+    },
+
+    _label: function () {
+      var _this = this;
+
+      var selected = _.filter(this.props.values, function (v) {
+        return _.contains(_this.props.value || [], v.value);
+      });
+      if (selected.length == 0) {
+        return this.props.allLabel;
+      } else if (selected.length == 1) {
+        return selected[0].label;
+      } else {
+        return this.props.severalLabel(selected.length);
+      }
+    },
+
+    _renderPanel: function () {
+      var _this2 = this;
+
+      if (!this.state.open) {
+        return null;
+      }
+
+      return React.createElement(
+        'div',
+        {
+          style: {
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            zIndex: 1000,
+            marginTop: '2px',
+            padding: '4px 0',
+            background: '#ffffff',
+            border: '1px solid rgba(0,0,0,0.25)',
+            borderRadius: '4px',
+            boxShadow: '0 3px 8px rgba(0,0,0,0.15)',
+            maxHeight: '300px',
+            overflowY: 'auto'
+          } },
+        React.createElement(
+          'a',
+          {
+            onClick: function () {
+              return _this2.props.onChange([]);
+            },
+            style: { display: 'block', padding: '4px 10px', fontSize: '12px', cursor: 'pointer' } },
+          this.props.allLabel
+        ),
+        this.props.values.map(function (v) {
+          return React.createElement(
+            'label',
+            {
+              key: v.value,
+              style: {
+                display: 'flex',
+                alignItems: 'center',
+                padding: '4px 10px',
+                fontSize: '12px',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap'
+              } },
+            React.createElement('input', {
+              type: 'checkbox',
+              checked: _.contains(_this2.props.value || [], v.value),
+              onChange: function () {
+                return _this2._toggleValue(v.value);
+              },
+              style: { marginRight: '6px' }
+            }),
+            v.color && React.createElement('span', {
+              style: {
+                display: 'inline-block',
+                width: '10px',
+                height: '10px',
+                borderRadius: '5px',
+                background: v.color,
+                marginRight: '6px'
+              }
+            }),
+            v.label
+          );
+        })
+      );
+    },
+
+    render: function () {
+      var _this3 = this;
+
+      var label = this._label();
+      return React.createElement(
+        'div',
+        { ref: function (el) {
+            return _this3.holder = el;
+          }, style: { position: 'relative' } },
+        React.createElement(
+          'select',
+          {
+            name: this.props.name,
+            value: 'selection',
+            onChange: function () {
+              return null;
+            },
+            onMouseDown: this._toggleOpen,
+            onKeyDown: function (event) {
+              if (_.contains([' ', 'Enter', 'ArrowDown'], event.key)) _this3._toggleOpen(event);
+            },
+            className: 'width-full' },
+          React.createElement(
+            'option',
+            { value: 'selection' },
+            label
+          )
+        ),
+        this._renderPanel()
       );
     }
   });
