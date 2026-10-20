@@ -3135,6 +3135,22 @@ window.i18n.locale_data = {
          null,
          "Toutes les étiquettes"
       ],
+      "%s tags": [
+         null,
+         "%s étiquettes"
+      ],
+      "Edit inventory code": [
+         null,
+         "Modifier le code d'inventaire"
+      ],
+      "%s results": [
+         null,
+         "%s résultats"
+      ],
+      "Per page": [
+         null,
+         "Par page"
+      ],
       "Tags": [
          null,
          "Étiquettes"

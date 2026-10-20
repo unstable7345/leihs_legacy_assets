@@ -16,14 +16,14 @@ if (window.i18n == undefined) window.i18n = {};
   };
 
   i18n.months = {
-    full: ["gener", "febrer", 'març', 'abril', 'maig', 'juny', 'juliol', 'agost', 'setembre', 'octubre', 'novembre', 'desembre'],
-    trunc: ['gen', 'febr', 'març', 'abr', 'maig', 'juny', 'jul', 'ag', 'set', 'oct', 'nov', 'des']
+    full: ["enero", "febrero", 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'],
+    trunc: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sep', 'oct', 'nov', 'dic']
   };
 
   i18n.days = {
     first: 1,
-    full: ['diumenge', 'dilluns', 'dimarts', 'dimecres', 'dijous', 'divendres', 'dissabte'],
-    trunc: ['dg', 'dl', 'dt', 'dc', 'dj', 'dv', 'ds']
+    full: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'],
+    trunc: ['do', 'lu', 'ma', 'mi', 'ju', 'vi', 'sá']
   };
 
   i18n.time = "H:mm";
@@ -36,28 +36,28 @@ if (window.i18n == undefined) window.i18n = {};
   };
 
   i18n.calendar = {
-    sameDay: "[Avui a les] LT",
+    sameDay: "[Hoy a las] LT",
     sameElse: "L",
-    nextDay: '[Demà a les] LT',
-    nextWeek: 'dddd [a les] LT',
-    lastDay: '[Ahir a les] LT',
-    lastWeek: 'dddd [passat a les] LT'
+    nextDay: '[Mañana a las] LT',
+    nextWeek: 'dddd [a las] LT',
+    lastDay: '[Ayer a las] LT',
+    lastWeek: 'dddd [pasado a las] LT'
   };
 
   i18n.relative = {
-    future: "d'aquí a %s",
-    past: "fa %s",
-    s: "uns segons",
-    m: "un minut",
-    mm: "%d minuts",
+    future: "en %s",
+    past: "hace %s",
+    s: "unos segundos",
+    m: "un minuto",
+    mm: "%d minutos",
     h: "una hora",
-    hh: "%d hores",
-    d: "un dia",
-    dd: "%d dies",
+    hh: "%d horas",
+    d: "un día",
+    dd: "%d días",
     M: "un mes",
-    MM: "%d mesos",
-    y: "un any",
-    yy: "%d anys"
+    MM: "%d meses",
+    y: "un año",
+    yy: "%d años"
   };
 
   i18n.number = {
@@ -73,10 +73,10 @@ window.i18n.locale_data = {
          "Project-Id-Version": " version 0.0.1",
          "Report-Msgid-Bugs-To": " ",
          "POT-Creation-Date": " 2018-03-16 15:51+0100",
-         "PO-Revision-Date": " 2026-10-13 12:00+0200",
+         "PO-Revision-Date": " 2026-10-11 05:00+0200",
          "Last-Translator": " magatzem ENTI",
-         "Language-Team": " Catalan",
-         "Language": " ca",
+         "Language-Team": " Spanish <es@li.org>",
+         "Language": " es",
          "MIME-Version": " 1.0",
          "Content-Type": " text/plain; charset=UTF-8",
          "Content-Transfer-Encoding": " 8bit",
@@ -86,85 +86,85 @@ window.i18n.locale_data = {
       },
       " at the inventory pool ": [
          null,
-         " al grup d'inventari "
+         " en el grupo de inventario "
       ],
       " item(s)": [
          null,
-         " article(s)"
+         " elemento(s)"
       ],
       " item(s) due on ": [
          null,
-         " article(s) amb retorn el "
+         " elemento(s) vencidos el "
       ],
       "% used (category limit - total of selected requests)": [
          null,
-         "% utilitzat (límit de la categoria - total de les sol·licituds seleccionades)"
+         "% usado (límite de la categoría - total de las solicitudes seleccionadas)"
       ],
       "%d day in the future": [
          "%d days in the future",
-         "%d dia en el futur",
-         "%d dies en el futur"
+         "%d día en el futuro",
+         "%d días en el futuro"
       ],
       "%d minutes passed. The items are not reserved for you any more!": [
          null,
-         "Han passat %d minuts. Els articles ja no estan reservats per a vostè!"
+         "Pasaron %d minutos. ¡Los artículos ya no están reservados para usted!"
       ],
       "%s (View in Order)": [
          null,
-         "%s (veure a la comanda)"
+         "%s (ver en el pedido)"
       ],
       "%s Order": [
          "%s Orders",
-         "%s comanda",
-         "%s comandes"
+         "%s pedido",
+         "%s pedidos"
       ],
       "%s Return": [
          "%s Returns",
-         "%s devolució",
-         "%s devolucions"
+         "%s devolución",
+         "%s devoluciones"
       ],
       "%s Search Results for \"%s\"": [
          null,
-         "%s resultats de cerca per a \"%s\""
+         "%s resultados de búsqueda para \"%s\""
       ],
       "%s assigned to %s": [
          null,
-         "%s assignat a %s"
+         "%s asignado a %s"
       ],
       "%s created": [
          null,
-         "%s creat"
+         "%s creado"
       ],
       "%s created successfully": [
          null,
-         "%s creat correctament"
+         "%s creado correctamente"
       ],
       "%s future visit": [
          "%s future visits",
          "%s visita futura",
-         "%s visites futures"
+         "%s visitas futuras"
       ],
       "%s is already assigned to a contract": [
          null,
-         "%s ja està assignat a un contracte"
+         "%s ya está asignado a un contrato"
       ],
       "%s is already assigned to a different contract": [
          null,
-         "%s ja està assignat a un altre contracte"
+         "%s ya está asignado a otro contrato"
       ],
       "%s is already assigned to this contract": [
          null,
-         "%s ja està assignat a aquest contracte"
+         "%s ya está asignado a este contrato"
       ],
       "%s item": [
          "%s items",
-         "%s article",
-         "%s articles"
+         "%s artículo",
+         "%s artículos"
       ],
       "%s location": [
          "%s locations",
-         "%s ubicació",
-         "%s ubicacions"
+         "%s ubicación",
+         "%s ubicaciones"
       ],
       "%s not available": [
          null,
@@ -172,158 +172,158 @@ window.i18n.locale_data = {
       ],
       "%s quantity increased to %s": [
          null,
-         "Quantitat de %s augmentada a %s"
+         "Cantidad de %s aumentada a %s"
       ],
       "%s room": [
          "%s rooms",
          "%s sala",
-         "%s sales"
+         "%s salas"
       ],
       "%s saved": [
          null,
-         "%s desat"
+         "%s guardado"
       ],
       "%s selected for take back": [
          null,
-         "%s seleccionat per a la devolució"
+         "%s seleccionado para la devolución"
       ],
       "%s successfully deleted": [
          null,
-         "%s eliminat correctament"
+         "%s eliminado correctamente"
       ],
       "%s successfully saved": [
          null,
-         "%s desat correctament"
+         "%s guardado correctamente"
       ],
       "%s until %s": [
          null,
-         "%s fins a %s"
+         "%s hasta %s"
       ],
       "%s visit overdue": [
          "%s visits overdue",
-         "%s visita endarrerida",
-         "%s visites endarrerides"
+         "%s visita atrasada",
+         "%s visitas atrasadas"
       ],
       "%s visit today": [
          "%s visits today",
-         "%s visita avui",
-         "%s visites avui"
+         "%s visita hoy",
+         "%s visitas hoy"
       ],
       "%s was not found for this take back": [
          null,
-         "No s'ha trobat %s en aquesta devolució"
+         "No se encontró %s en esta devolución"
       ],
       "%s was saved, but there were problems uploading files": [
          null,
-         "%s s'ha desat, però hi ha hagut problemes en pujar els fitxers"
+         "%s se guardó, pero hubo problemas al subir los archivos"
       ],
       "%s was saved, but there were problems uploading some images. Only images smaller than 8MB and of type png, gif and jpg are allowed.": [
          null,
-         "%s s'ha desat, però hi ha hagut problemes en pujar algunes imatges. Només es permeten imatges de menys de 8 MB en format png, gif o jpg."
+         "%s se guardó, pero hubo problemas al subir algunas imágenes. Solo se permiten imágenes de menos de 8 MB en formato png, gif o jpg."
       ],
       "%s will be removed from the template and not been added to your order.": [
          null,
-         "%s es traurà de la plantilla i no s'afegirà a la seva comanda."
+         "%s se quitará de la plantilla y no se agregará a su pedido."
       ],
       "(unknown)": [
          null,
-         "(desconegut)"
+         "(desconocido)"
       ],
       "1 value per line, blank lines ignored": [
          null,
-         "1 valor per línia; les línies buides s'ignoren"
+         "1 valor por línea; se ignoran las líneas vacías"
       ],
       "A Group contains several users. These users can gain a role by assigning the role to their Group.": [
          null,
-         "Un grup conté diversos usuaris. Aquests usuaris poden obtenir un rol assignant el rol al seu grup."
+         "Un grupo contiene varios usuarios. Estos usuarios pueden obtener un rol asignando el rol a su Grupo."
       ],
       "A change of the highlighted attributes requires a restart of the legacy service.": [
          null,
-         "Per canviar els atributs ressaltats cal reiniciar el servei legacy."
+         "Para cambiar los atributos resaltados hay que reiniciar el servicio legacy."
       ],
       "A model for the Inventory Code / Serial Number '%s' was not found": [
          null,
-         "No s'ha trobat el model pel codi d'inventari %s."
+         "No se encontró el modelo por el código de inventario %s."
       ],
       "A model with the ID '%s' was not found": [
          null,
-         "No s'ha trobat cap model amb l'ID '%s'"
+         "No se encontró ningún modelo con el ID '%s'"
       ],
       "A model with the same product name and empty version already exists.": [
          null,
-         "Ja existeix un model amb el mateix nom de producte i sense versió."
+         "Ya existe un modelo con el mismo nombre de producto y sin versión."
       ],
       "A model with the same product name and version already exists.": [
          null,
-         "Ja existeix un model amb el mateix nom de producte i la mateixa versió."
+         "Ya existe un modelo con el mismo nombre de producto y la misma versión."
       ],
       "A package cannot be nested to another package": [
          null,
-         "Un paquet no pot estar dins d'un altre paquet"
+         "Un paquete no puede estar dentro de otro paquete"
       ],
       "A package item must belong to a package model": [
          null,
-         "Un article de paquet ha de pertànyer a un model de paquet"
+         "Un artículo de paquete debe pertenecer a un modelo de paquete"
       ],
       "A template with the ID '%s' was not found": [
          null,
-         "No s'ha trobat cap plantilla amb l'ID '%s'"
+         "No se encontró ninguna plantilla con el ID '%s'"
       ],
       "AV-Technik": [
          null,
-         "Tecnologia audiovisual"
+         "Tecnología audiovisual"
       ],
       "Ablauf Garantie": [
          null,
-         "Fi de la garantia"
+         "Fin de la garantía"
       ],
       "Ablauf Vertrag": [
          null,
-         "Fi del contracte"
+         "Fin del contrato"
       ],
       "Accepted columns": [
          null,
-         "Columnes acceptades"
+         "Columnas aceptadas"
       ],
       "Access": [
          null,
-         "Accés"
+         "Acceso"
       ],
       "Access Level: %d": [
          null,
-         "Dret d'accés: %d"
+         "Derecho de Acceso: %d"
       ],
       "Access Right successfully created": [
          null,
-         "Drets d'accés creats correctament"
+         "Derechos de Acceso creados correctamente"
       ],
       "Access Right successfully updated": [
          null,
-         "Drets d'accés actualitzats correctament"
+         "Derechos de Acceso actualizados correctamente"
       ],
       "Access as": [
          null,
-         "Accedir com a"
+         "Acceder como"
       ],
       "Access right reinstated": [
          null,
-         "Dret d'accés restablert"
+         "Derecho de acceso restablecido"
       ],
       "Access rights": [
          null,
-         "Drets d'accés"
+         "Derechos de acceso"
       ],
       "AccessRight": [
          null,
-         "Dret d'accés"
+         "Derecho de acceso"
       ],
       "Accessories": [
          null,
-         "Accessoris"
+         "Accesorios"
       ],
       "Accounts": [
          null,
-         "Comptes"
+         "Cuentas"
       ],
       "Acknowledge": [
          null,
@@ -331,139 +331,155 @@ window.i18n.locale_data = {
       ],
       "Action": [
          null,
-         "Acció"
+         "Acción"
       ],
       "Activation Type": [
          null,
-         "Tipus d'activació"
+         "Tipo de activación"
       ],
       "Active": [
          null,
-         "Actiu"
+         "Activo"
       ],
       "Active Inventory": [
          null,
-         "Inventari actiu"
+         "Inventario activo"
       ],
       "Add": [
          null,
-         "Afegir"
+         "Agregar"
       ],
       "Add %s": [
          null,
-         "Afegir %s"
+         "Agregar %s"
       ],
       "Add Model": [
          null,
-         "Afegir model"
+         "Agregar modelo"
       ],
       "Add Option": [
          null,
-         "Afegir opció"
+         "Agregar opción"
       ],
       "Add Purpose": [
          null,
-         "Afegir motiu"
+         "Agregar motivo"
       ],
       "Add article for specific entitlement-group": [
          null,
-         "Afegir article per a un grup d'assignació concret"
+         "Agregar artículo para un grupo de asignación concreto"
       ],
       "Add inventory": [
          null,
-         "Afegir inventari"
+         "Agregar inventario"
       ],
       "Add item": [
          null,
-         "Afegir article"
+         "Agregar artículo"
       ],
       "Add new article to category": [
          null,
-         "Afegir un article nou a la categoria"
+         "Agregar un artículo nuevo a la categoría"
       ],
       "Add new main category": [
          null,
-         "Afegir una categoria principal nova"
+         "Agregar una categoría principal nueva"
       ],
       "Add new requester": [
          null,
-         "Afegir un sol·licitant nou"
+         "Agregar un solicitante nuevo"
       ],
       "Add new subcategory": [
          null,
-         "Afegir una subcategoria nova"
+         "Agregar una subcategoría nueva"
       ],
       "Add to order": [
          null,
-         "Afegir a la comanda"
+         "Agregar al pedido"
       ],
       "Add/Assign": [
          null,
-         "Afegir/Assignar"
+         "Agregar/Asignar"
       ],
       "Added": [
          null,
-         "Afegit"
+         "Añadido"
       ],
       "Added %s": [
          null,
-         "%s afegit"
+         "%s agregado"
       ],
       "Adding item": [
          null,
-         "Afegint article"
+         "Agregando artículo"
       ],
       "Additional label in inventory codes": [
          null,
-         "Etiqueta addicional als codis d'inventari"
+         "Etiqueta adicional en los códigos de inventario"
       ],
       "Additional notes": [
          null,
-         "Notes addicionals"
+         "Notas adicionales"
       ],
       "Address": [
          null,
-         "Adreça"
+         "Dirección"
       ],
       "Admin": [
          null,
-         "Administració"
+         "Administración"
       ],
       "Administrators": [
          null,
-         "Administradors"
+         "Administradores"
       ],
       "Advanced Search": [
          null,
-         "Cerca avançada"
+         "Búsqueda avanzada"
       ],
       "All": [
          null,
-         "Tots"
+         "Todos"
       ],
       "All %s": [
          null,
-         "Tots els %s"
+         "Todos los %s"
       ],
       "All inventory pools": [
          null,
-         "Tots els grups d'inventari"
+         "Todos los grupos de inventario"
       ],
       "All rooms": [
          null,
-         "Totes les sales"
+         "Todas las salas"
       ],
       "All tags": [
          null,
-         "Totes les etiquetes"
+         "Todas las etiquetas"
+      ],
+      "%s tags": [
+         null,
+         "%s etiquetas"
+      ],
+      "Edit inventory code": [
+         null,
+         "Editar código de inventario"
+      ],
+      "%s results": [
+         null,
+         "%s resultados"
+      ],
+      "Per page": [
+         null,
+         "Por página"
       ],
       "Tags": [
          null,
-         "Etiquetes"
+         "Etiquetas"
       ],
       "New tag": [
          null,
-         "Nova etiqueta"
+         "Nueva etiqueta"
       ],
       "Color": [
          null,
@@ -471,163 +487,163 @@ window.i18n.locale_data = {
       ],
       "tags_explanation": [
          null,
-         "Les etiquetes d'aquest pool, per marcar articles (per exemple «Etiquetat»). Es posen al formulari de cada article i s'hi pot filtrar a la llista d'Inventari."
+         "Las etiquetas de este pool, para marcar artículos (por ejemplo «Etiquetado»). Se ponen en el formulario de cada artículo y se puede filtrar por ellas en la lista de Inventario."
       ],
       "tags_delete_confirmation": [
          null,
-         "Eliminar l'etiqueta «%s»? Es traurà de %s articles."
+         "¿Eliminar la etiqueta «%s»? Se quitará de %s artículos."
       ],
       "All other columns are ignored.": [
          null,
-         "La resta de columnes s'ignoren."
+         "Las demás columnas se ignoran."
       ],
       "All selected": [
          null,
-         "Tots seleccionats"
+         "Todos seleccionados"
       ],
       "Allocations": [
          null,
-         "Assignacions"
+         "Asignaciones"
       ],
       "Allocations in other entitlement-groups considered - still available quantity of borrowable and not retired items": [
          null,
-         "Es tenen en compte les assignacions d'altres grups d'assignació: quantitat encara disponible d'articles prestables i no donats de baixa"
+         "Se tienen en cuenta las asignaciones de otros grupos de asignación: cantidad aún disponible de artículos prestables y no dados de baja"
       ],
       "An order can not have multiple delegated users.": [
          null,
-         "Una comanda no pot tenir diversos usuaris delegats."
+         "Un pedido no puede tener múltiples usuarios delegados."
       ],
       "Ankunftsdatum": [
          null,
-         "Data d'arribada"
+         "Fecha de llegada"
       ],
       "Ankunftsnotiz": [
          null,
-         "Nota d'arribada"
+         "Nota de llegada"
       ],
       "Ankunftszustand": [
          null,
-         "Estat a l'arribada"
+         "Estado a la llegada"
       ],
       "Anschaffungskategorie": [
          null,
-         "Categoria d'adquisició"
+         "Categoría de adquisición"
       ],
       "Apply Fields on Item": [
          null,
-         "Aplicar camps a l'article"
+         "Aplicar campos al artículo"
       ],
       "Approval Successful": [
          null,
-         "Aprovació correcta"
+         "Aprobación correcta"
       ],
       "Approval failed": [
          null,
-         "Aprovació fallida"
+         "Aprobación fallida"
       ],
       "Approve": [
          null,
-         "Aprovar"
+         "Aprobar"
       ],
       "Approve anyway": [
          null,
-         "Aprovar igualment"
+         "Aprobar de todos modos"
       ],
       "Approve order": [
          null,
-         "Aprovar comanda"
+         "Aprobar pedido"
       ],
       "Approved": [
          null,
-         "Aprovat"
+         "Aprobado"
       ],
       "Approved Items": [
          null,
-         "Articles aprovats"
+         "Artículos aprobados"
       ],
       "Approved on": [
          null,
-         "Aprovat el"
+         "Aprobado el"
       ],
       "Approved quantity": [
          null,
-         "Quantitat aprovada"
+         "Cantidad aprobada"
       ],
       "Are you sure you want to delete '%s'?": [
          null,
-         "Segur que vol eliminar '%s'?"
+         "¿Seguro que quiere eliminar '%s'?"
       ],
       "Article nr. or Producer nr.": [
          null,
-         "Núm. d'article o del fabricant"
+         "N.º de artículo o del fabricante"
       ],
       "Article or Project": [
          null,
-         "Article o projecte"
+         "Artículo o proyecto"
       ],
       "Assign": [
          null,
-         "Assignar"
+         "Asignar"
       ],
       "Assigning the inventory code fails": [
          null,
-         "No s'ha pogut assignar el codi d'inventari"
+         "No se pudo asignar el código de inventario"
       ],
       "Attachment": [
          null,
-         "Adjunt"
+         "Adjunto"
       ],
       "Attachment was successfully created.": [
          null,
-         "L'adjunt s'ha creat correctament."
+         "El adjunto se creó correctamente."
       ],
       "Attachments": [
          null,
-         "Adjunts"
+         "Adjuntos"
       ],
       "Attempt to add node to own graph collection": [
          null,
-         "Intent d'afegir un node a la seva pròpia col·lecció"
+         "Intento de agregar un nodo a su propia colección"
       ],
       "Attention": [
          null,
-         "Atenció"
+         "Atención"
       ],
       "Auswahl": [
          null,
-         "Selecció"
+         "Selección"
       ],
       "Authentication System": [
          null,
-         "Sistema d'autenticació"
+         "Sistema de autenticación"
       ],
       "Authentication Systems": [
          null,
-         "Sistemes d'autenticació"
+         "Sistemas de autenticación"
       ],
       "Automatic suspension": [
          null,
-         "Suspensió automàtica"
+         "Suspensión automática"
       ],
       "Automatic suspension reason": [
          null,
-         "Motiu de la suspensió automàtica"
+         "Motivo de la suspensión automática"
       ],
       "Availability": [
          null,
-         "Disponibilitat"
+         "Disponibilidad"
       ],
       "Availability Timeline": [
          null,
-         "Cronologia de disponibilitat"
+         "Cronología de disponibilidad"
       ],
       "Availability for": [
          null,
-         "Disponibilitat per a"
+         "Disponibilidad para"
       ],
       "Availability loaded": [
          null,
-         "Disponibilitat carregada"
+         "Disponibilidad cargada"
       ],
       "Available": [
          null,
@@ -635,11 +651,11 @@ window.i18n.locale_data = {
       ],
       "Available for borrower": [
          null,
-         "Disponible per al prestatari"
+         "Disponible para el prestatario"
       ],
       "Available in entitlement-group '": [
          null,
-         "Disponible al grup d'assignació '"
+         "Disponible en el grupo de asignación '"
       ],
       "Available in total": [
          null,
@@ -651,19 +667,19 @@ window.i18n.locale_data = {
       ],
       "Back": [
          null,
-         "Tornar"
+         "Volver"
       ],
       "Back to this hand over": [
          null,
-         "Tornar a aquest lliurament"
+         "Volver a esta entrega"
       ],
       "Back to this take back": [
          null,
-         "Tornar a aquesta devolució"
+         "Volver a esta devolución"
       ],
       "Back to this user": [
          null,
-         "Tornar a aquest usuari"
+         "Volver a este usuario"
       ],
       "Backend": [
          null,
@@ -671,7 +687,7 @@ window.i18n.locale_data = {
       ],
       "Badge ID was updated": [
          null,
-         "S'ha actualitzat el número de credencial"
+         "Se actualizó el número de credencial"
       ],
       "Badge%s": [
          null,
@@ -679,15 +695,15 @@ window.i18n.locale_data = {
       ],
       "Barcode": [
          null,
-         "Codi de barres"
+         "Código de barras"
       ],
       "Basic Information": [
          null,
-         "Informació bàsica"
+         "Información básica"
       ],
       "Body": [
          null,
-         "Cos"
+         "Cuerpo"
       ],
       "Book": [
          null,
@@ -695,27 +711,27 @@ window.i18n.locale_data = {
       ],
       "Booking is no longer possible on this end date": [
          null,
-         "Ja no es pot reservar amb aquesta data de fi"
+         "Ya no se puede reservar con esta fecha de fin"
       ],
       "Booking is no longer possible on this start date": [
          null,
-         "Ja no es pot reservar amb aquesta data d'inici"
+         "Ya no se puede reservar con esta fecha de inicio"
       ],
       "Borrow": [
          null,
-         "Préstecs"
+         "Préstamos"
       ],
       "Borrow items": [
          null,
-         "Demanar articles en préstec"
+         "Pedir artículos prestados"
       ],
       "Borrow section": [
          null,
-         "Secció de préstecs"
+         "Sección de préstamos"
       ],
       "Borrow template": [
          null,
-         "Plantilla de préstec"
+         "Plantilla de préstamo"
       ],
       "Borrowable": [
          null,
@@ -723,52 +739,52 @@ window.i18n.locale_data = {
       ],
       "Borrowable Items": [
          null,
-         "Articles prestables"
+         "Artículos prestables"
       ],
       "Borrowable items": [
          null,
-         "Articles prestables"
+         "Artículos prestables"
       ],
       "Borrowed Items": [
          null,
-         "Articles prestats"
+         "Artículos prestados"
       ],
       "Borrowed until": [
          null,
-         "Prestat fins a"
+         "Prestado hasta"
       ],
       "Borrower": [
          null,
-         "Prestatari"
+         "Prestatario"
       ],
       "Broken": [
          null,
-         "Avariat"
+         "Averiado"
       ],
       "Budget limits": [
          null,
-         "Límits de pressupost"
+         "Límites de presupuesto"
       ],
       "Budget period": [
          null,
-         "Període pressupostari"
+         "Período presupuestario"
       ],
       "Budget period end date": [
          null,
-         "Data de fi del període pressupostari"
+         "Fecha de fin del período presupuestario"
       ],
       "Budget periods": [
          null,
-         "Períodes pressupostaris"
+         "Períodos presupuestarios"
       ],
       "Building": [
          "Buildings",
-         "Edifici",
-         "Edificis"
+         "Edificio",
+         "Edificios"
       ],
       "Building together with a general room successfully created": [
          null,
-         "Edifici creat correctament juntament amb una sala general"
+         "Edificio creado correctamente junto con una sala general"
       ],
       "CSV": [
          null,
@@ -780,124 +796,124 @@ window.i18n.locale_data = {
       ],
       "Cancel": [
          null,
-         "Cancel·lar"
+         "Cancelar"
       ],
       "Cancel Edit": [
          null,
-         "Cancel·lar edició"
+         "Cancelar edición"
       ],
       "Categories": [
          null,
-         "Categories"
+         "Categorías"
       ],
       "Category": [
          null,
-         "Categoria"
+         "Categoría"
       ],
       "Category can have only one image.": [
          null,
-         "Una categoria només pot tenir una imatge."
+         "Una categoría solo puede tener una imagen."
       ],
       "Category name": [
          null,
-         "Nom de la categoria"
+         "Nombre de la categoría"
       ],
       "Category saved": [
          null,
-         "Categoria desada"
+         "Categoría guardada"
       ],
       "Change": [
          null,
-         "Canviar"
+         "Cambiar"
       ],
       "Change %s": [
          null,
-         "Canviar %s"
+         "Cambiar %s"
       ],
       "Change Borrower": [
          null,
-         "Canviar prestatari"
+         "Cambiar prestatario"
       ],
       "Change Borrower Successful": [
          null,
-         "Prestatari canviat correctament"
+         "Prestatario cambiado correctamente"
       ],
       "Change entry": [
          null,
-         "Canviar entrada"
+         "Cambiar entrada"
       ],
       "Change orderer": [
          null,
-         "Canviar sol·licitant"
+         "Cambiar solicitante"
       ],
       "Change orderer Successful": [
          null,
-         "Sol·licitant canviat correctament"
+         "Solicitante cambiado correctamente"
       ],
       "Changed": [
          null,
-         "Modificat"
+         "Modificado"
       ],
       "Changed %s from %s to %s": [
          null,
-         "%s canviat de %s a %s"
+         "%s cambiado de %s a %s"
       ],
       "Changed dates for %{model} from %{from} to %{to}": [
          null,
-         "Dates de %{model} canviades de %{from} a %{to}"
+         "Fechas de %{model} cambiadas de %{from} a %{to}"
       ],
       "Changes": [
          null,
-         "Canvis"
+         "Cambios"
       ],
       "Check invalid fields": [
          null,
-         "Revisi els camps no vàlids"
+         "Revise los campos no válidos"
       ],
       "Choose a suggested article or a category": [
          null,
-         "Triï un article suggerit o una categoria"
+         "Elija un artículo sugerido o una categoría"
       ],
       "Choose an article or a category": [
          null,
-         "Triï un article o una categoria"
+         "Elija un artículo o una categoría"
       ],
       "Choose an article/project": [
          null,
-         "Triï un article o projecte"
+         "Elija un artículo o proyecto"
       ],
       "City": [
          null,
-         "Ciutat"
+         "Ciudad"
       ],
       "Close": [
          null,
-         "Tancar"
+         "Cerrar"
       ],
       "Close All": [
          null,
-         "Tancar-ho tot"
+         "Cerrar todo"
       ],
       "Closed": [
          null,
-         "Tancat"
+         "Cerrado"
       ],
       "Closed Day": [
          null,
-         "Dia tancat"
+         "Día cerrado"
       ],
       "Closed Days": [
          null,
-         "Dies tancats"
+         "Días cerrados"
       ],
       "Collection": [
          "Collections",
-         "Col·lecció",
-         "Col·leccions"
+         "Colección",
+         "Colecciones"
       ],
       "Compatible successfully removed": [
          null,
-         "Compatibilitat treta correctament"
+         "Compatibilidad quitada correctamente"
       ],
       "Compatibles": [
          null,
@@ -905,39 +921,39 @@ window.i18n.locale_data = {
       ],
       "Complete": [
          null,
-         "Complet"
+         "Completo"
       ],
       "Complete Search": [
          null,
-         "Cerca completa"
+         "Búsqueda completa"
       ],
       "Complete order": [
          null,
-         "Completar comanda"
+         "Completar pedido"
       ],
       "Completeness": [
          null,
-         "Completesa"
+         "Completitud"
       ],
       "Concurrent": [
          null,
-         "Concurrent"
+         "Concurrente"
       ],
       "Consider opening hours": [
          null,
-         "Tenir en compte l'horari d'obertura"
+         "Tener en cuenta el horario de apertura"
       ],
       "Contact": [
          null,
-         "Contacte"
+         "Contacto"
       ],
       "Contact person": [
          null,
-         "Persona de contacte"
+         "Persona de contacto"
       ],
       "Content": [
          null,
-         "Contingut"
+         "Contenido"
       ],
       "Continue": [
          null,
@@ -945,51 +961,51 @@ window.i18n.locale_data = {
       ],
       "Continue this order": [
          null,
-         "Continuar aquesta comanda"
+         "Continuar este pedido"
       ],
       "Continue with available models only": [
          null,
-         "Continuar només amb els models disponibles"
+         "Continuar solo con los modelos disponibles"
       ],
       "Contract": [
          null,
-         "Contracte"
+         "Contrato"
       ],
       "Contract %d has been signed by %s": [
          null,
-         "%s ha signat el contracte %d"
+         "El contrato %d fue firmado por %s"
       ],
       "Contract No.": [
          null,
-         "Núm. de contracte"
+         "N.º de contrato"
       ],
       "Contract Nr.": [
          null,
-         "Núm. de contracte"
+         "Contrato Nro."
       ],
       "Contract expiration": [
          null,
-         "Fi del contracte"
+         "Fin del contrato"
       ],
       "Contract signed": [
          null,
-         "Contracte signat"
+         "Contrato firmado"
       ],
       "Contracts": [
          null,
-         "Contractes"
+         "Contratos"
       ],
       "Copy Item": [
          null,
-         "Copiar article"
+         "Copiar artículo"
       ],
       "Copy License": [
          null,
-         "Copiar llicència"
+         "Copiar licencia"
       ],
       "Couldn't update ": [
          null,
-         "No s'ha pogut actualitzar "
+         "No se pudo actualizar "
       ],
       "Country": [
          null,
@@ -997,7 +1013,7 @@ window.i18n.locale_data = {
       ],
       "Cover Image": [
          null,
-         "Imatge de portada"
+         "Imagen de portada"
       ],
       "Create %s": [
          null,
@@ -1005,51 +1021,51 @@ window.i18n.locale_data = {
       ],
       "Create copied item": [
          null,
-         "Crear article copiat"
+         "Crear artículo copiado"
       ],
       "Create new budget period": [
          null,
-         "Crear un període pressupostari nou"
+         "Crear un período presupuestario nuevo"
       ],
       "Create new category": [
          null,
-         "Crear una categoria nova"
+         "Crear una categoría nueva"
       ],
       "Create new item": [
          null,
-         "Crear un article nou"
+         "Crear un artículo nuevo"
       ],
       "Create new model": [
          null,
-         "Crear un model nou"
+         "Crear un modelo nuevo"
       ],
       "Create new option": [
          null,
-         "Crear una opció nova"
+         "Crear una opción nueva"
       ],
       "Create new software": [
          null,
-         "Crear un programari nou"
+         "Crear un software nuevo"
       ],
       "Create new software license": [
          null,
-         "Crear una llicència de programari nova"
+         "Crear una licencia de software nueva"
       ],
       "Create request by choosing an article or project": [
          null,
-         "Creï una sol·licitud triant un article o projecte"
+         "Cree una solicitud eligiendo un artículo o proyecto"
       ],
       "Create request for another user": [
          null,
-         "Crear una sol·licitud per a un altre usuari"
+         "Crear una solicitud para otro usuario"
       ],
       "Create request for this category": [
          null,
-         "Crear una sol·licitud per a aquesta categoria"
+         "Crear una solicitud para esta categoría"
       ],
       "Created at": [
          null,
-         "Creat el"
+         "Creado el"
       ],
       "Currency": [
          null,
@@ -1057,99 +1073,99 @@ window.i18n.locale_data = {
       ],
       "Current Order": [
          null,
-         "Comanda actual"
+         "Pedido actual"
       ],
       "Current budget period not defined yet": [
          null,
-         "Encara no s'ha definit el període pressupostari actual"
+         "Todavía no se definió el período presupuestario actual"
       ],
       "Current total of budget period": [
          null,
-         "Total actual del període pressupostari"
+         "Total actual del período presupuestario"
       ],
       "Current total of category": [
          null,
-         "Total actual de la categoria"
+         "Total actual de la categoría"
       ],
       "Current total of selected requests": [
          null,
-         "Total actual de les sol·licituds seleccionades"
+         "Total actual de las solicitudes seleccionadas"
       ],
       "Currently Borrowed Items": [
          null,
-         "Articles prestats actualment"
+         "Artículos prestados actualmente"
       ],
       "Currently has items to return": [
          null,
-         "Té articles per retornar"
+         "Tiene artículos por devolver"
       ],
       "Currently has open orders": [
          null,
-         "Té comandes obertes"
+         "Tiene pedidos abiertos"
       ],
       "Currently you have no items in your order.": [
          null,
-         "Ara mateix no té articles a la comanda."
+         "Por ahora no tiene artículos en su pedido."
       ],
       "Customer": [
          null,
-         "Client"
+         "Cliente"
       ],
       "Daily View": [
          null,
-         "Vista diària"
+         "Vista diaria"
       ],
       "Day": [
          null,
-         "Dia"
+         "Día"
       ],
       "Days": [
          null,
-         "Dies"
+         "Días"
       ],
       "Deadline soon": [
          null,
-         "El termini està a punt de vèncer"
+         "El plazo está por vencerse"
       ],
       "Deadline soon reminder sent for %{q} items on contracts %{c}": [
          null,
-         "El termini està a punt de vèncer: s'han enviat recordatoris per %{q} articles en %{c} contractes"
+         "El plazo está por vencerse, se enviaron recordatorios por %{q} elementos en %{c} contratos"
       ],
       "Dear client,": [
          null,
-         "Benvolgut client:"
+         "Estimado cliente:"
       ],
       "Dear leihs client,": [
          null,
-         "Benvolgut client de leihs:"
+         "Estimado cliente de leihs,"
       ],
       "Dear leihs manager,": [
          null,
-         "Benvolgut gestor de leihs:"
+         "Estimado gestor de leihs:"
       ],
       "Default Contract Note": [
          null,
-         "Nota predeterminada del contracte"
+         "Nota predeterminada del contrato"
       ],
       "Defective": [
          null,
-         "Defectuós"
+         "Defectuoso"
       ],
       "Delegated user is not member of the contract's delegation or is empty": [
          null,
-         "L'usuari delegat no és membre de la delegació del contracte o està buit"
+         "El usuario delegado no es miembro de la delegación del contrato o está vacío"
       ],
       "Delegated user must be empty for contract's normal user": [
          null,
-         "L'usuari delegat ha de quedar buit si el contracte és d'un usuari normal"
+         "El usuario delegado debe quedar vacío si el contrato es de un usuario normal"
       ],
       "Delegation": [
          null,
-         "Delegació"
+         "Delegación"
       ],
       "Delegations": [
          null,
-         "Delegacions"
+         "Delegaciones"
       ],
       "Delete": [
          null,
@@ -1161,43 +1177,43 @@ window.i18n.locale_data = {
       ],
       "Delete Selection": [
          null,
-         "Eliminar selecció"
+         "Eliminar selección"
       ],
       "Delete category with all it's articles/projects": [
          null,
-         "Eliminar la categoria amb tots els seus articles/projectes"
+         "Eliminar la categoría con todos sus artículos/proyectos"
       ],
       "Delete line": [
          null,
-         "Eliminar línia"
+         "Eliminar línea"
       ],
       "Delete main category": [
          null,
-         "Eliminar categoria principal"
+         "Eliminar categoría principal"
       ],
       "Delete subcategory": [
          null,
-         "Eliminar subcategoria"
+         "Eliminar subcategoría"
       ],
       "Delete this line": [
          null,
-         "Eliminar aquesta línia"
+         "Eliminar esta línea"
       ],
       "Deleted": [
          null,
-         "Eliminat"
+         "Eliminado"
       ],
       "Denied": [
          null,
-         "Denegat"
+         "Denegado"
       ],
       "Department": [
          null,
-         "Departament"
+         "Departamento"
       ],
       "Description": [
          null,
-         "Descripció"
+         "Descripción"
       ],
       "Disable": [
          null,
@@ -1205,31 +1221,31 @@ window.i18n.locale_data = {
       ],
       "Do you realy want to delete the '%s' category?": [
          null,
-         "Segur que vol eliminar la categoria '%s'?"
+         "¿Seguro que quiere eliminar la categoría '%s'?"
       ],
       "Document": [
          null,
-         "Document"
+         "Documento"
       ],
       "Documents": [
          null,
-         "Documents"
+         "Documentos"
       ],
       "Documents for hand over": [
          null,
-         "Documents per al lliurament"
+         "Documentos para la entrega"
       ],
       "Documents for take back": [
          null,
-         "Documents per a la devolució"
+         "Documentos para la devolución"
       ],
       "Does not have any reservable items": [
          null,
-         "No té articles reservables"
+         "No tiene artículos reservables"
       ],
       "E-Mail": [
          null,
-         "Correu electrònic"
+         "Correo electrónico"
       ],
       "ERROR": [
          null,
@@ -1245,47 +1261,47 @@ window.i18n.locale_data = {
       ],
       "Edit Item": [
          null,
-         "Editar article"
+         "Editar artículo"
       ],
       "Edit License": [
          null,
-         "Editar llicència"
+         "Editar licencia"
       ],
       "Edit Model": [
          null,
-         "Editar model"
+         "Editar modelo"
       ],
       "Edit Option": [
          null,
-         "Editar opció"
+         "Editar opción"
       ],
       "Edit Order": [
          null,
-         "Editar comanda"
+         "Editar pedido"
       ],
       "Edit Purpose": [
          null,
-         "Editar motiu"
+         "Editar motivo"
       ],
       "Edit Selection": [
          null,
-         "Editar selecció"
+         "Editar selección"
       ],
       "Edit Software": [
          null,
-         "Editar programari"
+         "Editar software"
       ],
       "Edit User": [
          null,
-         "Editar usuari"
+         "Editar usuario"
       ],
       "Edit multiple selected reservations": [
          null,
-         "Editar diverses reserves seleccionades"
+         "Editar varias reservas seleccionadas"
       ],
       "Edit purpose for order from": [
          null,
-         "Editar el motiu de la comanda de"
+         "Editar el motivo del pedido de"
       ],
       "Edit reservation": [
          null,
@@ -1293,27 +1309,27 @@ window.i18n.locale_data = {
       ],
       "Edit templates": [
          null,
-         "Editar plantilles"
+         "Editar plantillas"
       ],
       "Edit this Order": [
          null,
-         "Editar aquesta comanda"
+         "Editar este pedido"
       ],
       "Editing mail templates for the inventory pool %s": [
          null,
-         "Editant les plantilles de correu del grup d'inventari %s"
+         "Editando las plantillas de correo del grupo de inventario %s"
       ],
       "Editing system-wide mail templates": [
          null,
-         "Editant les plantilles de correu de tot el sistema"
+         "Editando las plantillas de correo de todo el sistema"
       ],
       "Email": [
          null,
-         "Correu electrònic"
+         "Correo electrónico"
       ],
       "Empty Username and/or Password": [
          null,
-         "Nom d'usuari o contrasenya buits"
+         "Nombre de Usuario ó Contraseña Vacios"
       ],
       "Enable": [
          null,
@@ -1321,31 +1337,31 @@ window.i18n.locale_data = {
       ],
       "End Date cannot be in the past": [
          null,
-         "La data de fi no pot ser en el passat"
+         "La fecha de fin no puede estar en el pasado"
       ],
       "End date": [
          null,
-         "Data de fi"
+         "Fecha de fin"
       ],
       "Entitlement-Group": [
          null,
-         "Grup d'assignació"
+         "Grupo de asignación"
       ],
       "Entitlement-Group %s": [
          null,
-         "Grup d'assignació %s"
+         "Grupo de asignación %s"
       ],
       "Entitlement-Groups": [
          null,
-         "Grups d'assignació"
+         "Grupos de asignación"
       ],
       "Entitlement-Groups of this customer": [
          null,
-         "Grups d'assignació d'aquest client"
+         "Grupos de asignación de este cliente"
       ],
       "Entity": [
          null,
-         "Entitat"
+         "Entidad"
       ],
       "Entry": [
          null,
@@ -1353,7 +1369,7 @@ window.i18n.locale_data = {
       ],
       "Equipment Booking and Inventory Management System": [
          null,
-         "Sistema de reserva d'equips i gestió d'inventari"
+         "Sistema de reserva de equipos y gestión de inventario"
       ],
       "Error": [
          null,
@@ -1361,27 +1377,27 @@ window.i18n.locale_data = {
       ],
       "Error creating the accessory.": [
          null,
-         "Error en crear l'accessori."
+         "Error al crear el accesorio."
       ],
       "Error deleting the accessory.": [
          null,
-         "Error en eliminar l'accessori."
+         "Error al eliminar el accesorio."
       ],
       "Error destroying the item package": [
          null,
-         "Error en eliminar el paquet d'articles"
+         "Error al eliminar el paquete de artículos"
       ],
       "Error destroying the package": [
          null,
-         "Error en eliminar el paquet"
+         "Error al destruir el paquete"
       ],
       "Error saving the package": [
          null,
-         "Error en desar el paquet"
+         "Error al guardar el paquete"
       ],
       "Error updating inventory code": [
          null,
-         "Error en actualitzar el codi d'inventari"
+         "Error al actualizar el código de inventario"
       ],
       "Excel export": [
          null,
@@ -1389,11 +1405,11 @@ window.i18n.locale_data = {
       ],
       "Expand All": [
          null,
-         "Desplegar-ho tot"
+         "Expandir Todo"
       ],
       "Expected to be returned.": [
          null,
-         "S'espera que es retorni."
+         "Se espera su devolución."
       ],
       "Extend entry": [
          null,
@@ -1401,67 +1417,67 @@ window.i18n.locale_data = {
       ],
       "Facility Management": [
          null,
-         "Gestió d'instal·lacions"
+         "Gestión de instalaciones"
       ],
       "Field": [
          null,
-         "Camp"
+         "Campo"
       ],
       "Fields": [
          null,
-         "Camps"
+         "Campos"
       ],
       "Fields have been updated successfully.": [
          null,
-         "Els camps s'han actualitzat correctament."
+         "Los campos se actualizaron correctamente."
       ],
       "File has to be uploaded on save": [
          null,
-         "El fitxer es puja en desar"
+         "El archivo se sube al guardar"
       ],
       "Finish this hand over": [
          null,
-         "Acabar aquest lliurament"
+         "Terminar esta entrega"
       ],
       "Finish this take back": [
          null,
-         "Acabar aquesta devolució"
+         "Terminar esta devolución"
       ],
       "First admin user": [
          null,
-         "Primer usuari administrador"
+         "Primer usuario administrador"
       ],
       "First admin user has been created. Default database authentication system has been configured.": [
          null,
-         "S'ha creat el primer usuari administrador i s'ha configurat el sistema d'autenticació predeterminat de la base de dades."
+         "Se creó el primer usuario administrador y se configuró el sistema de autenticación predeterminado de la base de datos."
       ],
       "First name": [
          null,
-         "Nom"
+         "Nombre"
       ],
       "Format": [
          null,
-         "Format"
+         "Formato"
       ],
       "Found %d matches": [
          null,
-         "S'han trobat %d coincidències"
+         "Se encontraron %d coincidencias"
       ],
       "Found %s": [
          null,
-         "S'ha trobat %s"
+         "Se encontró %s"
       ],
       "Free": [
          null,
-         "Lliure"
+         "Libre"
       ],
       "Fri": [
          null,
-         "Dv."
+         "Vie"
       ],
       "Friday": [
          null,
-         "Divendres"
+         "Viernes"
       ],
       "Frontend": [
          null,
@@ -1473,64 +1489,64 @@ window.i18n.locale_data = {
       ],
       "General Information": [
          null,
-         "Informació general"
+         "Información general"
       ],
       "Go Back": [
          null,
-         "Tornar"
+         "Volver"
       ],
       "Group manager": [
          null,
-         "Gestor de grup"
+         "Gestor de grupo"
       ],
       "Groups": [
          null,
-         "Grups"
+         "Grupos"
       ],
       "Hand Over": [
          null,
-         "Lliurar"
+         "Entregar"
       ],
       "Hand Over Selection": [
          null,
-         "Lliurar selecció"
+         "Entregar selección"
       ],
       "Hand Over to": [
          null,
-         "Lliurament a"
+         "Entrega a"
       ],
       "Hand Over to %s": [
          null,
-         "Lliurament a %s"
+         "Entrega a %s"
       ],
       "Hand Overs": [
          null,
-         "Lliuraments"
+         "Entregas"
       ],
       "Hand over completed": [
          null,
-         "Lliurament completat"
+         "Entrega completada"
       ],
       "Hand over of %s item": [
          "Hand over of %s items",
-         "Lliurament de %s article",
-         "Lliurament de %s articles"
+         "Entrega de %s artículo",
+         "Entrega de %s artículos"
       ],
       "Help": [
          null,
-         "Ajuda"
+         "Ayuda"
       ],
       "Helper": [
          null,
-         "Assistent"
+         "Asistente"
       ],
       "Hide notification": [
          null,
-         "Amagar notificació"
+         "Ocultar notificación"
       ],
       "Hide this field from all item forms": [
          null,
-         "Amagar aquest camp a tots els formularis d'articles"
+         "Ocultar este campo en todos los formularios de artículos"
       ],
       "High": [
          null,
@@ -1538,15 +1554,15 @@ window.i18n.locale_data = {
       ],
       "Highlight available items.": [
          null,
-         "Ressaltar els articles disponibles."
+         "Resaltar los artículos disponibles."
       ],
       "Hints": [
          null,
-         "Suggeriments"
+         "Sugerencias"
       ],
       "IC-Technik/Software": [
          null,
-         "Informàtica/Programari"
+         "Informática/Software"
       ],
       "IMEI-Number": [
          null,
@@ -1554,19 +1570,19 @@ window.i18n.locale_data = {
       ],
       "Image": [
          null,
-         "Imatge"
+         "Imagen"
       ],
       "Images": [
          null,
-         "Imatges"
+         "Imágenes"
       ],
       "Important notes for hand over": [
          null,
-         "Notes importants per al lliurament"
+         "Notas importantes para la entrega"
       ],
       "In Stock": [
          null,
-         "En estoc"
+         "En stock"
       ],
       "In Total": [
          null,
@@ -1574,39 +1590,39 @@ window.i18n.locale_data = {
       ],
       "In inspection": [
          null,
-         "En revisió"
+         "En revisión"
       ],
       "Inactive pools cannot have items, which are not retired.": [
          null,
-         "Els grups d'inventari inactius no poden tenir articles que no estiguin donats de baixa."
+         "Los grupos de inventario inactivos no pueden tener artículos que no estén dados de baja."
       ],
       "Incomplete": [
          null,
-         "Incomplet"
+         "Incompleto"
       ],
       "Inconsistent Inventory Pool": [
          null,
-         "Grup d'inventari incoherent"
+         "Grupo de inventario incoherente"
       ],
       "Initial Price": [
          null,
-         "Preu inicial"
+         "Precio inicial"
       ],
       "Inquiry to procurement request": [
          null,
-         "Consulta sobre la sol·licitud de compra"
+         "Consulta sobre la solicitud de compra"
       ],
       "Insert 0 for the entries you dont need.": [
          null,
-         "Posi 0 a les entrades que no necessiti."
+         "Ponga 0 en las entradas que no necesite."
       ],
       "Insert a default comment": [
          null,
-         "Escrigui un comentari predeterminat"
+         "Escriba un comentario predeterminado"
       ],
       "Insert all required information": [
          null,
-         "Completi tota la informació obligatòria"
+         "Complete toda la información obligatoria"
       ],
       "Inspect": [
          null,
@@ -1614,168 +1630,168 @@ window.i18n.locale_data = {
       ],
       "Inspect Item": [
          null,
-         "Revisar article"
+         "Revisar artículo"
       ],
       "Inspection": [
          null,
-         "Revisió"
+         "Revisión"
       ],
       "Inspection comment": [
          null,
-         "Comentari de la revisió"
+         "Comentario de la revisión"
       ],
       "Inspection start date": [
          null,
-         "Data d'inici de la revisió"
+         "Fecha de inicio de la revisión"
       ],
       "Inspector's priority": [
          null,
-         "Prioritat del revisor"
+         "Prioridad del revisor"
       ],
       "Inspectors": [
          null,
-         "Revisors"
+         "Revisores"
       ],
       "Installation": [
          null,
-         "Instal·lació"
+         "Instalación"
       ],
       "Insurance Number": [
          null,
-         "Número d'assegurança"
+         "Número de seguro"
       ],
       "Internal Description": [
          null,
-         "Descripció interna"
+         "Descripción interna"
       ],
       "Introduction": [
          null,
-         "Introducció"
+         "Introducción"
       ],
       "Invalid data": [
          null,
-         "Dades no vàlides"
+         "Datos no válidos"
       ],
       "Invalid date": [
          null,
-         "Data no vàlida"
+         "fecha no válida"
       ],
       "Invalid order_lines": [
          null,
-         "Línies de comanda no vàlides"
+         "Líneas de pedido no válidas"
       ],
       "Invalid technical user - contact your leihs admin": [
          null,
-         "Usuari tècnic no vàlid: contacti amb l'administrador de leihs"
+         "Usuario técnico no válido: contacte con el administrador de leihs"
       ],
       "Invalid username/password": [
          null,
-         "Nom d'usuari o contrasenya no vàlids"
+         "Nombre de Usuario ó Contraseña Inválidos"
       ],
       "Inventory": [
          null,
-         "Inventari"
+         "Inventario"
       ],
       "Inventory Advanced Search": [
          null,
-         "Cerca avançada d'inventari"
+         "Búsqueda avanzada de inventario"
       ],
       "Inventory Code": [
          null,
-         "Codi d'inventari"
+         "Código de inventario"
       ],
       "Inventory Code / Name": [
          null,
-         "Codi d'inventari / Nom"
+         "Código de inventario / Nombre"
       ],
       "Inventory Helper": [
          null,
-         "Assistent d'inventari"
+         "Asistente de inventario"
       ],
       "Inventory Pool": [
          null,
-         "Grup d'inventari"
+         "Grupo de inventario"
       ],
       "Inventory Pool is missing": [
          null,
-         "Falta el grup d'inventari"
+         "Falta el Grupo de Inventario"
       ],
       "Inventory Pools": [
          null,
-         "Grups d'inventari"
+         "Grupos de inventario"
       ],
       "Inventory code": [
          null,
-         "Codi d'inventari"
+         "Código de inventario"
       ],
       "Inventory code updated": [
          null,
-         "Codi d'inventari actualitzat"
+         "Código de inventario actualizado"
       ],
       "Inventory code, model name, search term": [
          null,
-         "Codi d'inventari, nom de model, terme de cerca"
+         "Código de inventario, nombre de modelo, término de búsqueda"
       ],
       "Inventory manager": [
          null,
-         "Gestor d'inventari"
+         "Gestor de inventario"
       ],
       "Inventory pool": [
          "Inventory pools",
-         "Grup d'inventari",
-         "Grups d'inventari"
+         "Grupo de inventario",
+         "Grupos de inventario"
       ],
       "Inventory pool can't be deactivated due to existing items which are not yet retired.": [
          null,
-         "El grup d'inventari no es pot desactivar perquè té articles que encara no estan donats de baixa."
+         "El grupo de inventario no se puede desactivar porque tiene artículos que todavía no están dados de baja."
       ],
       "Inventory pool can't be deactivated due to existing orders or signed contracts.": [
          null,
-         "El grup d'inventari no es pot desactivar perquè té comandes o contractes signats."
+         "El grupo de inventario no se puede desactivar porque tiene pedidos o contratos firmados."
       ],
       "Inventory pool is closed on end date": [
          null,
-         "El grup d'inventari està tancat la data de fi"
+         "El grupo de inventario está cerrado en la fecha de fin"
       ],
       "Inventory pool is closed on start date": [
          null,
-         "El grup d'inventari està tancat la data d'inici"
+         "El grupo de inventario está cerrado en la fecha de inicio"
       ],
       "Inventory pool successfully created": [
          null,
-         "Grup d'inventari creat correctament"
+         "Grupo de inventario creado correctamente"
       ],
       "Inventory pool successfully updated": [
          null,
-         "Grup d'inventari actualitzat correctament"
+         "Grupo de inventario actualizado correctamente"
       ],
       "Inventory pool successfully updated.": [
          null,
-         "Grup d'inventari actualitzat correctament."
+         "Grupo de inventario actualizado correctamente."
       ],
       "Inventory pools": [
          null,
-         "Grups d'inventari"
+         "Grupos de inventario"
       ],
       "InventoryPool|Email": [
          null,
-         "Correu electrònic"
+         "Correo electrónico"
       ],
       "InventoryPool|Shortname": [
          null,
-         "Nom curt"
+         "Nombre corto"
       ],
       "Investment": [
          null,
-         "Inversió"
+         "Inversión"
       ],
       "Invoice Date": [
          null,
-         "Data de la factura"
+         "Fecha de factura"
       ],
       "Invoice Information": [
          null,
-         "Dades de la factura"
+         "Datos de la factura"
       ],
       "Invoice Number": [
          null,
@@ -1783,80 +1799,80 @@ window.i18n.locale_data = {
       ],
       "Item": [
          "Items",
-         "Article",
-         "Articles"
+         "Artículo",
+         "Artículos"
       ],
       "Item handed over as part of contract %d.": [
          null,
-         "Article lliurat com a part del contracte %d."
+         "Artículo entregado como parte del contrato %d."
       ],
       "Item is defective": [
          null,
-         "L'article està defectuós"
+         "El artículo está defectuoso"
       ],
       "Item is incomplete": [
          null,
-         "L'article està incomplet"
+         "El artículo está incompleto"
       ],
       "Item is not available in that time range": [
          null,
-         "L'article no està disponible en aquest període"
+         "El artículo no está disponible en ese período"
       ],
       "Item is overdue and therefore unavailable!": [
          null,
-         "L'article està endarrerit i, per tant, no està disponible."
+         "El artículo está atrasado y, por lo tanto, no disponible."
       ],
       "Item is part of package": [
          null,
-         "L'article forma part d'un paquet"
+         "El artículo forma parte de un paquete"
       ],
       "Item is reserved in the future, therefore it's not available!": [
          null,
-         "L'article està reservat en el futur i, per tant, no està disponible."
+         "El artículo está reservado en el futuro y, por lo tanto, no está disponible."
       ],
       "Item not borrowable": [
          null,
-         "Article no prestable"
+         "Artículo no prestable"
       ],
       "Item package successfully destroyed": [
          null,
-         "Paquet d'articles eliminat correctament"
+         "Paquete de artículos eliminado correctamente"
       ],
       "Item price": [
          null,
-         "Preu de l'article"
+         "Precio del artículo"
       ],
       "Item saved.": [
          null,
-         "Article desat."
+         "Artículo guardado."
       ],
       "Item taken back": [
          null,
-         "Article retornat"
+         "Artículo devuelto"
       ],
       "Item was not saved": [
          null,
-         "L'article no s'ha desat"
+         "El artículo no se guardó"
       ],
       "Item was saved.": [
          null,
-         "L'article s'ha desat."
+         "El artículo se guardó."
       ],
       "Items": [
          null,
-         "Articles"
+         "Artículos"
       ],
       "Item|Retired reason": [
          null,
-         "Motiu de la baixa"
+         "Motivo de la baja"
       ],
       "Key": [
          null,
-         "Clau"
+         "Clave"
       ],
       "Kind regards,": [
          null,
-         "Salutacions cordials,"
+         "Saludos cordiales,"
       ],
       "Label": [
          null,
@@ -1868,31 +1884,31 @@ window.i18n.locale_data = {
       ],
       "Languages": [
          null,
-         "Idiomes"
+         "Idiomas"
       ],
       "Last Checked": [
          null,
-         "Darrera revisió"
+         "Última revisión"
       ],
       "Last Visitors:": [
          null,
-         "Darrers visitants:"
+         "Últimos visitantes:"
       ],
       "Last name": [
          null,
-         "Cognom"
+         "Apellido"
       ],
       "Latest 10 emails": [
          null,
-         "Darrers 10 correus electrònics"
+         "Últimos 10 correos electrónicos"
       ],
       "Latest reminder": [
          null,
-         "Darrer recordatori"
+         "Último recordatorio"
       ],
       "Legend": [
          null,
-         "Llegenda"
+         "Leyenda"
       ],
       "Lender": [
          null,
@@ -1900,136 +1916,136 @@ window.i18n.locale_data = {
       ],
       "Lending": [
          null,
-         "Préstec"
+         "Préstamo"
       ],
       "Lending / Daily View": [
          null,
-         "Préstec / Vista diària"
+         "Préstamo / Vista diaria"
       ],
       "Lending Contract No.": [
          null,
-         "Contracte de préstec núm."
+         "Contrato de préstamo n.º"
       ],
       "Lending Contract No. %d": [
          null,
-         "Contracte de préstec núm. %d"
+         "Contrato de préstamo n.º %d"
       ],
       "Lending Contract No. %s": [
          null,
-         "Contracte de préstec núm. %s"
+         "Contrato de préstamo n.º %s"
       ],
       "Lending Contracts No. %s": [
          null,
-         "Contractes de préstec núm. %s"
+         "Contratos de préstamo n.º %s"
       ],
       "Lending Terms": [
          null,
-         "Condicions de préstec"
+         "Condiciones de préstamo"
       ],
       "Lending manager": [
          null,
-         "Gestor de préstecs"
+         "Gestor de préstamos"
       ],
       "License": [
          "Licenses",
-         "Llicència",
-         "Llicències"
+         "Licencia",
+         "Licencias"
       ],
       "License Number": [
          null,
-         "Número de llicència"
+         "Número de licencia"
       ],
       "License Server": [
          null,
-         "Servidor de llicències"
+         "Servidor de licencias"
       ],
       "License Type": [
          null,
-         "Tipus de llicència"
+         "Tipo de licencia"
       ],
       "License Version": [
          null,
-         "Versió de la llicència"
+         "Versión de la licencia"
       ],
       "License expiration": [
          null,
-         "Fi de la llicència"
+         "Fin de la licencia"
       ],
       "License saved.": [
          null,
-         "Llicència desada."
+         "Licencia guardada."
       ],
       "List of %d Users": [
          null,
-         "Llista de %d usuaris"
+         "Lista de %d usuarios"
       ],
       "List of %s": [
          null,
-         "Llista de %s"
+         "Lista de %s"
       ],
       "List of Authentication Systems": [
          null,
-         "Llista de sistemes d'autenticació"
+         "Lista de sistemas de autenticación"
       ],
       "List of Buildings": [
          null,
-         "Llista d'edificis"
+         "Lista de edificios"
       ],
       "List of Categories": [
          null,
-         "Llista de categories"
+         "Lista de categorías"
       ],
       "List of Contracts": [
          null,
-         "Llista de contractes"
+         "Lista de contratos"
       ],
       "List of Entitlement-Groups": [
          null,
-         "Llista de grups d'assignació"
+         "Lista de grupos de asignación"
       ],
       "List of Inventory": [
          null,
-         "Llista d'inventari"
+         "Lista de inventario"
       ],
       "List of Inventory Pools": [
          null,
-         "Llista de grups d'inventari"
+         "Lista de grupos de inventario"
       ],
       "List of Languages": [
          null,
-         "Llista d'idiomes"
+         "Lista de idiomas"
       ],
       "List of Orders": [
          null,
-         "Llista de comandes"
+         "Lista de pedidos"
       ],
       "List of Rooms": [
          null,
-         "Llista de sales"
+         "Lista de salas"
       ],
       "List of Users": [
          null,
-         "Llista d'usuaris"
+         "Lista de usuarios"
       ],
       "List of Visits": [
          null,
-         "Llista de visites"
+         "Lista de visitas"
       ],
       "List of available variables": [
          null,
-         "Llista de variables disponibles"
+         "Lista de variables disponibles"
       ],
       "List of templates": [
          null,
-         "Llista de plantilles"
+         "Lista de plantillas"
       ],
       "Loading": [
          null,
-         "Carregant"
+         "Cargando"
       ],
       "Loading availability": [
          null,
-         "Carregant disponibilitat"
+         "Cargando disponibilidad"
       ],
       "Local": [
          null,
@@ -2037,59 +2053,59 @@ window.i18n.locale_data = {
       ],
       "Location": [
          null,
-         "Ubicació"
+         "Ubicación"
       ],
       "Location not defined": [
          null,
-         "Ubicació sense definir"
+         "Ubicación sin definir"
       ],
       "Locations": [
          null,
-         "Ubicacions"
+         "Ubicaciones"
       ],
       "Logged in successfully": [
          null,
-         "Sessió iniciada correctament"
+         "Inicio de Sesión exitoso"
       ],
       "Login": [
          null,
-         "Iniciar sessió"
+         "Iniciar sesión"
       ],
       "Logout": [
          null,
-         "Tancar sessió"
+         "Cerrar sesión"
       ],
       "Low": [
          null,
-         "Baixa"
+         "Baja"
       ],
       "MAC-Address": [
          null,
-         "Adreça MAC"
+         "Dirección MAC"
       ],
       "Mail Templates": [
          null,
-         "Plantilles de correu"
+         "Plantillas de correo"
       ],
       "Main category": [
          null,
-         "Categoria principal"
+         "Categoría principal"
       ],
       "Maintenance": [
          null,
-         "Manteniment"
+         "Mantenimiento"
       ],
       "Maintenance contract": [
          null,
-         "Contracte de manteniment"
+         "Contrato de mantenimiento"
       ],
       "Maintenance expiration": [
          null,
-         "Fi del manteniment"
+         "Fin del mantenimiento"
       ],
       "Make changes and save": [
          null,
-         "Faci els canvis i desi"
+         "Haga los cambios y guarde"
       ],
       "Manage": [
          null,
@@ -2101,231 +2117,231 @@ window.i18n.locale_data = {
       ],
       "Manage inventory, place reservations on items and pick them up": [
          null,
-         "Gestioni l'inventari, reservi articles i reculli'ls"
+         "Gestione el inventario, reserve artículos y retírelos"
       ],
       "Manage section": [
          null,
-         "Secció de gestió"
+         "Sección de gestión"
       ],
       "Manage user roles via Groups.": [
          null,
-         "Gestioni els rols dels usuaris mitjançant grups."
+         "Gestione los roles de los usuarios mediante grupos."
       ],
       "Mandatory": [
          null,
-         "Obligatori"
+         "Obligatorio"
       ],
       "Manufacturer": [
          null,
-         "Fabricant"
+         "Fabricante"
       ],
       "Manufacturer (A-Z)": [
          null,
-         "Fabricant (A-Z)"
+         "Fabricante (A-Z)"
       ],
       "Manufacturer (Z-A)": [
          null,
-         "Fabricant (Z-A)"
+         "Fabricante (Z-A)"
       ],
       "Matching Templates": [
          null,
-         "Plantilles coincidents"
+         "Plantillas coincidentes"
       ],
       "Max. visits": [
          null,
-         "Màx. de visites"
+         "Máx. de visitas"
       ],
       "Maximum reservation time is restricted to": [
          null,
-         "El temps màxim de reserva està limitat a"
+         "El tiempo máximo de reserva está limitado a"
       ],
       "Medium": [
          null,
-         "Mitjana"
+         "Media"
       ],
       "Min. number of days between current date and hand over": [
          null,
-         "Mín. de dies entre la data actual i el lliurament"
+         "Mín. de días entre la fecha actual y la entrega"
       ],
       "Mobile": [
          null,
-         "Mòbil"
+         "Móvil"
       ],
       "Model": [
          null,
-         "Model"
+         "Modelo"
       ],
       "Model (A-Z)": [
          null,
-         "Model (A-Z)"
+         "Modelo (A-Z)"
       ],
       "Model (Z-A)": [
          null,
-         "Model (Z-A)"
+         "Modelo (Z-A)"
       ],
       "Model must be selected": [
          null,
-         "Cal seleccionar un model"
+         "Debe seleccionarse un modelo"
       ],
       "Model name": [
          null,
-         "Nom del model"
+         "Nombre del modelo"
       ],
       "Model not present anymore": [
          null,
-         "El model ja no existeix"
+         "El modelo ya no existe"
       ],
       "Model saved": [
          null,
-         "Model desat"
+         "Modelo guardado"
       ],
       "Model successfully added as compatible": [
          null,
-         "Model afegit correctament com a compatible"
+         "Modelo agregado correctamente como compatible"
       ],
       "Model successfully removed": [
          null,
-         "Model tret correctament"
+         "Modelo quitado correctamente"
       ],
       "Models": [
          null,
-         "Models"
+         "Modelos"
       ],
       "Model|Images|File content type": [
          null,
-         "Tipus de fitxer"
+         "Tipo de archivo"
       ],
       "Model|Images|File file size": [
          null,
-         "Mida del fitxer"
+         "Tamaño del archivo"
       ],
       "Mon": [
          null,
-         "Dl."
+         "Lun"
       ],
       "Monday": [
          null,
-         "Dilluns"
+         "Lunes"
       ],
       "Motivation": [
          null,
-         "Motivació"
+         "Motivación"
       ],
       "Move to another budget period": [
          null,
-         "Moure a un altre període pressupostari"
+         "Mover a otro período presupuestario"
       ],
       "Move to another entitlement-group": [
          null,
-         "Moure a un altre grup d'assignació"
+         "Mover a otro grupo de asignación"
       ],
       "Multiple Workplace": [
          null,
-         "Lloc de treball múltiple"
+         "Puesto de trabajo múltiple"
       ],
       "Musikinstrumente": [
          null,
-         "Instrument musical"
+         "Instrumento musical"
       ],
       "My documents": [
          null,
-         "Els meus documents"
+         "Mis documentos"
       ],
       "My entitlement-groups": [
          null,
-         "Els meus grups d'assignació"
+         "Mis grupos de asignación"
       ],
       "My requests": [
          null,
-         "Les meves sol·licituds"
+         "Mis solicitudes"
       ],
       "Name": [
          null,
-         "Nom"
+         "Nombre"
       ],
       "Name / ID": [
          null,
-         "Nom / ID"
+         "Nombre / ID"
       ],
       "Name of receiver": [
          null,
-         "Nom del receptor"
+         "Nombre del receptor"
       ],
       "Name of the entitlement-group": [
          null,
-         "Nom del grup d'assignació"
+         "Nombre del grupo de asignación"
       ],
       "Name of the model": [
          null,
-         "Nom del model"
+         "Nombre del modelo"
       ],
       "Name of the requester": [
          null,
-         "Nom del sol·licitant"
+         "Nombre del solicitante"
       ],
       "Name of the template": [
          null,
-         "Nom de la plantilla"
+         "Nombre de la plantilla"
       ],
       "Name of the user": [
          null,
-         "Nom de l'usuari"
+         "Nombre del usuario"
       ],
       "New": [
          null,
-         "Nou"
+         "Nuevo"
       ],
       "New Borrower": [
          null,
-         "Nou prestatari"
+         "Nuevo prestatario"
       ],
       "New Category": [
          null,
-         "Nova categoria"
+         "Nueva categoría"
       ],
       "New Delegation": [
          null,
-         "Nova delegació"
+         "Nueva delegación"
       ],
       "New Entitlement-Group": [
          null,
-         "Nou grup d'assignació"
+         "Nuevo grupo de asignación"
       ],
       "New Orderer": [
          null,
-         "Nou sol·licitant"
+         "Nuevo solicitante"
       ],
       "New Package": [
          null,
-         "Nou paquet"
+         "Nuevo paquete"
       ],
       "New Template": [
          null,
-         "Nova plantilla"
+         "Nueva plantilla"
       ],
       "New User": [
          null,
-         "Nou usuari"
+         "Nuevo usuario"
       ],
       "New inventory badge": [
          null,
-         "Nou"
+         "Nuevo"
       ],
       "New item created.": [
          null,
-         "Article nou creat."
+         "Nuevo elemento creado"
       ],
       "New line (Add Article or Project)": [
          null,
-         "Línia nova (afegir article o projecte)"
+         "Línea nueva (agregar artículo o proyecto)"
       ],
       "New users will get customer access automatically.": [
          null,
-         "Els usuaris nous reben accés de client automàticament."
+         "Los usuarios nuevos reciben acceso de cliente automáticamente."
       ],
       "Next": [
          null,
-         "Següent"
+         "Siguiente"
       ],
       "No": [
          null,
@@ -2333,75 +2349,75 @@ window.i18n.locale_data = {
       ],
       "No access": [
          null,
-         "Sense accés"
+         "Sin acceso"
       ],
       "No admins defined yet": [
          null,
-         "Encara no hi ha administradors"
+         "Todavía no hay administradores"
       ],
       "No categories defined yet": [
          null,
-         "Encara no hi ha categories"
+         "Todavía no hay categorías"
       ],
       "No description": [
          null,
-         "Sense descripció"
+         "Sin descripción"
       ],
       "No description available for this model.": [
          null,
-         "No hi ha descripció per a aquest model."
+         "No hay descripción para este modelo."
       ],
       "No entries found": [
          null,
-         "No s'han trobat entrades"
+         "No se encontraron entradas"
       ],
       "No entry found": [
          null,
-         "No s'ha trobat cap entrada"
+         "No se encontró ninguna entrada"
       ],
       "No hand overs found": [
          null,
-         "No s'han trobat lliuraments"
+         "No se encontraron entregas"
       ],
       "No orders are possible on this end date": [
          null,
-         "No es poden fer comandes amb aquesta data de fi"
+         "No se pueden hacer pedidos con esta fecha de fin"
       ],
       "No orders are possible on this start date": [
          null,
-         "No es poden fer comandes amb aquesta data d'inici"
+         "No se pueden hacer pedidos con esta fecha de inicio"
       ],
       "No reminder yet": [
          null,
-         "Encara sense recordatori"
+         "Todavía sin recordatorio"
       ],
       "No requesters defined yet": [
          null,
-         "Encara no hi ha sol·licitants"
+         "Todavía no hay solicitantes"
       ],
       "No results": [
          null,
-         "Sense resultats"
+         "Sin resultados"
       ],
       "No take backs found": [
          null,
-         "No s'han trobat devolucions"
+         "No se encontraron devoluciones"
       ],
       "No verification required": [
          null,
-         "No requereix verificació"
+         "No requiere verificación"
       ],
       "No.": [
          null,
-         "Núm."
+         "N.º"
       ],
       "None": [
          null,
-         "Cap"
+         "Ninguno"
       ],
       "None selected": [
          null,
-         "Cap seleccionat"
+         "Ninguno seleccionado"
       ],
       "Normal": [
          null,
@@ -2413,7 +2429,7 @@ window.i18n.locale_data = {
       ],
       "Not a requester": [
          null,
-         "No és sol·licitant"
+         "No es solicitante"
       ],
       "Not available": [
          null,
@@ -2421,7 +2437,7 @@ window.i18n.locale_data = {
       ],
       "Not categorized": [
          null,
-         "Sense categoria"
+         "Sin categoría"
       ],
       "Note": [
          null,
@@ -2429,303 +2445,303 @@ window.i18n.locale_data = {
       ],
       "Nothing selected": [
          null,
-         "No hi ha res seleccionat"
+         "Nada seleccionado"
       ],
       "Notification": [
          null,
-         "Notificació"
+         "Notificación"
       ],
       "Number of items": [
          null,
-         "Nombre d'articles"
+         "Número de artículos"
       ],
       "OK": [
          null,
-         "D'acord"
+         "Aceptar"
       ],
       "One of the managers approves/denies or changes your reservation": [
          null,
-         "Un gestor aprova, rebutja o modifica la seva reserva"
+         "Un gestor aprueba, rechaza o modifica su reserva"
       ],
       "Only categories with requests": [
          null,
-         "Només categories amb sol·licituds"
+         "Solo categorías con solicitudes"
       ],
       "Only enter whole numbers": [
          null,
-         "Introdueixi només nombres enters"
+         "Solo ingrese números enteros"
       ],
       "Only my own categories": [
          null,
-         "Només les meves categories"
+         "Solo mis categorías"
       ],
       "Only my own requests": [
          null,
-         "Només les meves sol·licituds"
+         "Solo mis solicitudes"
       ],
       "Open": [
          null,
-         "Obert"
+         "Abierto"
       ],
       "Open %s": [
          null,
-         "Obrir %s"
+         "Abrir %s"
       ],
       "Open Datepicker": [
          null,
-         "Obrir calendari"
+         "Abrir calendario"
       ],
       "Open Orders": [
          null,
-         "Comandes obertes"
+         "Pedidos abiertos"
       ],
       "Open orders": [
          null,
-         "Comandes obertes"
+         "Pedidos abiertos"
       ],
       "Opening Hours": [
          null,
-         "Horari d'obertura"
+         "Horario de apertura"
       ],
       "Operating System": [
          null,
-         "Sistema operatiu"
+         "Sistema operativo"
       ],
       "Option": [
          null,
-         "Opció"
+         "Opción"
       ],
       "Option saved": [
          null,
-         "Opció desada"
+         "Opción guardada"
       ],
       "Options": [
          null,
-         "Opcions"
+         "Opciones"
       ],
       "Order": [
          null,
-         "Comanda"
+         "Pedido"
       ],
       "Order approved": [
          null,
-         "Comanda aprovada"
+         "Pedido aprobado"
       ],
       "Order from": [
          null,
-         "Comanda de"
+         "Pedido de"
       ],
       "Order from %s": [
          null,
-         "Comanda de %s"
+         "Pedido de %s"
       ],
       "Order overview": [
          null,
-         "Resum de la comanda"
+         "Resumen del pedido"
       ],
       "Order quantity": [
          null,
-         "Quantitat demanada"
+         "Cantidad pedida"
       ],
       "Order received": [
          null,
-         "Comanda rebuda"
+         "Pedido recibido"
       ],
       "Order rejected": [
          null,
-         "Comanda rebutjada"
+         "Pedido rechazado"
       ],
       "Order submitted": [
          null,
-         "Comanda enviada"
+         "Pedido enviado"
       ],
       "Orders": [
          null,
-         "Comandes"
+         "Pedidos"
       ],
       "Organisation": [
          null,
-         "Organització"
+         "Organización"
       ],
       "Organisation unit": [
          null,
-         "Unitat organitzativa"
+         "Unidad organizativa"
       ],
       "Organisations": [
          null,
-         "Organitzacions"
+         "Organizaciones"
       ],
       "Organisations of the requesters": [
          null,
-         "Organitzacions dels sol·licitants"
+         "Organizaciones de los solicitantes"
       ],
       "Other entitlement-groups": [
          null,
-         "Altres grups d'assignació"
+         "Otros grupos de asignación"
       ],
       "Overbooked Quantity": [
          null,
-         "Quantitat amb sobrereserva"
+         "Cantidad con sobrerreserva"
       ],
       "Overbooking": [
          null,
-         "Sobrereserva"
+         "Sobrerreserva"
       ],
       "Overdue": [
          null,
-         "Endarrerit"
+         "Atrasado"
       ],
       "Overdue Returns": [
          null,
-         "Devolucions endarrerides"
+         "Devoluciones atrasadas"
       ],
       "Overdue Visit": [
          null,
-         "Visita endarrerida"
+         "Visita atrasada"
       ],
       "Overview": [
          null,
-         "Resum"
+         "Resumen"
       ],
       "Owned": [
          null,
-         "Propis"
+         "Propios"
       ],
       "Owner": [
          null,
-         "Propietari"
+         "Propietario"
       ],
       "Package": [
          null,
-         "Paquet"
+         "Paquete"
       ],
       "Package Code": [
          null,
-         "Codi del paquet"
+         "Código del paquete"
       ],
       "Package successfully destroyed": [
          null,
-         "Paquet eliminat correctament"
+         "Paquete destruido correctamente"
       ],
       "Package successfully saved": [
          null,
-         "Paquet desat correctament"
+         "Paquete guardado correctamente"
       ],
       "Packages": [
          null,
-         "Paquets"
+         "Paquetes"
       ],
       "Packages created": [
          null,
-         "Paquets creats"
+         "Paquetes creados"
       ],
       "Packages updated": [
          null,
-         "Paquets actualitzats"
+         "Paquetes actualizados"
       ],
       "Parent categories": [
          null,
-         "Categories superiors"
+         "Categorías superiores"
       ],
       "Partially approved": [
          null,
-         "Aprovat parcialment"
+         "Aprobado parcialmente"
       ],
       "Password": [
          null,
-         "Contrasenya"
+         "Contraseña"
       ],
       "Password Confirmation": [
          null,
-         "Confirmació de la contrasenya"
+         "Confirmación de la contraseña"
       ],
       "Password changed": [
          null,
-         "Contrasenya modificada"
+         "Contraseña modificada"
       ],
       "Pending": [
          null,
-         "Pendent"
+         "Pendiente"
       ],
       "Period": [
          null,
-         "Període"
+         "Período"
       ],
       "Phone": [
          null,
-         "Telèfon"
+         "Teléfono"
       ],
       "Phone%s": [
          null,
-         "Telèfon%s"
+         "Teléfono%s"
       ],
       "Picking List": [
          null,
-         "Llista de recollida"
+         "Lista de recogida"
       ],
       "Please adapt the specific quantities to fit your needs.": [
          null,
-         "Ajusti les quantitats al que necessiti."
+         "Ajuste las cantidades a lo que necesite."
       ],
       "Please contact the concerned inventory pool.": [
          null,
-         "Contacti amb el grup d'inventari corresponent."
+         "Contacte con el grupo de inventario correspondiente."
       ],
       "Please note that these contracts, while they do belong to approved orders, may be changed by the lending manager at any time. They represent only a current snapshot of the order and might not contain the same items as the final contract once you pick up your items.": [
          null,
-         "Tingui en compte que aquests contractes, encara que pertanyen a comandes aprovades, el gestor de préstecs els pot modificar en qualsevol moment. Només mostren l'estat actual de la comanda i potser no contenen els mateixos articles que el contracte final quan reculli els articles."
+         "Tenga en cuenta que estos contratos, aunque pertenecen a pedidos aprobados, pueden ser modificados por el gestor de préstamos en cualquier momento. Solo muestran el estado actual del pedido y puede que no contengan los mismos artículos que el contrato final cuando retire sus artículos."
       ],
       "Please provide a purpose...": [
          null,
-         "Indiqui un motiu..."
+         "Indique un motivo..."
       ],
       "Please provide a search term": [
          null,
-         "Indiqui un terme de cerca"
+         "Indique un término de búsqueda"
       ],
       "Please provide all required fields": [
          null,
-         "Completi tots els camps obligatoris"
+         "Complete todos los campos obligatorios"
       ],
       "Please provide an inventory code": [
          null,
-         "Indiqui un codi d'inventari"
+         "Indique un código de inventario"
       ],
       "Please select a template.": [
          null,
-         "Seleccioni una plantilla."
+         "Seleccione una plantilla."
       ],
       "Please select a time range and continue.": [
          null,
-         "Seleccioni un període i continuï."
+         "Seleccione un período y continúe."
       ],
       "Please select an inventory pool": [
          null,
-         "Seleccioni un grup d'inventari"
+         "Seleccione un grupo de inventario"
       ],
       "Please select an item.": [
          null,
-         "Seleccioni un article."
+         "Seleccione un artículo."
       ],
       "Please select some fields.": [
          null,
-         "Seleccioni alguns camps."
+         "Seleccione algunos campos."
       ],
       "Please solve the conflicts for all highlighted reservations in order to continue.": [
          null,
-         "Resolgui els conflictes de totes les reserves ressaltades per continuar."
+         "Resuelva los conflictos de todas las reservas resaltadas para continuar."
       ],
       "Please specify the purpose of your order here...": [
          null,
-         "Indiqui aquí el motiu de la seva comanda..."
+         "Indique aquí el motivo de su pedido..."
       ],
       "Point of Delivery": [
          null,
-         "Punt de lliurament"
+         "Punto de entrega"
       ],
       "Prepackaged": [
          null,
-         "Preembalat"
+         "Preembalado"
       ],
       "Previous": [
          null,
@@ -2733,7 +2749,7 @@ window.i18n.locale_data = {
       ],
       "Price": [
          null,
-         "Preu"
+         "Precio"
       ],
       "Print": [
          null,
@@ -2741,131 +2757,131 @@ window.i18n.locale_data = {
       ],
       "Print Contracts": [
          null,
-         "Imprimir contractes"
+         "Imprimir contratos"
       ],
       "Print Selection": [
          null,
-         "Imprimir selecció"
+         "Imprimir selección"
       ],
       "Print dialog will open aut.": [
          null,
-         "El diàleg d'impressió s'obrirà automàticament."
+         "El diálogo de impresión se abrirá automáticamente."
       ],
       "Priority": [
          null,
-         "Prioritat"
+         "Prioridad"
       ],
       "Problems": [
          null,
-         "Problemes"
+         "Problemas"
       ],
       "Process multiple fields for multiple items in a row": [
          null,
-         "Processar diversos camps de diversos articles seguits"
+         "Procesar varios campos de varios artículos seguidos"
       ],
       "Procured by": [
          null,
-         "Adquirit per"
+         "Adquirido por"
       ],
       "Procurement": [
          null,
-         "Compres"
+         "Compras"
       ],
       "Product": [
          null,
-         "Producte"
+         "Producto"
       ],
       "Produktionstechnik": [
          null,
-         "Tècnica de producció"
+         "Técnica de producción"
       ],
       "Project Number": [
          null,
-         "Número de projecte"
+         "Número de proyecto"
       ],
       "Properties": [
          null,
-         "Propietats"
+         "Propiedades"
       ],
       "Property": [
          null,
-         "Propietat"
+         "Propiedad"
       ],
       "Purpose": [
          null,
-         "Motiu"
+         "Motivo"
       ],
       "Purpose changed '%s' for '%s'": [
          null,
-         "Motiu canviat de '%s' a '%s'"
+         "Motivo cambiado de '%s' a '%s'"
       ],
       "Purpose changed '%{from}' for '%{to}'": [
          null,
-         "Motiu canviat de '%{from}' a '%{to}'"
+         "Motivo cambiado de '%{from}' a '%{to}'"
       ],
       "Purpose of the order": [
          null,
-         "Motiu de la comanda"
+         "Motivo del pedido"
       ],
       "Purpose these items are borrowed for": [
          null,
-         "Motiu del préstec d'aquests articles"
+         "Motivo del préstamo de estos artículos"
       ],
       "Qty.": [
          null,
-         "Quant."
+         "Cant."
       ],
       "Quantities": [
          null,
-         "Quantitats"
+         "Cantidades"
       ],
       "Quantity": [
          null,
-         "Quantitat"
+         "Cantidad"
       ],
       "Quantity allocations": [
          null,
-         "Assignació de quantitats"
+         "Asignación de cantidades"
       ],
       "Quantity: %d": [
          null,
-         "Quantitat: %d"
+         "Cantidad: %d"
       ],
       "Reason for Retirement": [
          null,
-         "Motiu de la baixa"
+         "Motivo de la baja"
       ],
       "Recommended Accessories": [
          null,
-         "Accessoris recomanats"
+         "Accesorios recomendados"
       ],
       "Reference": [
          null,
-         "Referència"
+         "Referencia"
       ],
       "Reject": [
          null,
-         "Rebutjar"
+         "Rechazar"
       ],
       "Reject order": [
          null,
-         "Rebutjar comanda"
+         "Rechazar pedido"
       ],
       "Rejected": [
          null,
-         "Rebutjat"
+         "Rechazado"
       ],
       "Rejected on": [
          null,
-         "Rebutjat el"
+         "Rechazado el"
       ],
       "Rejection Successful": [
          null,
-         "Rebuig correcte"
+         "Rechazo correcto"
       ],
       "Relevant for inventory": [
          null,
-         "Rellevant per a l'inventari"
+         "Relevante para el inventario"
       ],
       "Remind": [
          null,
@@ -2873,63 +2889,63 @@ window.i18n.locale_data = {
       ],
       "Reminded %{q} items for contracts %{c}": [
          null,
-         "S'ha enviat recordatori de %{q} articles dels contractes %{c}"
+         "Recordado %{q} veces para el contrato %{c}"
       ],
       "Reminder": [
          null,
-         "Recordatori"
+         "Recordatorio"
       ],
       "Reminder emails": [
          null,
-         "Correus de recordatori"
+         "Correos de recordatorio"
       ],
       "Reminder sent": [
          null,
-         "Recordatori enviat"
+         "Recordatorio enviado"
       ],
       "Remove": [
          null,
-         "Treure"
+         "Quitar"
       ],
       "Removed %{q} %{m}": [
          null,
-         "Tret: %{q} %{m}"
+         "Quitado: %{q} %{m}"
       ],
       "Removed on save": [
          null,
-         "Es treu en desar"
+         "Se quita al guardar"
       ],
       "Removing items": [
          null,
-         "Traient articles"
+         "Quitando artículos"
       ],
       "Replacement": [
          null,
-         "Reposició"
+         "Reposición"
       ],
       "Request moved": [
          null,
-         "Sol·licitud moguda"
+         "Solicitud movida"
       ],
       "Requested Items": [
          null,
-         "Articles sol·licitats"
+         "Artículos solicitados"
       ],
       "Requested quantity": [
          null,
-         "Quantitat sol·licitada"
+         "Cantidad solicitada"
       ],
       "Requester": [
          null,
-         "Sol·licitant"
+         "Solicitante"
       ],
       "Requesters": [
          null,
-         "Sol·licitants"
+         "Solicitantes"
       ],
       "Requests": [
          null,
-         "Sol·licituds"
+         "Solicitudes"
       ],
       "Reservation": [
          null,
@@ -2937,19 +2953,19 @@ window.i18n.locale_data = {
       ],
       "Reset": [
          null,
-         "Restablir"
+         "Restablecer"
       ],
       "Reset all filter": [
          null,
-         "Restablir tots els filtres"
+         "Restablecer todos los filtros"
       ],
       "Reset timeout": [
          null,
-         "Reiniciar el límit de temps"
+         "Reiniciar el límite de tiempo"
       ],
       "Reset visibility of all fields on the item forms": [
          null,
-         "Restablir la visibilitat de tots els camps als formularis d'articles"
+         "Restablecer la visibilidad de todos los campos en los formularios de artículos"
       ],
       "Responsible": [
          null,
@@ -2957,11 +2973,11 @@ window.i18n.locale_data = {
       ],
       "Responsible department": [
          null,
-         "Departament responsable"
+         "Departamento responsable"
       ],
       "Responsible inventory pool": [
          null,
-         "Grup d'inventari responsable"
+         "Grupo de inventario responsable"
       ],
       "Responsible person": [
          null,
@@ -2969,35 +2985,35 @@ window.i18n.locale_data = {
       ],
       "Retire": [
          null,
-         "Donar de baixa"
+         "Retirar"
       ],
       "Retire Item": [
          null,
-         "Donar de baixa l'article"
+         "Dar de baja el artículo"
       ],
       "Retired": [
          null,
-         "Donat de baixa"
+         "Dado de baja"
       ],
       "Retirement": [
          null,
-         "Baixa"
+         "Baja"
       ],
       "Return": [
          null,
-         "Devolució"
+         "Devolución"
       ],
       "Return to this hand over": [
          null,
-         "Tornar a aquest lliurament"
+         "Volver a esta entrega"
       ],
       "Returned Items": [
          null,
-         "Articles retornats"
+         "Artículos devueltos"
       ],
       "Returns": [
          null,
-         "Devolucions"
+         "Devoluciones"
       ],
       "Role": [
          null,
@@ -3005,104 +3021,104 @@ window.i18n.locale_data = {
       ],
       "Roles for users and groups can be managed in the new %s.": [
          null,
-         "Els rols d'usuaris i grups es gestionen a la nova %s."
+         "Los roles de usuarios y grupos se gestionan en la nueva %s."
       ],
       "Room": [
          "Rooms",
          "Sala",
-         "Sales"
+         "Salas"
       ],
       "Running Account": [
          null,
-         "Compte corrent"
+         "Cuenta corriente"
       ],
       "Same or similar serial number already exists.": [
          null,
-         "Ja existeix el mateix número de sèrie o un de semblant."
+         "Ya existe el mismo número de serie u otro parecido."
       ],
       "Saturday": [
          null,
-         "Dissabte"
+         "Sábado"
       ],
       "Save": [
          null,
-         "Desar"
+         "Guardar"
       ],
       "Save %s": [
          null,
-         "Desar %s"
+         "Guardar %s"
       ],
       "Save Package": [
          null,
-         "Desar paquet"
+         "Guardar paquete"
       ],
       "Save and copy": [
          null,
-         "Desar i copiar"
+         "Guardar y copiar"
       ],
       "Save and copy %s": [
          null,
-         "Desar i copiar %s"
+         "Guardar y copiar %s"
       ],
       "Save anyway": [
          null,
-         "Desar igualment"
+         "Guardar de todos modos"
       ],
       "Save change": [
          null,
-         "Desar canvi"
+         "Guardar cambio"
       ],
       "Save changes": [
          null,
-         "Desar canvis"
+         "Guardar cambios"
       ],
       "Save package": [
          null,
-         "Desar paquet"
+         "Guardar paquete"
       ],
       "Saved": [
          null,
-         "Desat"
+         "Guardado"
       ],
       "Search": [
          null,
-         "Cercar"
+         "Buscar"
       ],
       "Search %s": [
          null,
-         "Cercar %s"
+         "Buscar %s"
       ],
       "Search Results for \"%s\"": [
          null,
-         "Resultats de cerca per a \"%s\""
+         "Resultados de búsqueda para \"%s\""
       ],
       "Search Results for %s": [
          null,
-         "Resultats de cerca per a %s"
+         "Resultados de búsqueda para %s"
       ],
       "Search for '%s'": [
          null,
-         "Cercar '%s'"
+         "Buscar '%s'"
       ],
       "Search results (%s) for \"%s\"": [
          null,
-         "Resultats de cerca (%s) per a \"%s\""
+         "Resultados de búsqueda (%s) para \"%s\""
       ],
       "Search results (%s) for %s": [
          null,
-         "Resultats de cerca (%s) per a %s"
+         "Resultados de búsqueda (%s) para %s"
       ],
       "Search...": [
          null,
-         "Cercar..."
+         "Buscar..."
       ],
       "Searching": [
          null,
-         "Cercant"
+         "Buscando"
       ],
       "Searching...": [
          null,
-         "Cercant..."
+         "Buscando..."
       ],
       "Select": [
          null,
@@ -3110,51 +3126,51 @@ window.i18n.locale_data = {
       ],
       "Select Field": [
          null,
-         "Seleccionar camp"
+         "Seleccionar campo"
       ],
       "Select File": [
          null,
-         "Seleccionar fitxer"
+         "Seleccionar archivo"
       ],
       "Select Image": [
          null,
-         "Seleccionar imatge"
+         "Seleccionar imagen"
       ],
       "Select all": [
          null,
-         "Seleccionar-ho tot"
+         "Seleccionar todo"
       ],
       "Selected Pools (%s)": [
          null,
-         "Grups seleccionats (%s)"
+         "Grupos seleccionados (%s)"
       ],
       "Selection": [
          null,
-         "Selecció"
+         "Selección"
       ],
       "Send reminder": [
          null,
-         "Enviar recordatori"
+         "Enviar recordatorio"
       ],
       "Serial Number": [
          null,
-         "Número de sèrie"
+         "Número de serie"
       ],
       "Settings": [
          null,
-         "Configuració"
+         "Configuración"
       ],
       "Settings for %s": [
          null,
-         "Configuració de %s"
+         "Configuración de %s"
       ],
       "Shelf": [
          null,
-         "Prestatge"
+         "Estante"
       ],
       "Short Name": [
          null,
-         "Nom curt"
+         "Nombre corto"
       ],
       "Show": [
          null,
@@ -3162,151 +3178,151 @@ window.i18n.locale_data = {
       ],
       "Show Availability": [
          null,
-         "Mostrar disponibilitat"
+         "Mostrar disponibilidad"
       ],
       "Show all %s...": [
          null,
-         "Mostrar els %s..."
+         "Mostrar los %s..."
       ],
       "Show all ...": [
          null,
-         "Mostrar-ho tot..."
+         "Mostrar todo..."
       ],
       "Show all fields": [
          null,
-         "Mostrar tots els camps"
+         "Mostrar todos los campos"
       ],
       "Show all found %s": [
          null,
-         "Mostrar els %s trobats"
+         "Mostrar los %s encontrados"
       ],
       "Show all properties": [
          null,
-         "Mostrar totes les propietats"
+         "Mostrar todas las propiedades"
       ],
       "Show all search results": [
          null,
-         "Mostrar tots els resultats"
+         "Mostrar todos los resultados"
       ],
       "Show delegation": [
          null,
-         "Mostrar delegació"
+         "Mostrar delegación"
       ],
       "Show less properties": [
          null,
-         "Mostrar menys propietats"
+         "Mostrar menos propiedades"
       ],
       "Show user": [
          null,
-         "Mostrar usuari"
+         "Mostrar usuario"
       ],
       "Signature": [
          null,
-         "Signatura"
+         "Firma"
       ],
       "Signed": [
          null,
-         "Signat"
+         "Firmado"
       ],
       "Signed contracts": [
          null,
-         "Contractes signats"
+         "Contratos firmados"
       ],
       "Single Workplace": [
          null,
-         "Lloc de treball únic"
+         "Puesto de trabajo único"
       ],
       "Site License": [
          null,
-         "Llicència de lloc"
+         "Licencia de sitio"
       ],
       "Software": [
          null,
-         "Programari"
+         "Software"
       ],
       "Software Information": [
          null,
-         "Informació del programari"
+         "Información del software"
       ],
       "Software License": [
          null,
-         "Llicència de programari"
+         "Licencia de software"
       ],
       "Something went wrong!": [
          null,
-         "Alguna cosa ha anat malament!"
+         "¡Algo salió mal!"
       ],
       "Source code": [
          null,
-         "Codi font"
+         "Código fuente"
       ],
       "Special filters": [
          null,
-         "Filtres especials"
+         "Filtros especiales"
       ],
       "Specification of the contact person is required": [
          null,
-         "Cal indicar la persona de contacte"
+         "Hay que indicar la persona de contacto"
       ],
       "Specification of the purpose is required": [
          null,
-         "Cal indicar el motiu"
+         "Hay que indicar el motivo"
       ],
       "Start": [
          null,
-         "Inici"
+         "Inicio"
       ],
       "Start Date must be before End Date": [
          null,
-         "La data d'inici ha de ser anterior a la data de fi"
+         "La fecha de inicio debe ser anterior a la Fecha de finalización"
       ],
       "Start Screen": [
          null,
-         "Pantalla d'inici"
+         "Pantalla de inicio"
       ],
       "Start and end date cannot be in the past": [
          null,
-         "La data d'inici i la de fi no poden ser en el passat"
+         "Fecha de inicio y fin no puede ser en el pasado"
       ],
       "Start date": [
          null,
-         "Data d'inici"
+         "Fecha de inicio"
       ],
       "Start search": [
          null,
-         "Iniciar cerca"
+         "Iniciar búsqueda"
       ],
       "State": [
          null,
-         "Estat"
+         "Estado"
       ],
       "State of Request": [
          null,
-         "Estat de la sol·licitud"
+         "Estado de la solicitud"
       ],
       "Statistics": [
          null,
-         "Estadístiques"
+         "Estadísticas"
       ],
       "Status": [
          null,
-         "Estat"
+         "Estado"
       ],
       "Status note": [
          null,
-         "Nota d'estat"
+         "Nota de estado"
       ],
       "Subcategories": [
          null,
-         "Subcategories"
+         "Subcategorías"
       ],
       "Subcategory": [
          null,
-         "Subcategoria"
+         "Subcategoría"
       ],
       "Submission failed": [
          null,
-         "No s'ha pogut enviar la comanda"
+         "Falló el pedido"
       ],
       "Submit": [
          null,
@@ -3314,92 +3330,92 @@ window.i18n.locale_data = {
       ],
       "Submit Order": [
          null,
-         "Enviar comanda"
+         "Enviar pedido"
       ],
       "Submitted": [
          null,
-         "Enviat"
+         "Enviado"
       ],
       "Subordinate to %s": [
          null,
-         "Subordinat a %s"
+         "Subordinado a %s"
       ],
       "Successful Order": [
          null,
-         "Comanda correcta"
+         "Pedido correcto"
       ],
       "Successfully set.": [
          null,
-         "Establert correctament."
+         "Establecido correctamente."
       ],
       "Sunday": [
          null,
-         "Diumenge"
+         "Domingo"
       ],
       "Supplier": [
          null,
-         "Proveïdor"
+         "Proveedor"
       ],
       "Suppliers": [
          null,
-         "Proveïdors"
+         "Proveedores"
       ],
       "Suspended": [
          null,
-         "Suspès"
+         "Suspendido"
       ],
       "Suspended reason": [
          null,
-         "Motiu de la suspensió"
+         "Motivo de la suspensión"
       ],
       "Suspended until": [
          null,
-         "Suspès fins a"
+         "Suspendido hasta"
       ],
       "Swap Model": [
          null,
-         "Canviar model"
+         "Cambiar modelo"
       ],
       "Swapped %{from} for %{to}": [
          null,
-         "Intercanviat %{from} per %{to}"
+         "Intercambio %{from} por %{to}"
       ],
       "Swapped from %s ": [
          null,
-         "Canviat des de %s "
+         "Cambiado desde %s "
       ],
       "Take Back": [
          null,
-         "Retornar"
+         "Devolver"
       ],
       "Take Back Selection": [
          null,
-         "Retornar selecció"
+         "Devolver selección"
       ],
       "Take Back from": [
          null,
-         "Devolució de"
+         "Devolución de"
       ],
       "Take Back from %s": [
          null,
-         "Devolució de %s"
+         "Devolución de %s"
       ],
       "Take Backs": [
          null,
-         "Devolucions"
+         "Devoluciones"
       ],
       "Take back completed": [
          null,
-         "Devolució completada"
+         "Devolución completada"
       ],
       "Take back of %s item": [
          "Take back of %s items",
-         "Devolució de %s article",
-         "Devolució de %s articles"
+         "Devolución de %s artículo",
+         "Devolución de %s artículos"
       ],
       "Technical Details": [
          null,
-         "Detalls tècnics"
+         "Detalles técnicos"
       ],
       "Template": [
          null,
@@ -3407,319 +3423,319 @@ window.i18n.locale_data = {
       ],
       "Template Categories": [
          null,
-         "Categories de plantilles"
+         "Categorías de plantillas"
       ],
       "Template must have at least one model": [
          null,
-         "La plantilla ha de tenir com a mínim un model"
+         "La plantilla debe tener al menos un modelo"
       ],
       "Templates": [
          null,
-         "Plantilles"
+         "Plantillas"
       ],
       "Terms and conditions of the lender apply.": [
          null,
-         "S'apliquen les condicions del prestador."
+         "Se aplican las condiciones del prestador."
       ],
       "That means that the user probably did not get the approval mail and you need to contact him/her in a different way.": [
          null,
-         "Això vol dir que probablement l'usuari no ha rebut el correu d'aprovació i caldrà contactar-hi d'una altra manera."
+         "Esto significa que probablemente el usuario no recibió el correo de aprobación y tendrá que contactarle de otra forma."
       ],
       "The Category must be empty": [
          null,
-         "La categoria ha d'estar buida"
+         "Esta Categoría debe estar vacía"
       ],
       "The Inventory Code %s was not found for %s": [
          null,
-         "No s'ha trobat el codi d'inventari %s per a %s"
+         "No se encontró el código de inventario %s para %s"
       ],
       "The Inventory Code %s was not found.": [
          null,
-         "No s'ha trobat el codi d'inventari %s."
+         "No se encontró el código de inventario %s."
       ],
       "The Inventory Pool must be empty": [
          null,
-         "El grup d'inventari ha d'estar buit"
+         "El Inventario debe estar vacío"
       ],
       "The accessory was successfully created.": [
          null,
-         "L'accessori s'ha creat correctament."
+         "El accesorio se creó correctamente."
       ],
       "The accessory was successfully deleted.": [
          null,
-         "L'accessori s'ha eliminat correctament."
+         "El accesorio se eliminó correctamente."
       ],
       "The admin role cannot be scoped to an inventory pool": [
          null,
-         "El rol d'administrador no es pot assignar a un grup d'inventari"
+         "El rol de administrador no puede estar asignado a un grupo de inventario"
       ],
       "The assignment for %s was removed": [
          null,
-         "S'ha tret l'assignació de %s"
+         "Se quitó la asignación de %s"
       ],
       "The budget period is closed": [
          null,
-         "El període pressupostari està tancat"
+         "El período presupuestario está cerrado"
       ],
       "The entitlement-group quantities were successfully saved.": [
          null,
-         "Les quantitats del grup d'assignació s'han desat correctament."
+         "Las cantidades del grupo de asignación se guardaron correctamente."
       ],
       "The following error happened while sending a notification email to %{email}:\\\\n": [
          null,
-         "S'ha produït l'error següent en enviar un correu de notificació a %{email}:\\\\n"
+         "Se produjo el siguiente error al enviar un correo de notificación a %{email}:\\\\n"
       ],
       "The highlighted entries are not accomplishable for the intended quantity.": [
          null,
-         "Les entrades ressaltades no es poden complir amb la quantitat prevista."
+         "Las entradas resaltadas no se pueden cumplir con la cantidad prevista."
       ],
       "The inventory code %s is not valid for this model": [
          null,
-         "El codi d'inventari %s no és vàlid per a aquest model"
+         "El código de inventario %s no es válido para este modelo"
       ],
       "The item %s will be retired and no longer available for rentals.": [
          null,
-         "L'article %s es donarà de baixa i ja no estarà disponible per a préstecs."
+         "El artículo %s se dará de baja y ya no estará disponible para préstamos."
       ],
       "The item belongs to a package": [
          null,
-         "L'article pertany a un paquet"
+         "El artículo pertenece a un paquete"
       ],
       "The item cannot be retired because it's not returned yet or has already been assigned to a contract line.": [
          null,
-         "L'article no es pot donar de baixa perquè encara no s'ha retornat o ja està assignat a una línia de contracte."
+         "El artículo no se puede dar de baja porque todavía no se devolvió o ya está asignado a una línea de contrato."
       ],
       "The item doesn't belong to the inventory pool related to this contract": [
          null,
-         "L'article no pertany al grup d'inventari relacionat amb aquest contracte"
+         "El artículo no pertenece al grupo de inventario relacionado con este contrato"
       ],
       "The item doesn't match with the reserved model": [
          null,
-         "L'article no coincideix amb el model reservat"
+         "El artículo no coincide con el modelo reservado"
       ],
       "The item is already handed over or assigned to a different contract line": [
          null,
-         "L'article ja està lliurat o assignat a una altra línia de contracte"
+         "El artículo ya está entregado o asignado a otra línea de contrato"
       ],
       "The item is already retired": [
          null,
-         "L'article ja està donat de baixa"
+         "El artículo ya está dado de baja"
       ],
       "The item with the inventory code %s was not found": [
          null,
-         "No s'ha trobat l'article amb el codi d'inventari %s"
+         "No se encontró el artículo con el código de inventario %s"
       ],
       "The items of the package can not be edited": [
          null,
-         "Els articles del paquet no es poden editar"
+         "Los artículos del paquete no se pueden editar"
       ],
       "The line was not found": [
          null,
-         "No s'ha trobat la línia"
+         "No se encontró la línea"
       ],
       "The mail was sent": [
          null,
-         "El correu s'ha enviat"
+         "El correo se envió"
       ],
       "The model cannot be changed because the item is used in contracts already.": [
          null,
-         "El model no es pot canviar perquè l'article ja s'utilitza en contractes."
+         "El modelo no se puede cambiar porque el artículo ya se usa en contratos."
       ],
       "The model is already compatible": [
          null,
-         "Aquest model ja és compatible"
+         "Este modelo ya es compatible"
       ],
       "The model needs a product name.": [
          null,
-         "El model necessita un nom de producte."
+         "El modelo necesita un nombre de producto."
       ],
       "The new user details could not be saved.": [
          null,
-         "No s'han pogut desar les dades de l'usuari nou."
+         "No se pudieron guardar los datos del usuario nuevo."
       ],
       "The option could not be added": [
          null,
-         "No s'ha pogut afegir l'opció"
+         "No se pudo agregar la opción"
       ],
       "The option doesn't belong to the inventory pool related to this contract": [
          null,
-         "L'opció no pertany al grup d'inventari relacionat amb aquest contracte"
+         "Esta opción no corresponde al grupo de inventario relacionado a este contrato"
       ],
       "The order has already been dealt with.": [
          null,
-         "La comanda ja s'ha processat."
+         "El pedido ya ha sido procesado."
       ],
       "The order will be discarded.": [
          null,
-         "Es descartarà la comanda."
+         "Se descartará el pedido."
       ],
       "The package is not in stock": [
          null,
-         "El paquet no és en estoc"
+         "El paquete no está en stock"
       ],
       "The parent item doesn't exist (parent_id: %d)": [
          null,
-         "L'article superior no existeix (parent_id: %d)"
+         "El artículo superior no existe (parent_id: %d)"
       ],
       "The properties have been updated.": [
          null,
-         "Les propietats s'han actualitzat."
+         "Las propiedades fueron actualizadas."
       ],
       "The responsible inventory pool cannot be changed because it's not returned yet or has already been assigned to a contract line.": [
          null,
-         "El grup d'inventari responsable no es pot canviar perquè l'article encara no s'ha retornat o ja està assignat a una línia de contracte."
+         "El grupo de inventario responsable no se puede cambiar porque el artículo todavía no se devolvió o ya está asignado a una línea de contrato."
       ],
       "The selected inventory pool is closed on that day": [
          null,
-         "El grup d'inventari seleccionat està tancat aquest dia"
+         "El grupo de inventario seleccionado está cerrado ese día"
       ],
       "The selected model is not a package": [
          null,
-         "El model seleccionat no és un paquet"
+         "El modelo seleccionado no es un paquete"
       ],
       "The selected reservations have been moved": [
          null,
-         "Les reserves seleccionades s'han mogut"
+         "Las reservas seleccionadas se movieron"
       ],
       "The template \"%s\" will be deleted and no longer available for usage.": [
          null,
-         "La plantilla \"%s\" s'eliminarà i ja no es podrà utilitzar."
+         "La plantilla \"%s\" se eliminará y ya no se podrá usar."
       ],
       "The template has been added to your order.": [
          null,
-         "La plantilla s'ha afegit a la seva comanda."
+         "La plantilla se agregó a su pedido."
       ],
       "The user does not have an email address": [
          null,
-         "L'usuari no té adreça de correu electrònic"
+         "El usuario no tiene dirección de correo electrónico"
       ],
       "There are open reservations for delegated users: ": [
          null,
-         "Hi ha reserves obertes d'usuaris delegats: "
+         "Hay reservas abiertas de usuarios delegados: "
       ],
       "These mail templates are copied for a new inventory pool when it is created.": [
          null,
-         "Aquestes plantilles de correu es copien per a cada grup d'inventari nou quan es crea."
+         "Estas plantillas de correo se copian para cada grupo de inventario nuevo cuando se crea."
       ],
       "These orders have been successfully submitted, but are NOT YET APPROVED.": [
          null,
-         "Aquestes comandes s'han enviat correctament, però ENCARA NO ESTAN APROVADES."
+         "Estos pedidos se enviaron correctamente, pero TODAVÍA NO ESTÁN APROBADOS."
       ],
       "This contract is not signable because it doesn't have any contract reservations.": [
          null,
-         "Aquest contracte no es pot signar perquè no té reserves."
+         "Este contrato no se puede firmar porque no tiene reservas."
       ],
       "This contract is not signable because none of the reservations have a purpose.": [
          null,
-         "Aquest contracte no es pot signar perquè cap reserva no té motiu."
+         "Este contrato no se puede firmar porque ninguna reserva tiene motivo."
       ],
       "This contract is not signable because some reservations are not assigned.": [
          null,
-         "Aquest contracte no es pot signar perquè hi ha reserves sense assignar."
+         "Este contrato no se puede firmar porque hay reservas sin asignar."
       ],
       "This contract is not signable because the delegated user is either missing or not part of this delegation.": [
          null,
-         "Aquest contracte no es pot signar perquè falta l'usuari delegat o no forma part d'aquesta delegació."
+         "Este contrato no se puede firmar porque falta el usuario delegado o no forma parte de esta delegación."
       ],
       "This entry will be removed from the order.": [
          null,
-         "Aquesta entrada es traurà de la comanda."
+         "Esta entrada se quitará del pedido."
       ],
       "This inventory pool is closed on that day.": [
          null,
-         "Aquest grup d'inventari està tancat aquest dia."
+         "Este grupo de inventario está cerrado ese día."
       ],
       "This is a package containing the following items": [
          null,
-         "Aquest és un paquet que conté els articles següents"
+         "Este es un paquete que contiene los siguientes artículos"
       ],
       "This is the list of items you requested. To complete this order, please %s.": [
          null,
-         "Aquesta és la llista d'articles que ha sol·licitat. Per completar aquesta comanda, %s."
+         "Esta es la lista de artículos que solicitó. Para completar este pedido, %s."
       ],
       "This item was retired": [
          null,
-         "Aquest article està donat de baixa"
+         "Este artículo está dado de baja"
       ],
       "This item will be given to a different inventory pool and not show up in yours anymore!": [
          null,
-         "Aquest article passarà a un altre grup d'inventari i deixarà d'aparèixer al seu."
+         "Este artículo pasará a otro grupo de inventario y dejará de aparecer en el suyo."
       ],
       "This model is now in %d categories": [
          null,
-         "Aquest model és ara a %d categories"
+         "Este modelo está ahora en %d categorías"
       ],
       "This note is added to any contract, but can be changed individually before actually printing and signing each contract.": [
          null,
-         "Aquesta nota s'afegeix a tots els contractes, però es pot canviar en cadascun abans d'imprimir-lo i signar-lo."
+         "Esta nota se agrega a todos los contratos, pero se puede cambiar en cada uno antes de imprimirlo y firmarlo."
       ],
       "This order has already been approved.": [
          null,
-         "Aquesta comanda ja s'ha aprovat."
+         "Este pedido ya fue aprobado."
       ],
       "This order is not approvable because doesn't have any models.": [
          null,
-         "Aquesta comanda no es pot aprovar perquè no té cap model."
+         "Esta orden no puede aprobarse aun"
       ],
       "This order is not approvable because some reservations violate the minimal reservation advance period of the inventory pool. Please adjust the start date accordingly.": [
          null,
-         "Aquesta comanda no es pot aprovar perquè algunes reserves no respecten l'antelació mínima de reserva del grup d'inventari. Ajusti la data d'inici."
+         "Este pedido no se puede aprobar porque algunas reservas no respetan la antelación mínima de reserva del grupo de inventario. Ajuste la fecha de inicio."
       ],
       "This order is not approvable because some reserved models are not available.": [
          null,
-         "Aquesta comanda no es pot aprovar perquè alguns models reservats no estan disponibles."
+         "Este pedido no se puede aprobar porque algunos modelos reservados no están disponibles."
       ],
       "This order is not approvable because the inventory pool is closed on either the start or enddate.": [
          null,
-         "Aquesta comanda no es pot aprovar perquè el grup d'inventari està tancat la data d'inici o la de fi."
+         "Este pedido no se puede aprobar porque el grupo de inventario está cerrado en la fecha de inicio o en la de fin."
       ],
       "This user is suspended.": [
          null,
-         "Aquest usuari està suspès."
+         "Este usuario está suspendido."
       ],
       "Thu": [
          null,
-         "Dj."
+         "Jue"
       ],
       "Thursday": [
          null,
-         "Dijous"
+         "Jueves"
       ],
       "Time until your order times out. Click to reset.": [
          null,
-         "Temps fins que caduqui la seva comanda. Faci clic per reiniciar-lo."
+         "Tiempo hasta que caduque su pedido. Haga clic para reiniciarlo."
       ],
       "Time window": [
          null,
-         "Període de temps"
+         "Período de Tiempo"
       ],
       "Timeline": [
          null,
-         "Cronologia"
+         "Cronología"
       ],
       "To allocate models to users use the %s.": [
          null,
-         "Per assignar models als usuaris utilitzi els %s."
+         "Para asignar modelos a los usuarios use los %s."
       ],
       "To be verified": [
          null,
-         "Per verificar"
+         "Por verificar"
       ],
       "To pick up": [
          null,
-         "Per recollir"
+         "Por retirar"
       ],
       "Today": [
          null,
-         "Avui"
+         "Hoy"
       ],
       "Toggle %s": [
          null,
-         "Mostrar/amagar %s"
+         "Mostrar/ocultar %s"
       ],
       "Too many users found": [
          null,
-         "S'han trobat massa usuaris"
+         "Se encontraron demasiados usuarios"
       ],
       "Total": [
          null,
@@ -3727,39 +3743,39 @@ window.i18n.locale_data = {
       ],
       "Total of all approved requests": [
          null,
-         "Total de totes les sol·licituds aprovades"
+         "Total de todas las solicitudes aprobadas"
       ],
       "Total of all requests in state \"New\"": [
          null,
-         "Total de totes les sol·licituds en estat \"Nou\""
+         "Total de todas las solicitudes en estado \"Nuevo\""
       ],
       "Total price (indicative value)": [
          null,
-         "Preu total (valor indicatiu)"
+         "Precio total (valor indicativo)"
       ],
       "Total quantity": [
          null,
-         "Quantitat total"
+         "Cantidad total"
       ],
       "Total quantity of borrowable and not retired items": [
          null,
-         "Quantitat total d'articles prestables i no donats de baixa"
+         "Cantidad total de artículos prestables y no dados de baja"
       ],
       "Tue": [
          null,
-         "Dt."
+         "Mar"
       ],
       "Tuesday": [
          null,
-         "Dimarts"
+         "Martes"
       ],
       "Type in a search term": [
          null,
-         "Escrigui un terme de cerca"
+         "Escriba un término de búsqueda"
       ],
       "Umzug": [
          null,
-         "Trasllat"
+         "Mudanza"
       ],
       "Unborrowable": [
          null,
@@ -3767,156 +3783,156 @@ window.i18n.locale_data = {
       ],
       "Unborrowable Items": [
          null,
-         "Articles no prestables"
+         "Artículos no prestables"
       ],
       "Undo approval": [
          null,
-         "Desfer l'aprovació"
+         "Deshacer aprobación"
       ],
       "Unexpected error.": [
          null,
-         "Error inesperat."
+         "Error inesperado."
       ],
       "Unsigned": [
          null,
-         "Sense signar"
+         "Sin firmar"
       ],
       "Unsigned Hand Over": [
          null,
-         "Lliurament sense signar"
+         "Entrega sin firmar"
       ],
       "Unsigned contracts": [
          null,
-         "Contractes sense signar"
+         "Contratos sin firmar"
       ],
       "Unsubmitted": [
          null,
-         "Sense enviar"
+         "Sin enviar"
       ],
       "Unsuccessful reminder of %{q} items for contracts %{c}": [
          null,
-         "No s'ha pogut enviar el recordatori de %{q} articles dels contractes %{c}"
+         "No se pudo enviar el recordatorio de %{q} artículos de los contratos %{c}"
       ],
       "Unused Models": [
          null,
-         "Models sense utilitzar"
+         "Modelos sin usar"
       ],
       "Update": [
          null,
-         "Actualitzar"
+         "Actualizar"
       ],
       "Updated at": [
          null,
-         "Actualitzat el"
+         "Actualizado el"
       ],
       "Upload a comma separated CSV file (with UTF-8 encoding), each row describing an item.": [
          null,
-         "Pugi un fitxer CSV separat per comes (amb codificació UTF-8), amb una fila per article."
+         "Suba un archivo CSV separado por comas (con codificación UTF-8), con una fila por artículo."
       ],
       "Upload error.": [
          null,
-         "Error de pujada."
+         "Error de subida"
       ],
       "Upload problems": [
          null,
-         "Problemes en pujar"
+         "Problemas al subir"
       ],
       "Uploading files - please wait": [
          null,
-         "Pujant fitxers, esperi"
+         "Subiendo archivos, espere"
       ],
       "Used Models": [
          null,
-         "Models utilitzats"
+         "Modelos usados"
       ],
       "Used for sending e-mails from leihs": [
          null,
-         "S'utilitza per enviar correus electrònics des de leihs"
+         "Se usa para enviar correos electrónicos desde leihs"
       ],
       "Used on the start page in the borrow section": [
          null,
-         "S'utilitza a la pàgina d'inici de la secció de préstecs"
+         "Se usa en la página de inicio de la sección de préstamos"
       ],
       "User": [
          "Users",
-         "Usuari",
-         "Usuaris"
+         "Usuario",
+         "Usuarios"
       ],
       "User and model to be verified": [
          null,
-         "Usuari i model per verificar"
+         "Usuario y modelo por verificar"
       ],
       "User created successfully": [
          null,
-         "Usuari creat correctament"
+         "Usuario creado correctamente"
       ],
       "User data": [
          null,
-         "Dades d'usuari"
+         "Datos de usuario"
       ],
       "User details were updated successfully.": [
          null,
-         "Les dades de l'usuari s'han actualitzat correctament."
+         "Los datos del usuario se actualizaron correctamente."
       ],
       "User does not have access to inventory pool: %s": [
          null,
-         "L'usuari no té accés al grup d'inventari: %s"
+         "El usuario no tiene acceso al grupo de inventarios: %s"
       ],
       "User is suspended for inventory pool: %s": [
          null,
-         "L'usuari està suspès al grup d'inventari: %s"
+         "El usuario está suspendido para el grupo de inventarios: %s"
       ],
       "User must be selected": [
          null,
-         "Cal seleccionar un usuari"
+         "Debe seleccionarse un usuario"
       ],
       "User or Order not found": [
          null,
-         "No s'ha trobat l'usuari o la comanda"
+         "No se encontró el usuario o el pedido"
       ],
       "User swapped %{from} for %{to}": [
          null,
-         "L'usuari ha intercanviat %{from} per %{to}"
+         "El Usuario intercambio %{from} por %{to}"
       ],
       "User to be verified": [
          null,
-         "Usuari per verificar"
+         "Usuario por verificar"
       ],
       "User unknown": [
          null,
-         "Usuari desconegut"
+         "Usuario desconocido"
       ],
       "User/Typical usage": [
          null,
-         "Usuari/Ús típic"
+         "Usuario/Uso típico"
       ],
       "Username": [
          null,
-         "Nom d'usuari"
+         "Nombre de usuario"
       ],
       "Users": [
          null,
-         "Usuaris"
+         "Usuarios"
       ],
       "Users who don't bring back the items on the required date are suspended from next day on.": [
          null,
-         "Els usuaris que no retornen els articles en la data indicada queden suspesos a partir de l'endemà."
+         "Los usuarios que no devuelven los artículos en la fecha indicada quedan suspendidos a partir del día siguiente."
       ],
       "User|AccessRight|Suspended reason": [
          null,
-         "Motiu de la suspensió"
+         "Motivo de la suspensión"
       ],
       "User|Email": [
          null,
-         "Correu electrònic"
+         "Correo electrónico"
       ],
       "User|Firstname": [
          null,
-         "Nom"
+         "Nombre"
       ],
       "User|Lastname": [
          null,
-         "Cognom"
+         "Apellido"
       ],
       "Value": [
          null,
@@ -3924,19 +3940,19 @@ window.i18n.locale_data = {
       ],
       "Value List": [
          null,
-         "Llista de valors"
+         "Lista de valores"
       ],
       "Value List for Lending Contract No.": [
          null,
-         "Llista de valors del contracte de préstec núm."
+         "Lista de valores del contrato de préstamo n.º"
       ],
       "Value List for Lending Contract No. %s": [
          null,
-         "Llista de valors del contracte de préstec núm. %s"
+         "Lista de valores del contrato de préstamo n.º %s"
       ],
       "Verification required": [
          null,
-         "Requereix verificació"
+         "Requiere verificación"
       ],
       "Verify": [
          null,
@@ -3944,103 +3960,103 @@ window.i18n.locale_data = {
       ],
       "Verify + approve order": [
          null,
-         "Verificar i aprovar comanda"
+         "Verificar y aprobar pedido"
       ],
       "View %s": [
          null,
-         "Veure %s"
+         "Ver %s"
       ],
       "View Item": [
          null,
-         "Veure article"
+         "Ver artículo"
       ],
       "View Model": [
          null,
-         "Veure model"
+         "Ver modelo"
       ],
       "View Option": [
          null,
-         "Veure opció"
+         "Ver opción"
       ],
       "Visible for borrowers in frontend": [
          null,
-         "Visible per als prestataris al frontend"
+         "Visible para los prestatarios en el frontend"
       ],
       "Visits": [
          null,
-         "Visites"
+         "Visitas"
       ],
       "Warning": [
          null,
-         "Avís"
+         "Aviso"
       ],
       "Warranty expiration": [
          null,
-         "Fi de la garantia"
+         "Fin de la garantía"
       ],
       "Wed": [
          null,
-         "Dc."
+         "Mié"
       ],
       "Wednesday": [
          null,
-         "Dimecres"
+         "Miércoles"
       ],
       "Welcome %s": [
          null,
-         "Benvingut/da, %s"
+         "Bienvenido/a, %s"
       ],
       "Werkstatt-Technik": [
          null,
-         "Tècnica de taller"
+         "Técnica de taller"
       ],
       "Which inventory pool has the most contracts?": [
          null,
-         "Quin grup d'inventari té més contractes?"
+         "¿Qué grupo de inventario tiene más contratos?"
       ],
       "Which inventory pool is busiest?": [
          null,
-         "Quin grup d'inventari té més activitat?"
+         "¿Qué grupo de inventario tiene más actividad?"
       ],
       "Which item is busiest?": [
          null,
-         "Quin article té més activitat?"
+         "¿Qué artículo tiene más actividad?"
       ],
       "Who borrowed the most things?": [
          null,
-         "Qui ha demanat més coses en préstec?"
+         "¿Quién pidió más cosas prestadas?"
       ],
       "Who bought the most items?": [
          null,
-         "Qui ha comprat més articles?"
+         "¿Quién compró más artículos?"
       ],
       "Workdays": [
          null,
-         "Dies laborables"
+         "Días laborables"
       ],
       "Working order": [
          null,
-         "En funcionament"
+         "En funcionamiento"
       ],
       "Workload": [
          null,
-         "Càrrega de treball"
+         "Carga de trabajo"
       ],
       "Write a comment. The comment will be part of the rejection e-mail.": [
          null,
-         "Escrigui un comentari. El comentari s'inclourà al correu de rebuig."
+         "Escriba un comentario. El comentario se incluirá en el correo de rechazo."
       ],
       "Write a comment... (your comment will be part of the confirmation e-mail)": [
          null,
-         "Escrigui un comentari... (s'inclourà al correu de confirmació)"
+         "Escriba un comentario... (se incluirá en el correo de confirmación)"
       ],
       "Write a note... (the note will be part of the contract)": [
          null,
-         "Escrigui una nota... (la nota s'inclourà al contracte)"
+         "Escriba una nota... (la nota se incluirá en el contrato)"
       ],
       "Write a note... the note will be part of the contract": [
          null,
-         "Escrigui una nota... la nota s'inclourà al contracte"
+         "Escriba una nota... la nota se incluirá en el contrato"
       ],
       "Yes": [
          null,
@@ -4048,172 +4064,172 @@ window.i18n.locale_data = {
       ],
       "You are not authorized for this action.": [
          null,
-         "No té autorització per a aquesta acció."
+         "No tiene autorización para esta acción."
       ],
       "You are not logged in.": [
          null,
-         "No ha iniciat la sessió."
+         "No ha iniciado sesión."
       ],
       "You are not the owner of this item": [
          null,
-         "No és el propietari d'aquest article"
+         "No es el propietario de este artículo"
       ],
       "You are suspended for this inventory pool": [
          null,
-         "Està suspès en aquest grup d'inventari"
+         "Está suspendido en este grupo de inventario"
       ],
       "You bring back your items": [
          null,
-         "Vostè retorna els articles"
+         "Usted devuelve sus artículos"
       ],
       "You can edit your personal data": [
          null,
-         "Pot editar les seves dades personals"
+         "Puede editar sus datos personales"
       ],
       "You can modify the time range for each separate model in the next step.": [
          null,
-         "Al pas següent pot canviar el període de cada model per separat."
+         "En el siguiente paso puede cambiar el período de cada modelo por separado."
       ],
       "You can not create a package without any item": [
          null,
-         "No es pot crear un paquet sense articles"
+         "No se puede crear un paquete sin artículos"
       ],
       "You can not take back more items then you handed over": [
          null,
-         "No es poden retornar més articles dels que s'han lliurat"
+         "No se pueden devolver más artículos de los que se entregaron"
       ],
       "You can not take back more options then you handed over": [
          null,
-         "No es poden retornar més opcions de les que s'han lliurat"
+         "No se pueden devolver más opciones de las que se entregaron"
       ],
       "You can't add a package to a package.": [
          null,
-         "No es pot afegir un paquet a un altre paquet."
+         "No se puede agregar un paquete a otro paquete."
       ],
       "You cannot delete all reservations of an order. Perhaps you want to reject it instead?": [
          null,
-         "No es poden eliminar totes les reserves d'una comanda. Potser la vol rebutjar?"
+         "No se pueden eliminar todas las reservas de un pedido. ¿Quizás quiere rechazarlo?"
       ],
       "You cannot delete this user": [
          null,
-         "No es pot eliminar aquest usuari"
+         "No se puede eliminar este usuario"
       ],
       "You do not have any items in your order. Please %s and choose items for your order.": [
          null,
-         "No té articles a la comanda. %s i triï articles per a la comanda."
+         "No tiene artículos en su pedido. %s y elija artículos para su pedido."
       ],
       "You do not have the responsibility to lend this item. Responsible for this item is the pool \"%s\".": [
          null,
-         "No és responsable de prestar aquest article. El responsable és el grup d'inventari \"%s\"."
+         "No es responsable de prestar este artículo. El responsable es el grupo de inventario \"%s\"."
       ],
       "You don't have access to this item.": [
          null,
-         "No té accés a aquest article."
+         "No tiene acceso a este artículo."
       ],
       "You don't have any rights to access this application.": [
          null,
-         "No té permisos per accedir a aquesta aplicació."
+         "No tiene permisos para acceder a esta aplicación"
       ],
       "You don't have permission to perform this action": [
          null,
-         "No té permís per fer aquesta acció"
+         "No tiene permiso para realizar esta acción"
       ],
       "You have %{no_access} to any inventory pools!": [
          null,
-         "No té accés a cap grup d'inventari! (%{no_access})"
+         "¡No tiene acceso a ningún grupo de inventario! (%{no_access})"
       ],
       "You have access to the following inventory pools": [
          null,
-         "Té accés als grups d'inventari següents"
+         "Tiene acceso a los siguientes grupos de inventario"
       ],
       "You have access to the following inventory pools:": [
          null,
-         "Té accés als grups d'inventari següents:"
+         "Tiene acceso a los siguientes grupos de inventario:"
       ],
       "You have been logged out.": [
          null,
-         "S'ha tancat la seva sessió."
+         "Su sesión ha sido cerrada."
       ],
       "You have permission to access the following inventory pool": [
          "You have permission to access the following inventory pools",
-         "Té permís d'accés al grup d'inventari següent",
-         "Té permís d'accés als grups d'inventari següents"
+         "Tiene permiso de acceso al siguiente grupo de inventario",
+         "Tiene permiso de acceso a los siguientes grupos de inventario"
       ],
       "You have to provide the quantity for the things you want to return": [
          null,
-         "Indiqui la quantitat del que vol retornar"
+         "Indique la cantidad de lo que quiere devolver"
       ],
       "You have unsaved data. Would you like to delete the data?": [
          null,
-         "Hi ha dades sense desar. Les vol eliminar?"
+         "Hay datos sin guardar. ¿Quiere eliminarlos?"
       ],
       "You pick up the reserved items at the inventory pool": [
          null,
-         "Vostè recull els articles reservats al grup d'inventari"
+         "Usted retira los artículos reservados en el grupo de inventario"
       ],
       "You place a reservation for some items in this system": [
          null,
-         "Vostè reserva alguns articles en aquest sistema"
+         "Usted reserva algunos artículos en este sistema"
       ],
       "You should redo your action or reload the page!": [
          null,
-         "Repeteixi l'acció o torni a carregar la pàgina."
+         "Repita la acción o recargue la página."
       ],
       "You wait for confirmation from the inventory pools in question": [
          null,
-         "Vostè espera la confirmació dels grups d'inventari corresponents"
+         "Usted espera la confirmación de los grupos de inventario correspondientes"
       ],
       "You were served by %s": [
          null,
-         "L'ha atès %s"
+         "Le atendió %s"
       ],
       "Your order has been modified. All reservations are now available.": [
          null,
-         "La seva comanda s'ha modificat. Ara totes les reserves estan disponibles."
+         "Su pedido se modificó. Ahora todas las reservas están disponibles."
       ],
       "Your order has been successfully submitted, but is NOT YET APPROVED.": [
          null,
-         "La seva comanda s'ha enviat correctament, però ENCARA NO ESTÀ APROVADA."
+         "Su pedido se envió correctamente, pero TODAVÍA NO ESTÁ APROBADO."
       ],
       "Your order ist empty.": [
          null,
-         "La seva comanda està buida."
+         "Su pedido está vacío."
       ],
       "Your order was successfully transmitted to those responsible and is %s.": [
          null,
-         "La seva comanda s'ha enviat correctament als responsables i està %s."
+         "Su pedido se envió correctamente a los responsables y está %s."
       ],
       "Your order will time out in %s.": [
          null,
-         "La seva comanda caducarà d'aquí a %s."
+         "Su pedido caducará en %s."
       ],
       "Zielraum": [
          null,
-         "Zona de destinació"
+         "Zona de destino"
       ],
       "Zip": [
          null,
-         "Codi postal"
+         "Código postal"
       ],
       "[Model %s] ": [
          null,
-         "[Model %s] "
+         "[Modelo %s] "
       ],
       "[leihs] Order received": [
          null,
-         "[leihs] Comanda rebuda"
+         "[leihs] Pedido recibido"
       ],
       "[leihs] Reminder": [
          null,
-         "[leihs] Recordatori"
+         "[leihs] Recordatorio"
       ],
       "[leihs] Reservation Confirmation": [
          null,
-         "[leihs] Reserva confirmada"
+         "[leihs] Reserva Confirmada"
       ],
       "[leihs] Reservation Rejected": [
          null,
-         "[leihs] Reserva rebutjada"
+         "[leihs] Reserva Rechazada"
       ],
       "[leihs] Reservation Submitted": [
          null,
@@ -4221,71 +4237,71 @@ window.i18n.locale_data = {
       ],
       "[leihs] Reservation confirmed (with changes)": [
          null,
-         "[leihs] Reserva confirmada (amb canvis)"
+         "[leihs] Reserva confirmada (con cambios)"
       ],
       "[leihs] Some items should be returned tomorrow": [
          null,
-         "[leihs] Alguns articles s'han de retornar demà"
+         "[leihs] Algunos elementos deberían de ser devueltos mañana"
       ],
       "accept_lending_terms_label": [
          null,
-         "Accepto les condicions de préstec: "
+         "Acepto las condiciones de préstamo: "
       ],
       "accounting type": [
          null,
-         "tipus de comptabilitat"
+         "tipo de contabilidad"
       ],
       "active": [
          null,
-         "actiu"
+         "activo"
       ],
       "admin section of this inventory-pool": [
          null,
-         "secció d'administració d'aquest grup d'inventari"
+         "sección de administración de este grupo de inventario"
       ],
       "admin_active": [
          null,
-         "actiu"
+         "activo"
       ],
       "admin_all": [
          null,
-         "tots"
+         "todos"
       ],
       "admin_inactive": [
          null,
-         "inactiu"
+         "inactivo"
       ],
       "admin_search_term": [
          null,
-         "Terme de cerca..."
+         "Término de búsqueda..."
       ],
       "all models": [
          null,
-         "tots els models"
+         "todos los modelos"
       ],
       "already in Category": [
          null,
-         "ja és a la categoria"
+         "ya se encuentra en la Categoría"
       ],
       "and assign fields": [
          null,
-         "i assignar camps"
+         "y asignar campos"
       ],
       "aquisition": [
          null,
-         "adquisició"
+         "adquisición"
       ],
       "ascending": [
          null,
-         "ascendent"
+         "ascendente"
       ],
       "assign highest available": [
          null,
-         "assignar el més alt disponible"
+         "asignar el mayor disponible"
       ],
       "assigned to %s": [
          null,
-         "assignat a %s"
+         "asignado a %s"
       ],
       "available": [
          null,
@@ -4293,11 +4309,11 @@ window.i18n.locale_data = {
       ],
       "available quantity": [
          null,
-         "quantitat disponible"
+         "cantidad disponible"
       ],
       "awaiting approval": [
          null,
-         "pendent d'aprovació"
+         "pendiente de aprobación"
       ],
       "borrowable": [
          null,
@@ -4305,43 +4321,43 @@ window.i18n.locale_data = {
       ],
       "by browsing categories": [
          null,
-         "per categories"
+         "por categorías"
       ],
       "click here to reload": [
          null,
-         "faci clic aquí per tornar a carregar"
+         "haga clic aquí para recargar"
       ],
       "closed": [
          null,
-         "tancat"
+         "cerrado"
       ],
       "contracts": [
          null,
-         "contractes"
+         "contratos"
       ],
       "cost center": [
          null,
-         "centre de cost"
+         "centro de coste"
       ],
       "could not be assigned for take back": [
          null,
-         "no s'ha pogut assignar a la devolució"
+         "no se pudo asignar a la devolución"
       ],
       "create_multiple_items_code_digits": [
          null,
-         "Dígits del comptador"
+         "Dígitos del contador"
       ],
       "create_multiple_items_code_parts": [
          null,
-         "Camps del codi"
+         "Campos del código"
       ],
       "create_multiple_items_code_pattern_notice": [
          null,
-         "Els codis es formen amb els camps units pel separador i un comptador. El comptador continua després del codi més alt que ja existeixi amb els mateixos camps."
+         "Los códigos se forman con los campos unidos por el separador y un contador. El contador sigue después del código más alto que ya exista con los mismos campos."
       ],
       "create_multiple_items_code_preview": [
          null,
-         "Codis"
+         "Códigos"
       ],
       "create_multiple_items_code_separator": [
          null,
@@ -4349,20 +4365,20 @@ window.i18n.locale_data = {
       ],
       "create_multiple_items_inv_code_notice": [
          null,
-         "Quan es creen diversos articles alhora, el codi d'inventari no es pot establir individualment. En canvi, es genera automàticament la llista contínua de codis d'inventari més curta possible."
+         "Cuando se crean varios artículos a la vez, el código de inventario no se puede establecer individualmente. En su lugar, se genera automáticamente la menor lista continua posible de códigos de inventario."
       ],
       "create_multiple_items_label_quantity": [
          null,
-         "Quantitat"
+         "Cantidad"
       ],
       "current page is set as start page": [
          null,
-         "la pàgina actual està definida com a pàgina d'inici"
+         "la página actual está definida como página de inicio"
       ],
       "day": [
          "days",
-         "dia",
-         "dies"
+         "día",
+         "días"
       ],
       "delete": [
          null,
@@ -4370,27 +4386,27 @@ window.i18n.locale_data = {
       ],
       "deployed %s ago": [
          null,
-         "desplegat fa %s"
+         "desplegado hace %s"
       ],
       "descending": [
          null,
-         "descendent"
+         "descendente"
       ],
       "disabled": [
          null,
-         "desactivat"
+         "desactivado"
       ],
       "doesn't match parent's attribute": [
          null,
-         "no coincideix amb l'atribut del superior"
+         "no coincide con el atributo del superior"
       ],
       "enabled": [
          null,
-         "activat"
+         "activado"
       ],
       "entries%s": [
          null,
-         "entrades%s"
+         "entradas%s"
       ],
       "extend": [
          null,
@@ -4398,39 +4414,39 @@ window.i18n.locale_data = {
       ],
       "fill up gaps": [
          null,
-         "omplir buits"
+         "rellenar huecos"
       ],
       "for": [
          null,
-         "per a"
+         "para"
       ],
       "for '%s'": [
          null,
-         "per a '%s'"
+         "para '%s'"
       ],
       "for items": [
          null,
-         "per a articles"
+         "para artículos"
       ],
       "for licenses": [
          null,
-         "per a llicències"
+         "para licencias"
       ],
       "for max.": [
          null,
-         "per a màx."
+         "para máx."
       ],
       "found %i": [
          null,
-         "%i trobats"
+         "%i encontrados"
       ],
       "from": [
          null,
-         "des de"
+         "desde"
       ],
       "from %s": [
          null,
-         "des de %s"
+         "desde %s"
       ],
       "general": [
          null,
@@ -4438,15 +4454,15 @@ window.i18n.locale_data = {
       ],
       "general ledger account": [
          null,
-         "compte del llibre major"
+         "cuenta del libro mayor"
       ],
       "go back": [
          null,
-         "tornar"
+         "volver"
       ],
       "go to today": [
          null,
-         "anar a avui"
+         "ir a hoy"
       ],
       "here": [
          null,
@@ -4454,23 +4470,23 @@ window.i18n.locale_data = {
       ],
       "in": [
          null,
-         "a"
+         "en"
       ],
       "in stock": [
          null,
-         "en estoc"
+         "en stock"
       ],
       "in the future": [
          null,
-         "en el futur"
+         "en el futuro"
       ],
       "in the past": [
          null,
-         "en el passat"
+         "en el pasado"
       ],
       "inactive": [
          null,
-         "inactiu"
+         "inactivo"
       ],
       "incl. VAT": [
          null,
@@ -4478,75 +4494,75 @@ window.i18n.locale_data = {
       ],
       "inspection phase until %s": [
          null,
-         "fase de revisió fins a %s"
+         "fase de revisión hasta %s"
       ],
       "internal order": [
          null,
-         "comanda interna"
+         "pedido interno"
       ],
       "investment": [
          null,
-         "inversió"
+         "inversión"
       ],
       "is %s ago": [
          null,
-         "és fa %s"
+         "es hace %s"
       ],
       "is late": [
          null,
-         "està endarrerit"
+         "está atrasado"
       ],
       "is not a HTTP(S) URL": [
          null,
-         "no és una URL HTTP(S)"
+         "no es una URL HTTP(S)"
       ],
       "is not a valid URL": [
          null,
-         "no és una URL vàlida"
+         "no es una URL valida"
       ],
       "is part of a package": [
          null,
-         "forma part d'un paquet"
+         "forma parte de un paquete"
       ],
       "item not assigned. ": [
          null,
-         "article no assignat. "
+         "artículo no asignado. "
       ],
       "item_version": [
          null,
-         "Versió"
+         "Versión"
       ],
       "items": [
          null,
-         "articles"
+         "artículos"
       ],
       "jump to this date": [
          null,
-         "anar a aquesta data"
+         "ir a esta fecha"
       ],
       "last change by '%s'": [
          null,
-         "darrer canvi de '%s'"
+         "último cambio de '%s'"
       ],
       "last used +1": [
          null,
-         "darrer utilitzat +1"
+         "último usado +1"
       ],
       "legacy_manage_entitlement_group_new_admin_section_notice": [
          null,
-         "Els usuaris i grups d'aquest grup d'assignació es gestionen a la nova secció d'administració."
+         "Los usuarios y grupos de esta entitlement-group se manejan en la nueva sección Admin."
       ],
       "legacy_manage_group_new_admin_section_notice": [
          null,
-         "Els grups es gestionen a la nova secció d'administració."
+         "Los grupos se manejan en la nueva sección Admin."
       ],
       "legacy_manage_inventory_pool_admin_section_notice": [
          null,
-         "Llevat de la gestió dels grups d'assignació, totes les funcions són a la secció d'administració."
+         "Salvo la gestión de los grupos de asignación, todas las funciones están en la sección de administración."
       ],
       "legacy_manage_users_new_admin_section_notice": [
          null,
-         "Els usuaris i els seus drets d'accés també es poden gestionar a la nova secció d'administració."
+         "Los usuarios y sus derechos de acceso también se pueden manejar en la nueva sección Admin."
       ],
       "lends": [
          null,
@@ -4554,43 +4570,43 @@ window.i18n.locale_data = {
       ],
       "max 255 characters": [
          null,
-         "màx. 255 caràcters"
+         "máx. 255 caracteres"
       ],
       "models": [
          null,
-         "models"
+         "modelos"
       ],
       "more": [
          null,
-         "més"
+         "más"
       ],
       "more properties": [
          null,
-         "més propietats"
+         "más propiedades"
       ],
       "must be greater or equal to the inspection start date": [
          null,
-         "ha de ser igual o posterior a la data d'inici de la revisió"
+         "debe ser igual o posterior a la fecha de inicio de la revisión"
       ],
       "no fields selected": [
          null,
-         "no hi ha camps seleccionats"
+         "no hay campos seleccionados"
       ],
       "no image": [
          null,
-         "sense imatge"
+         "sin imagen"
       ],
       "no item assigned": [
          null,
-         "cap article assignat"
+         "ningún artículo asignado"
       ],
       "no item selected": [
          null,
-         "cap article seleccionat"
+         "ningún artículo seleccionado"
       ],
       "no purpose specified": [
          null,
-         "sense motiu indicat"
+         "sin motivo indicado"
       ],
       "not available": [
          null,
@@ -4606,43 +4622,43 @@ window.i18n.locale_data = {
       ],
       "not in stock": [
          null,
-         "sense estoc"
+         "sin stock"
       ],
       "not retired": [
          null,
-         "no donat de baixa"
+         "no dado de baja"
       ],
       "not used": [
          null,
-         "sense utilitzar"
+         "sin usar"
       ],
       "not valid. ": [
          null,
-         "no vàlid. "
+         "no válido. "
       ],
       "not yet saved": [
          null,
-         "encara sense desar"
+         "todavía sin guardar"
       ],
       "on time!": [
          null,
-         "a temps!"
+         "¡a tiempo!"
       ],
       "one day ago": [
          null,
-         "fa un dia"
+         "hace un día"
       ],
       "only models with items": [
          null,
-         "només models amb articles"
+         "solo modelos con artículos"
       ],
       "only models without items": [
          null,
-         "només models sense articles"
+         "solo modelos sin artículos"
       ],
       "open datepicker": [
          null,
-         "obrir calendari"
+         "abrir calendario"
       ],
       "or": [
          null,
@@ -4650,131 +4666,131 @@ window.i18n.locale_data = {
       ],
       "or search for item": [
          null,
-         "o cercar un article"
+         "o buscar un artículo"
       ],
       "orders": [
          null,
-         "comandes"
+         "pedidos"
       ],
       "overdue": [
          null,
-         "endarrerit"
+         "atrasado"
       ],
       "please wait": [
          null,
-         "esperi"
+         "espere"
       ],
       "please wait...": [
          null,
-         "esperi..."
+         "espere..."
       ],
       "quantity increased by %s": [
          null,
-         "quantitat augmentada en %s"
+         "cantidad aumentada en %s"
       ],
       "quantity not available. ": [
          null,
-         "quantitat no disponible. "
+         "cantidad no disponible. "
       ],
       "remaining": [
          null,
-         "restant"
+         "restante"
       ],
       "rentable": [
          null,
-         "llogable"
+         "alquilable"
       ],
       "requested": [
          null,
-         "sol·licitat"
+         "solicitado"
       ],
       "requesting phase until %s": [
          null,
-         "fase de sol·licitud fins a %s"
+         "fase de solicitud hasta %s"
       ],
       "required": [
          null,
-         "obligatori"
+         "obligatorio"
       ],
       "reserved / item assigned in future": [
          null,
-         "reservat / article assignat en el futur"
+         "reservado / artículo asignado en el futuro"
       ],
       "reset user": [
          null,
-         "restablir usuari"
+         "restablecer usuario"
       ],
       "retired": [
          null,
-         "donat de baixa"
+         "dado de baja"
       ],
       "selected": [
          null,
-         "seleccionat"
+         "seleccionado"
       ],
       "set current page as start page": [
          null,
-         "definir la pàgina actual com a pàgina d'inici"
+         "definir la página actual como página de inicio"
       ],
       "show less": [
          null,
-         "mostrar menys"
+         "mostrar menos"
       ],
       "show less properties": [
          null,
-         "mostrar menys propietats"
+         "mostrar menos propiedades"
       ],
       "show package parts": [
          null,
-         "mostrar les parts del paquet"
+         "mostrar las partes del paquete"
       ],
       "since": [
          null,
-         "des de"
+         "desde"
       ],
       "since max.": [
          null,
-         "des de màx."
+         "desde máx."
       ],
       "submit it": [
          null,
-         "enviï-la"
+         "envíelo"
       ],
       "therefore you may not be able to change some of these fields": [
          null,
-         "per tant, és possible que no pugui canviar alguns d'aquests camps"
+         "por lo tanto, puede que no pueda cambiar algunos de estos campos"
       ],
       "this is a package": [
          null,
-         "això és un paquet"
+         "esto es un paquete"
       ],
       "this is the branch '%s'": [
          null,
-         "aquesta és la branca '%s'"
+         "esta es la rama '%s'"
       ],
       "to": [
          null,
-         "fins a"
+         "hasta"
       ],
       "to %s": [
          null,
-         "fins a %s"
+         "hasta %s"
       ],
       "to edit this item": [
          null,
-         "per editar aquest article"
+         "para editar este artículo"
       ],
       "to substitute": [
          null,
-         "per substituir"
+         "para sustituir"
       ],
       "today": [
          null,
-         "Avui"
+         "Hoy"
       ],
       "unavailable / can't be guaranteed": [
          null,
-         "no disponible / no es pot garantir"
+         "no disponible / no se puede garantizar"
       ],
       "unborrowable": [
          null,
@@ -4782,111 +4798,111 @@ window.i18n.locale_data = {
       ],
       "undo": [
          null,
-         "desfer"
+         "deshacer"
       ],
       "unknown Model": [
          null,
-         "model desconegut"
+         "modelo desconocido"
       ],
       "until": [
          null,
-         "fins a"
+         "hasta"
       ],
       "upcoming": [
          null,
-         "properes"
+         "próximas"
       ],
       "use barcode scanner to assign fields to item immediately": [
          null,
-         "utilitzi el lector de codis de barres per assignar camps a l'article a l'instant"
+         "use el lector de códigos de barras para asignar campos al artículo al instante"
       ],
       "used": [
          null,
-         "utilitzat"
+         "usado"
       ],
       "was assigned for take back": [
          null,
-         "s'ha assignat a la devolució"
+         "se asignó a la devolución"
       ],
       "while deleting a hand over line": [
          null,
-         "en eliminar una línia de lliurament"
+         "al eliminar una línea de entrega"
       ],
       "while deleting hand over for": [
          null,
-         "en eliminar el lliurament per a"
+         "al eliminar la entrega para"
       ],
       "while deleting multiple order reservations": [
          null,
-         "en eliminar diverses reserves de la comanda"
+         "al eliminar varias reservas del pedido"
       ],
       "while deleting order line for": [
          null,
-         "en eliminar la línia de comanda per a"
+         "al eliminar la línea de pedido para"
       ],
       "while try to send an e-mail reminder to:": [
          null,
-         "en intentar enviar un recordatori per correu a:"
+         "al intentar enviar un recordatorio por correo a:"
       ],
       "with comment": [
          null,
-         "amb comentari"
+         "con comentario"
       ],
       "without conflict": [
          null,
-         "sense conflictes"
+         "sin conflictos"
       ],
       "you cannot hand out reservations which are ending in the past": [
          null,
-         "no es poden lliurar reserves que acaben en el passat"
+         "no se pueden entregar reservas que terminan en el pasado"
       ],
       "you cannot hand out reservations which are starting in the future": [
          null,
-         "no es poden lliurar reserves que comencen en el futur"
+         "no se pueden entregar reservas que empiezan en el futuro"
       ],
       "you cannot hand out reservations with unassigned inventory codes": [
          null,
-         "no es poden lliurar reserves amb codis d'inventari sense assignar"
+         "no se pueden entregar reservas con códigos de inventario sin asignar"
       ],
       "%{model} is reserved for %{date}, %{slot}. To hand it over today, change the date of the reservation first.": [
          null,
-         "%{model} està reservat per al %{date}, %{slot}. Per lliurar-lo avui, canviï primer la data de la reserva."
+         "%{model} está reservado para el %{date}, %{slot}. Para entregarlo hoy, cambie primero la fecha de la reserva."
       ],
       "The time slot %{slot} of %{model} is already over.": [
          null,
-         "L'horari %{slot} de %{model} ja ha acabat."
+         "El horario %{slot} de %{model} ya terminó."
       ],
       "%{model} is reserved for %{slot}. Handed over now, it is missing for other reservations before %{start}. Hand over anyway?": [
          null,
-         "%{model} està reservat per a %{slot}. Si es lliura ara, faltarà per a altres reserves abans de les %{start}. Lliurar-lo igualment?"
+         "%{model} está reservado para %{slot}. Si se entrega ahora, faltará para otras reservas antes de las %{start}. ¿Entregarlo de todos modos?"
       ],
       "Whole day": [
          null,
-         "Dia complet"
+         "Día completo"
       ],
       "%s is already assigned to a different contract or hand over": [
          null,
-         "%s ja està assignat a un altre contracte o lliurament"
+         "%s ya está asignado a otro contrato o entrega"
       ],
       "Additional Data": [
          null,
-         "Dades addicionals"
+         "Datos adicionales"
       ],
       "Allocations in other groups considered - still available quantity of borrowable and not retired items": [
          null,
-         "Es tenen en compte les assignacions d'altres grups: quantitat encara disponible d'articles prestables i no donats de baixa"
+         "Se tienen en cuenta las asignaciones de otros grupos: cantidad aún disponible de artículos prestables y no dados de baja"
       ],
       "Attachment can't belong to model and item": [
          null,
-         "Un adjunt no pot pertànyer alhora a un model i a un article"
+         "Un adjunto no puede pertenecer a la vez a un modelo y a un artículo"
       ],
       "Attachment must be belong to model or item": [
          null,
-         "Un adjunt ha de pertànyer a un model o a un article"
+         "Un adjunto debe pertenecer a un modelo o a un artículo"
       ],
       "Back to %s": [
          null,
-         "Tornar a %s"
+         "Volver a %s"
       ],
       "Badge": [
          null,
@@ -4898,23 +4914,23 @@ window.i18n.locale_data = {
       ],
       "CSV import failed with %d errors": [
          null,
-         "La importació del CSV ha fallat amb %d errors"
+         "La importación del CSV falló con %d errores"
       ],
       "CSV successfully imported, %d items created": [
          null,
-         "CSV importat correctament: %d articles creats"
+         "CSV importado correctamente: %d artículos creados"
       ],
       "Contract can't have multiple delegated users.": [
          null,
-         "Un contracte no pot tenir diversos usuaris delegats."
+         "Un contrato no puede tener varios usuarios delegados."
       ],
       "Contract can't have multiple handed over by users.": [
          null,
-         "Un contracte no pot tenir diversos usuaris que l'hagin lliurat."
+         "Un contrato no puede tener varios usuarios que lo entregaron."
       ],
       "End date of a take back line can not be in the past.": [
          null,
-         "La data de fi d'una línia de devolució no pot ser en el passat."
+         "La fecha de fin de una línea de devolución no puede estar en el pasado."
       ],
       "Excel": [
          null,
@@ -4926,11 +4942,11 @@ window.i18n.locale_data = {
       ],
       "Group": [
          null,
-         "Grup"
+         "Grupo"
       ],
       "If you transfer an item to a different inventory pool it's not visible for you anymore.": [
          null,
-         "Si transfereix un article a un altre grup d'inventari, deixarà de veure'l."
+         "Si transfiere un artículo a otro grupo de inventario, dejará de verlo."
       ],
       "Import": [
          null,
@@ -4938,11 +4954,11 @@ window.i18n.locale_data = {
       ],
       "Licenses": [
          null,
-         "Llicències"
+         "Licencias"
       ],
       "Model Name": [
          null,
-         "Nom del model"
+         "Nombre del modelo"
       ],
       "Personal ID": [
          null,
@@ -4950,111 +4966,111 @@ window.i18n.locale_data = {
       ],
       "Retired Reason": [
          null,
-         "Motiu de la baixa"
+         "Motivo de la baja"
       ],
       "Rooms Diff": [
          null,
-         "Diferències de sales"
+         "Diferencias de salas"
       ],
       "Search category": [
          null,
-         "Cercar categoria"
+         "Buscar categoría"
       ],
       "Set current screen as your personal start screen": [
          null,
-         "Definir aquesta pantalla com la seva pantalla d'inici"
+         "Definir esta pantalla como su pantalla de inicio"
       ],
       "Software Informationen": [
          null,
-         "Informació del programari"
+         "Información del software"
       ],
       "Start Date cannot be a past date": [
          null,
-         "La data d'inici no pot ser en el passat"
+         "La fecha de inicio no puede estar en el pasado"
       ],
       "Technical Detail": [
          null,
-         "Detall tècnic"
+         "Detalle técnico"
       ],
       "The delegated user %s is suspended.": [
          null,
-         "L'usuari delegat %s està suspès."
+         "El usuario delegado %s está suspendido."
       ],
       "The item with the inventory code '%s' was not found": [
          null,
-         "No s'ha trobat l'article amb el codi d'inventari '%s'"
+         "No se encontró el artículo con el código de inventario '%s'"
       ],
       "The start_date is not unique": [
          null,
-         "La data d'inici no és única"
+         "La fecha de inicio no es única"
       ],
       "Type": [
          null,
-         "Tipus"
+         "Tipo"
       ],
       "Unallowed content type": [
          null,
-         "Tipus de fitxer no permès"
+         "Tipo de archivo no permitido"
       ],
       "Uploaded file must be less than 100MB": [
          null,
-         "El fitxer pujat ha d'ocupar menys de 100 MB"
+         "El archivo subido debe ocupar menos de 100 MB"
       ],
       "Uploaded file must be less than 8MB": [
          null,
-         "El fitxer pujat ha d'ocupar menys de 8 MB"
+         "El archivo subido debe ocupar menos de 8 MB"
       ],
       "Version": [
          null,
-         "Versió"
+         "Versión"
       ],
       "You don't have permission": [
          null,
-         "No té permís"
+         "No tiene permiso"
       ],
       "You dont have the permission to update any of the selected fields.": [
          null,
-         "No té permís per actualitzar cap dels camps seleccionats."
+         "No tiene permiso para actualizar ninguno de los campos seleccionados."
       ],
       "close dialog": [
          null,
-         "tancar diàleg"
+         "cerrar diálogo"
       ],
       "contract_contact_details_heading": [
          null,
-         "Dades de contacte"
+         "Datos de contacto"
       ],
       "create_multiple_items_btn_csv_export": [
          null,
-         "Desar com a CSV"
+         "Guardar como CSV"
       ],
       "create_multiple_items_checkbox_show_barcode": [
          null,
-         "Mostrar codis de barres"
+         "Mostrar códigos de barras"
       ],
       "create_multiple_items_checkbox_show_full_urls": [
          null,
-         "Mostrar els URL complets"
+         "Mostrar las URL completas"
       ],
       "create_multiple_items_head_list": [
          null,
-         "Llista dels articles creats"
+         "Lista de los artículos creados"
       ],
       "create_multiple_items_head_summary": [
          null,
-         "Resum"
+         "Resumen"
       ],
       "create_multiple_items_head_title": [
          null,
-         "Articles creats correctament!"
+         "¡Artículos creados correctamente!"
       ],
       "create_multiple_items_hint_csv_export": [
          null,
-         "(per exemple, per a impressores d'etiquetes)"
+         "(por ejemplo, para impresoras de etiquetas)"
       ],
       "create_multiple_items_label_date": [
          null,
-         "Data"
+         "Fecha"
       ],
       "create_multiple_items_label_export": [
          null,
@@ -5062,27 +5078,27 @@ window.i18n.locale_data = {
       ],
       "max. %s": [
          null,
-         "màx. %s"
+         "máx. %s"
       ],
       "must be taken from other groups": [
          null,
-         "cal agafar-los d'altres grups"
+         "hay que tomarlos de otros grupos"
       ],
       "%s available for general use, of which assigned": [
          null,
-         "%s disponibles per a ús general; d'aquests, assignats"
+         "%s disponibles para uso general; de ellos, asignados"
       ],
       "%s reserved for group %s, of which assigned": [
          null,
-         "%s reservats per al grup %s; d'aquests, assignats"
+         "%s reservados para el grupo %s; de ellos, asignados"
       ],
       "Last checked before": [
          null,
-         "Darrera revisió abans de"
+         "Última revisión antes de"
       ],
       "Only visible if owner": [
          null,
-         "Només visible per al propietari"
+         "Solo visible para el propietario"
       ],
       "min": [
          null,
@@ -5090,15 +5106,15 @@ window.i18n.locale_data = {
       ],
       "max": [
          null,
-         "màx."
+         "máx."
       ],
       "Old version": [
          null,
-         "Versió anterior"
+         "Versión anterior"
       ],
       "Upload a comma separated CSV file (UTF-8 encoding).": [
          null,
-         "Pugi un fitxer CSV separat per comes (codificació UTF-8)."
+         "Suba un archivo CSV separado por comas (codificación UTF-8)."
       ],
       "Room number": [
          null,
@@ -5106,11 +5122,11 @@ window.i18n.locale_data = {
       ],
       "has %s more...": [
          null,
-         "%s més..."
+         "%s más..."
       ],
       "The assigned contract reservations have to be marked either as signed or as closed": [
          null,
-         "Les reserves assignades al contracte s'han de marcar com a signades o tancades"
+         "Las reservas asignadas al contrato deben estar marcadas como firmadas o cerradas"
       ],
       "Challenge Response/System ID": [
          null,
@@ -5150,49 +5166,49 @@ window.i18n.locale_data = {
       ],
       "Start time": [
          null,
-         "Hora d'inici"
+         "Hora de inicio"
       ],
       "End time": [
          null,
-         "Hora de fi"
+         "Hora de fin"
       ],
       "Keep the times": [
          null,
-         "Mantenir els horaris"
+         "Mantener los horarios"
       ],
       "Choose both times, or none for whole days": [
          null,
-         "Triï les dues hores, o cap per a dies complets"
+         "Elige las dos horas, o ninguna para días completos"
       ],
       "The end has to be after the start": [
          null,
-         "La fi ha de ser posterior a l'inici"
+         "El fin tiene que ser posterior al inicio"
       ],
       "The inventory pool does not offer reservations by the hour.": [
          null,
-         "El grup d'inventari no ofereix reserves per hores."
+         "El grupo de inventario no ofrece reservas por horas."
       ],
       "Choose both times within the hours of the inventory pool, or none for whole days.": [
          null,
-         "Triï les dues hores dins de l'horari del grup d'inventari, o cap per a dies complets."
+         "Elige las dos horas dentro del horario del grupo de inventario, o ninguna para días completos."
       ],
       "Max. hours per reservation": [
          null,
-         "Màx. hores per reserva"
+         "Máx. horas por reserva"
       ],
       "No limit": [
          null,
-         "Sense límit"
+         "Sin límite"
       ],
       "Hour": [
          "Hours",
          "Hora",
-         "Hores"
+         "Horas"
       ],
       "hour": [
          "hours",
          "hora",
-         "hores"
+         "horas"
       ]
    }
 }

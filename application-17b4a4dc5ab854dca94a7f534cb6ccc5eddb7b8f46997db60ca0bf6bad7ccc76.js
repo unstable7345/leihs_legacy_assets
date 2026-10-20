@@ -70264,6 +70264,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         responsible_inventory_pool_id: this.state.responsible_inventory_pool_id,
         room_id: this.state.room_id,
         tag_ids: this.state.tag_ids,
+        per_page: this.state.per_page,
         search_term: this.state.search_term,
         owned: this.state.owned,
         in_stock: this.state.in_stock,
@@ -70322,6 +70323,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           room_id: inventoryFilter.room_id || '',
           // NOTE: earlier only one tag could be chosen (tag_id)
           tag_ids: inventoryFilter.tag_ids || (inventoryFilter.tag_id ? [inventoryFilter.tag_id] : []),
+          per_page: inventoryFilter.per_page || 20,
           search_term: inventoryFilter.search_term,
           owned: inventoryFilter.owned,
           in_stock: inventoryFilter.in_stock,
@@ -70340,6 +70342,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           responsible_inventory_pool_id: '',
           room_id: '',
           tag_ids: [],
+          per_page: 20,
           search_term: '',
           owned: false,
           in_stock: false,
@@ -70408,15 +70411,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       this.setState({ search_term: event.target.value }, this._writeFilterAndDelayedReloadList);
     },
 
-    _onCheckboxChange: function (event, attribute) {
-      // NOTE: Never preveent default for checkboxes.
-      this.state[attribute] = event.target.checked;
-      this.setState(this.state, this._writeFilterAndReloadList);
-    },
-
     _inventoryParams: function (page) {
       return _.extend(this._prepareParams(), {
         page: page,
+        per_page: this.state.per_page,
         include_package_models: true,
         sort: 'name',
         order: 'ASC'
@@ -70773,10 +70771,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       if (showCategories && this.state.tabConfig.type != 'option') {
         return React.createElement(
           'div',
-          { className: 'row' },
+          { className: 'row', style: { display: 'flex' } },
           React.createElement(
             'div',
-            { className: 'col1of6 padding-right-xs' },
+            { className: 'padding-right-xs', style: { flex: '0 0 48px' } },
             React.createElement(
               'button',
               { onClick: this._toggleCategories, className: 'button inset width-full height-full no-padding text-align-center', id: 'categories-toggle' },
@@ -70785,7 +70783,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           ),
           React.createElement(
             'div',
-            { className: 'col5of6' },
+            { style: { flex: '1 1 auto' } },
             React.createElement('input', { value: this.state.search_term, onChange: this._onSearchChange, autoComplete: 'off', className: 'width-full', id: 'list-search', name: 'input', placeholder: _jed('Search...'), type: 'text' })
           )
         );
@@ -71006,13 +71004,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       var _this14 = this;
 
       var formClass = 'row margin-bottom-xs';
-      var formClass2 = 'col6of8';
+      var formClass2 = 'col4of8';
       if (this.state.tabConfig.type == 'option') {
         formClass += ' hidden';
         formClass2 += ' hidden';
       }
-
-      var checkboxesStyle = {};
 
       return React.createElement(
         'div',
@@ -71113,7 +71109,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           { className: 'row' },
           React.createElement(
             'div',
-            { className: 'col2of8 padding-right-xs' },
+            { className: 'col4of8 padding-right-xs' },
             this._renderToggleAndSearch()
           ),
           React.createElement(
@@ -71124,67 +71120,27 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               { className: 'row' },
               React.createElement(
                 'div',
-                { className: 'col1of5 padding-right-xs' },
-                React.createElement(
-                  'label',
-                  { className: 'button inset white width-full height-xxs', htmlFor: 'owned', style: checkboxesStyle },
-                  React.createElement('input', { checked: this.state.owned, autoComplete: 'off', id: 'owned', name: 'owned', type: 'checkbox', onChange: function (event) {
-                      return _this14._onCheckboxChange(event, 'owned');
-                    } }),
-                  React.createElement(
-                    'span',
-                    null,
-                    _jed('Owned')
-                  )
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'col1of5 padding-right-xs' },
-                React.createElement(
-                  'label',
-                  { className: 'button inset white width-full height-xxs', htmlFor: 'in_stock', style: checkboxesStyle },
-                  React.createElement('input', { checked: this.state.in_stock, autoComplete: 'off', id: 'in_stock', name: 'in_stock', type: 'checkbox', onChange: function (event) {
-                      return _this14._onCheckboxChange(event, 'in_stock');
-                    } }),
-                  React.createElement(
-                    'span',
-                    null,
-                    _jed('In Stock')
-                  )
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'col1of5 padding-right-xs' },
-                React.createElement(
-                  'label',
-                  { className: 'button inset white width-full height-xxs', htmlFor: 'incomplete', style: checkboxesStyle },
-                  React.createElement('input', { checked: this.state.incomplete, autoComplete: 'off', id: 'incomplete', name: 'incomplete', type: 'checkbox', onChange: function (event) {
-                      return _this14._onCheckboxChange(event, 'incomplete');
-                    } }),
-                  React.createElement(
-                    'span',
-                    null,
-                    _jed('Incomplete')
-                  )
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'col1of5 padding-right-xs' },
-                React.createElement(
-                  'label',
-                  { className: 'button inset white width-full height-xxs', htmlFor: 'broken', style: checkboxesStyle },
-                  React.createElement('input', { checked: this.state.broken, autoComplete: 'off', id: 'broken', name: 'broken', type: 'checkbox', onChange: function (event) {
-                      return _this14._onCheckboxChange(event, 'broken');
-                    } }),
-                  React.createElement(
-                    'span',
-                    null,
-                    _jed('Broken')
-                  )
-                )
+                { className: 'col1of2 padding-right-xs' },
+                React.createElement(InventoryFilterMultiSelect, {
+                  name: 'status',
+                  onChange: function (values) {
+                    return _this14.setState({
+                      owned: _.contains(values, 'owned'),
+                      in_stock: _.contains(values, 'in_stock'),
+                      incomplete: _.contains(values, 'incomplete'),
+                      broken: _.contains(values, 'broken')
+                    }, _this14._writeFilterAndReloadList);
+                  },
+                  value: _.filter(['owned', 'in_stock', 'incomplete', 'broken'], function (key) {
+                    return _this14.state[key];
+                  }),
+                  allLabel: _jed('Status'),
+                  clearLabel: _jed('All'),
+                  severalLabel: function (count) {
+                    return _jed('Status') + ' (' + count + ')';
+                  },
+                  values: [{ value: 'owned', label: _jed('Owned') }, { value: 'in_stock', label: _jed('In Stock') }, { value: 'incomplete', label: _jed('Incomplete') }, { value: 'broken', label: _jed('Broken') }]
+                })
               ),
               React.createElement(DatePickerWithInput, { value: this.state.before_last_check, onChange: this._onDateChange, customRenderer: this._customRenderer })
             )
@@ -71200,7 +71156,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     _customRenderer: function (arguments) {
       return React.createElement(
         'div',
-        { className: 'col1of5 padding-right-xs' },
+        { className: 'col1of2 padding-right-xs' },
         React.createElement(
           'label',
           { className: 'row' },
@@ -71951,6 +71907,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         return this._itemInventoryCode(item);
       }
 
+      // NOTE: the field is as wide as the code, so that the tags still fit
+      // next to it; a click elsewhere cancels, like Escape; the buttons keep
+      // the focus in the field (onMouseDown), so that clicking them is no
+      // click elsewhere
+
       return React.createElement(
         'span',
         { style: { display: 'inline-flex', alignItems: 'center' } },
@@ -71969,11 +71930,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               _this21.setState({ editingCode: null });
             }
           },
-          style: { fontSize: '12px', padding: '2px 6px', width: '16em' }
+          onBlur: function () {
+            return _this21.setState({ editingCode: null });
+          },
+          style: { fontSize: '12px', padding: '2px 6px', width: Math.max(10, editing.value.length + 3) + 'ch' }
         }),
         React.createElement(
           'div',
-          { className: 'button white small', title: _jed('Save'), onClick: function () {
+          { className: 'button white small', title: _jed('Save'),
+            onMouseDown: function (event) {
+              return event.preventDefault();
+            }, onClick: function () {
               return _this21._saveItemCode(item);
             },
             style: _.extend(this._itemIconButtonStyle(), { marginLeft: '4px' }) },
@@ -71981,7 +71948,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         ),
         React.createElement(
           'div',
-          { className: 'button white small', title: _jed('Cancel'), onClick: function () {
+          { className: 'button white small', title: _jed('Cancel'),
+            onMouseDown: function (event) {
+              return event.preventDefault();
+            }, onClick: function () {
               return _this21.setState({ editingCode: null });
             },
             style: _.extend(this._itemIconButtonStyle(), { marginLeft: '4px' }) },
@@ -72037,7 +72007,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           { className: 'col2of5 line-col text-align-left' },
           React.createElement(
             'div',
-            { className: 'row', style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap' } },
+            { className: 'row', style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', rowGap: '4px' } },
             this._renderItemCode(item),
             this._renderItemTags(item)
           ),
@@ -72165,6 +72135,45 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     },
 
+    // how many results the filters give, and how many to load at once
+    _renderResultsBar: function () {
+      var _this27 = this;
+
+      var pagination = this.state.pagination;
+      return React.createElement(
+        'div',
+        { className: 'row padding-horizontal-s margin-bottom-xs',
+          style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between' } },
+        React.createElement(
+          'span',
+          { className: 'grey-text' },
+          pagination ? _jed('%s results', pagination.total_count) : ''
+        ),
+        React.createElement(
+          'label',
+          { className: 'grey-text' },
+          _jed('Per page'),
+          ' ',
+          React.createElement(
+            'select',
+            {
+              value: this.state.per_page,
+              onChange: function (event) {
+                return _this27.setState({ per_page: parseInt(event.target.value, 10) }, _this27._writeFilterAndReloadList);
+              },
+              style: { width: 'auto' } },
+            [20, 50, 100].map(function (n) {
+              return React.createElement(
+                'option',
+                { key: n, value: n },
+                n
+              );
+            })
+          )
+        )
+      );
+    },
+
     _renderTable: function () {
 
       return React.createElement(
@@ -72197,6 +72206,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         { className: 'row margin-top-l' },
         this._renderSubTabs(),
         this._renderFilters(),
+        this._renderResultsBar(),
         this._renderTable()
       );
     },
@@ -72298,7 +72308,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               return _this2.props.onChange([]);
             },
             style: { display: 'block', padding: '4px 10px', fontSize: '12px', cursor: 'pointer' } },
-          this.props.allLabel
+          this.props.clearLabel || this.props.allLabel
         ),
         this.props.values.map(function (v) {
           return React.createElement(
