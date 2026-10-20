@@ -60836,19 +60836,15 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           { className: 'ui-menu-item-wrapper' },
           React.createElement(
             'div',
-            { className: 'row text-ellipsis' },
+            { className: 'row', style: { display: 'flex', alignItems: 'baseline' } },
             React.createElement(
-              'div',
-              { className: 'col1of3' },
-              React.createElement(
-                'strong',
-                null,
-                row.inventoryCode
-              )
+              'strong',
+              { style: { flex: '0 0 auto', marginRight: '12px', whiteSpace: 'nowrap' } },
+              row.inventoryCode
             ),
             React.createElement(
               'div',
-              { className: 'col2of3 text-ellipsis', title: _this4._renderModelName(row.value.model) },
+              { style: { flex: '1 1 auto', minWidth: 0 } },
               _this4._renderModelName(row.value.model)
             )
           )
@@ -60863,7 +60859,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           inputClassName: 'has-addon width-full',
           element: 'div',
           inputId: 'search-item',
-          dropdownWidth: '424px',
+          dropdownWidth: '100%',
           label: '',
           _makeCall: makeCall,
           onChange: this.props.onSelectChildItem,
@@ -61047,6 +61043,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
   window.CreateItemContent.displayName = 'CreateItemContent';
 })();
+/* NOTE: the code takes what it needs, the model name the rest, on more lines if needed */;
 ;(function () {
   // NOTE: only for linter and clarity:
   /* global _, _jed, moment, accounting, i18n, React, PropTypes, App, CreateItemFieldSwitch, RenderFieldLabel, InputInventoryCode, InputCheckbox, InputInventoryCode, InputQuantityAllocations, InputAttachment, InputText, InputAutocompleteSearch, InputAutocomplete, InputTextarea, InputSelect, InputRadio, InputDate, InputCheckbox */
@@ -70308,7 +70305,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
         currentPage: 1,
 
-        delayedReloads: []
+        delayedReloads: [],
+
+        // NOTE: the inventory code being changed right in the list, e.g. {itemId: ..., value: 'MIC-01'}
+        editingCode: null
       };
 
       if (inventoryFilter && !filterReset) {
@@ -70406,12 +70406,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     _onSearchChange: function (event) {
       event.preventDefault();
       this.setState({ search_term: event.target.value }, this._writeFilterAndDelayedReloadList);
-    },
-
-    _onCheckboxChange: function (event, attribute) {
-      // NOTE: Never preveent default for checkboxes.
-      this.state[attribute] = event.target.checked;
-      this.setState(this.state, this._writeFilterAndReloadList);
     },
 
     _inventoryParams: function (page) {
@@ -70773,10 +70767,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       if (showCategories && this.state.tabConfig.type != 'option') {
         return React.createElement(
           'div',
-          { className: 'row' },
+          { className: 'row', style: { display: 'flex' } },
           React.createElement(
             'div',
-            { className: 'col1of6 padding-right-xs' },
+            { className: 'padding-right-xs', style: { flex: '0 0 48px' } },
             React.createElement(
               'button',
               { onClick: this._toggleCategories, className: 'button inset width-full height-full no-padding text-align-center', id: 'categories-toggle' },
@@ -70785,7 +70779,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           ),
           React.createElement(
             'div',
-            { className: 'col5of6' },
+            { style: { flex: '1 1 auto' } },
             React.createElement('input', { value: this.state.search_term, onChange: this._onSearchChange, autoComplete: 'off', className: 'width-full', id: 'list-search', name: 'input', placeholder: _jed('Search...'), type: 'text' })
           )
         );
@@ -71006,13 +71000,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       var _this14 = this;
 
       var formClass = 'row margin-bottom-xs';
-      var formClass2 = 'col6of8';
+      var formClass2 = 'col4of8';
       if (this.state.tabConfig.type == 'option') {
         formClass += ' hidden';
         formClass2 += ' hidden';
       }
-
-      var checkboxesStyle = {};
 
       return React.createElement(
         'div',
@@ -71113,7 +71105,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           { className: 'row' },
           React.createElement(
             'div',
-            { className: 'col2of8 padding-right-xs' },
+            { className: 'col4of8 padding-right-xs' },
             this._renderToggleAndSearch()
           ),
           React.createElement(
@@ -71124,67 +71116,27 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               { className: 'row' },
               React.createElement(
                 'div',
-                { className: 'col1of5 padding-right-xs' },
-                React.createElement(
-                  'label',
-                  { className: 'button inset white width-full height-xxs', htmlFor: 'owned', style: checkboxesStyle },
-                  React.createElement('input', { checked: this.state.owned, autoComplete: 'off', id: 'owned', name: 'owned', type: 'checkbox', onChange: function (event) {
-                      return _this14._onCheckboxChange(event, 'owned');
-                    } }),
-                  React.createElement(
-                    'span',
-                    null,
-                    _jed('Owned')
-                  )
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'col1of5 padding-right-xs' },
-                React.createElement(
-                  'label',
-                  { className: 'button inset white width-full height-xxs', htmlFor: 'in_stock', style: checkboxesStyle },
-                  React.createElement('input', { checked: this.state.in_stock, autoComplete: 'off', id: 'in_stock', name: 'in_stock', type: 'checkbox', onChange: function (event) {
-                      return _this14._onCheckboxChange(event, 'in_stock');
-                    } }),
-                  React.createElement(
-                    'span',
-                    null,
-                    _jed('In Stock')
-                  )
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'col1of5 padding-right-xs' },
-                React.createElement(
-                  'label',
-                  { className: 'button inset white width-full height-xxs', htmlFor: 'incomplete', style: checkboxesStyle },
-                  React.createElement('input', { checked: this.state.incomplete, autoComplete: 'off', id: 'incomplete', name: 'incomplete', type: 'checkbox', onChange: function (event) {
-                      return _this14._onCheckboxChange(event, 'incomplete');
-                    } }),
-                  React.createElement(
-                    'span',
-                    null,
-                    _jed('Incomplete')
-                  )
-                )
-              ),
-              React.createElement(
-                'div',
-                { className: 'col1of5 padding-right-xs' },
-                React.createElement(
-                  'label',
-                  { className: 'button inset white width-full height-xxs', htmlFor: 'broken', style: checkboxesStyle },
-                  React.createElement('input', { checked: this.state.broken, autoComplete: 'off', id: 'broken', name: 'broken', type: 'checkbox', onChange: function (event) {
-                      return _this14._onCheckboxChange(event, 'broken');
-                    } }),
-                  React.createElement(
-                    'span',
-                    null,
-                    _jed('Broken')
-                  )
-                )
+                { className: 'col1of2 padding-right-xs' },
+                React.createElement(InventoryFilterMultiSelect, {
+                  name: 'status',
+                  onChange: function (values) {
+                    return _this14.setState({
+                      owned: _.contains(values, 'owned'),
+                      in_stock: _.contains(values, 'in_stock'),
+                      incomplete: _.contains(values, 'incomplete'),
+                      broken: _.contains(values, 'broken')
+                    }, _this14._writeFilterAndReloadList);
+                  },
+                  value: _.filter(['owned', 'in_stock', 'incomplete', 'broken'], function (key) {
+                    return _this14.state[key];
+                  }),
+                  allLabel: _jed('Status'),
+                  clearLabel: _jed('All'),
+                  severalLabel: function (count) {
+                    return _jed('Status') + ' (' + count + ')';
+                  },
+                  values: [{ value: 'owned', label: _jed('Owned') }, { value: 'in_stock', label: _jed('In Stock') }, { value: 'incomplete', label: _jed('Incomplete') }, { value: 'broken', label: _jed('Broken') }]
+                })
               ),
               React.createElement(DatePickerWithInput, { value: this.state.before_last_check, onChange: this._onDateChange, customRenderer: this._customRenderer })
             )
@@ -71200,7 +71152,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     _customRenderer: function (arguments) {
       return React.createElement(
         'div',
-        { className: 'col1of5 padding-right-xs' },
+        { className: 'col1of2 padding-right-xs' },
         React.createElement(
           'label',
           { className: 'row' },
@@ -71690,37 +71642,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
       }
     },
 
-    _renderItemPackageInfo: function (item) {
-      var _this17 = this;
-
-      if (!this._itemIsPackage(item)) {
-        return null;
-      }
-
-      return React.createElement(
-        'div',
-        { className: 'row' },
-        React.createElement('div', { className: 'col1of2' }),
-        React.createElement(
-          'div',
-          { className: 'col1of2' },
-          React.createElement(
-            'button',
-            { onClick: function (event) {
-                return _this17._onToggleItem(event, item);
-              }, className: 'button inset small width-full', 'data-type': 'inventory-expander' },
-            this._renderItemArrow(item),
-            ' ',
-            React.createElement(
-              'span',
-              null,
-              this._itemChildCount(item)
-            )
-          )
-        )
-      );
-    },
-
     _itemProblems: function (item) {
       return item.getProblems();
     },
@@ -71838,7 +71759,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
     // a menu to put and remove the tags of the pool right in the list
     _renderItemTagsMenu: function (item) {
-      var _this18 = this;
+      var _this17 = this;
 
       if (!this._hasEditRights() || _.isEmpty(this.props.tags)) {
         return null;
@@ -71850,13 +71771,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
       return React.createElement(
         'div',
-        { className: 'dropdown-holder inline-block', style: { marginLeft: '6px' } },
+        { className: 'dropdown-holder inline-block', style: { marginLeft: '4px' } },
         React.createElement(
           'div',
           {
             className: 'button white small dropdown-toggle',
             title: _jed('Tags'),
-            style: { padding: '0 6px', lineHeight: '16px', fontSize: '10px' } },
+            style: this._itemIconButtonStyle() },
           React.createElement('i', { className: 'fa fa-tag' })
         ),
         React.createElement(
@@ -71872,7 +71793,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
                 {
                   className: 'dropdown-item',
                   onClick: function (event) {
-                    return _this18._onToggleItemTag(event, item, tag);
+                    return _this17._onToggleItemTag(event, item, tag);
                   },
                   style: { fontSize: '12px', lineHeight: '16px', padding: '4px 12px', whiteSpace: 'nowrap', cursor: 'pointer' } },
                 React.createElement('i', { className: 'fa ' + (checked ? 'fa-check-square-o' : 'fa-square-o'), style: { color: tag.color, width: '14px' } }),
@@ -71886,7 +71807,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _onToggleItemTag: function (event, item, tag) {
-      var _this19 = this;
+      var _this18 = this;
 
       event.preventDefault();
       var tagIds = _.map(item.tags || [], function (t) {
@@ -71908,10 +71829,157 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
           stored.tags = tags;
         }
         item.tags = tags;
-        _this19.forceUpdate();
+        _this18.forceUpdate();
       }).error(function (res) {
         App.Flash({ type: 'error', message: res.responseJSON && res.responseJSON.message || res.statusText });
       });
+    },
+
+    _itemIconButtonStyle: function () {
+      return { padding: '0 6px', lineHeight: '16px', fontSize: '10px', width: '24px', textAlign: 'center' };
+    },
+
+    // NOTE: like the field in the item form: inventory managers of the owner pool
+    _canEditItemCode: function (item) {
+      return this._appAccessRight().atLeastRole(this._appCurrentUserRole(), 'inventory_manager') && item.owner_id == App.InventoryPool.current.id;
+    },
+
+    _renderItemCodeEditButton: function (item) {
+      var _this19 = this;
+
+      if (!this._hasEditRights()) {
+        return null;
+      }
+
+      // NOTE: an empty place where the code can't be changed, so that the tags
+      // button stays at the same place in all lines
+      var canEdit = this._canEditItemCode(item);
+      return React.createElement(
+        'div',
+        {
+          className: 'button white small',
+          title: _jed('Edit inventory code'),
+          onClick: function () {
+            return canEdit && _this19.setState({ editingCode: { itemId: item.id, value: item.inventory_code } });
+          },
+          style: _.extend(this._itemIconButtonStyle(), canEdit ? {} : { visibility: 'hidden' }) },
+        React.createElement('i', { className: 'fa fa-pencil' })
+      );
+    },
+
+    _saveItemCode: function (item) {
+      var _this20 = this;
+
+      var code = this.state.editingCode.value.trim();
+      if (code == '' || code == item.inventory_code) {
+        this.setState({ editingCode: null });
+        return;
+      }
+
+      $.ajax({
+        url: App.Inventory.url().replace('/inventory', '') + '/items/' + item.id + '/inventory_code',
+        method: 'PUT',
+        contentType: 'application/json',
+        dataType: 'json',
+        data: JSON.stringify({ inventory_code: code })
+      }).done(function (data) {
+        // NOTE: App.Item.find returns clones of the stored item (see the tags)
+        var stored = App.Item.irecords[item.id];
+        if (stored) {
+          stored.inventory_code = data.inventory_code;
+        }
+        item.inventory_code = data.inventory_code;
+        _this20.setState({ editingCode: null });
+      }).error(function (res) {
+        App.Flash({ type: 'error', message: res.responseJSON && res.responseJSON.message || res.statusText });
+      });
+    },
+
+    _renderItemCode: function (item) {
+      var _this21 = this;
+
+      var editing = this.state.editingCode;
+      if (!editing || editing.itemId != item.id) {
+        return this._itemInventoryCode(item);
+      }
+
+      // NOTE: the field is as wide as the code, so that the tags still fit
+      // next to it; a click elsewhere cancels, like Escape; the buttons keep
+      // the focus in the field (onMouseDown), so that clicking them is no
+      // click elsewhere
+
+      return React.createElement(
+        'span',
+        { style: { display: 'inline-flex', alignItems: 'center' } },
+        React.createElement('input', {
+          type: 'text',
+          autoFocus: true,
+          value: editing.value,
+          onChange: function (event) {
+            return _this21.setState({ editingCode: { itemId: item.id, value: event.target.value } });
+          },
+          onKeyDown: function (event) {
+            if (event.key == 'Enter') {
+              event.preventDefault();
+              _this21._saveItemCode(item);
+            } else if (event.key == 'Escape') {
+              _this21.setState({ editingCode: null });
+            }
+          },
+          onBlur: function () {
+            return _this21.setState({ editingCode: null });
+          },
+          style: { fontSize: '12px', padding: '2px 6px', width: Math.max(10, editing.value.length + 3) + 'ch' }
+        }),
+        React.createElement(
+          'div',
+          { className: 'button white small', title: _jed('Save'),
+            onMouseDown: function (event) {
+              return event.preventDefault();
+            }, onClick: function () {
+              return _this21._saveItemCode(item);
+            },
+            style: _.extend(this._itemIconButtonStyle(), { marginLeft: '4px' }) },
+          React.createElement('i', { className: 'fa fa-check' })
+        ),
+        React.createElement(
+          'div',
+          { className: 'button white small', title: _jed('Cancel'),
+            onMouseDown: function (event) {
+              return event.preventDefault();
+            }, onClick: function () {
+              return _this21.setState({ editingCode: null });
+            },
+            style: _.extend(this._itemIconButtonStyle(), { marginLeft: '4px' }) },
+          React.createElement('i', { className: 'fa fa-times' })
+        )
+      );
+    },
+
+    _renderItemPackageExpander: function (item) {
+      var _this22 = this;
+
+      if (!this._itemIsPackage(item)) {
+        return null;
+      }
+
+      return React.createElement(
+        'div',
+        { style: { width: '50%', marginLeft: '8px' } },
+        React.createElement(
+          'button',
+          { onClick: function (event) {
+              return _this22._onToggleItem(event, item);
+            }, className: 'button inset small width-full', 'data-type': 'inventory-expander' },
+          this._renderItemArrow(item),
+          ' ',
+          React.createElement(
+            'span',
+            null,
+            this._itemChildCount(item)
+          )
+        )
+      );
     },
 
     _renderItemLine: function (item) {
@@ -71922,17 +71990,22 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         React.createElement(
           'div',
           { className: 'col1of5 line-col' },
-          this._renderItemPackageInfo(item)
+          React.createElement(
+            'div',
+            { style: { display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '12px' } },
+            this._renderItemCodeEditButton(item),
+            this._renderItemTagsMenu(item),
+            this._renderItemPackageExpander(item)
+          )
         ),
         React.createElement(
           'div',
           { className: 'col2of5 line-col text-align-left' },
           React.createElement(
             'div',
-            { className: 'row', style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap' } },
-            this._itemInventoryCode(item),
-            this._renderItemTags(item),
-            this._renderItemTagsMenu(item)
+            { className: 'row', style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', rowGap: '4px' } },
+            this._renderItemCode(item),
+            this._renderItemTags(item)
           ),
           this._renderItemDetail(item)
         ),
@@ -71963,10 +72036,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderItemItems: function (item) {
-      var _this20 = this;
+      var _this23 = this;
 
       return _.flatten(item.children().all().map(function (item) {
-        return _this20._renderItem(item);
+        return _this23._renderItem(item);
       }));
     },
 
@@ -71999,10 +72072,10 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderModelItems: function (model) {
-      var _this21 = this;
+      var _this24 = this;
 
       return _.flatten(this._modelItems(model).all().map(function (item) {
-        return _this21._renderItem(item);
+        return _this24._renderItem(item);
       }));
     },
 
@@ -72028,18 +72101,18 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
 
     _renderPage: function (page) {
-      var _this22 = this;
+      var _this25 = this;
 
       return _.flatten(page.map(function (model) {
-        return _this22._renderModelWithItems(model);
+        return _this25._renderModelWithItems(model);
       }));
     },
 
     _renderPages: function (pages) {
-      var _this23 = this;
+      var _this26 = this;
 
       return _.flatten(pages.map(function (page) {
-        return _this23._renderPage(page);
+        return _this26._renderPage(page);
       }));
     },
 
@@ -72191,7 +72264,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
               return _this2.props.onChange([]);
             },
             style: { display: 'block', padding: '4px 10px', fontSize: '12px', cursor: 'pointer' } },
-          this.props.allLabel
+          this.props.clearLabel || this.props.allLabel
         ),
         this.props.values.map(function (v) {
           return React.createElement(
